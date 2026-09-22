@@ -128,6 +128,39 @@ a.gomap,.nm.gomap{display:block;color:inherit}
 a.gomap:active{opacity:.6}
 a.gomap:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:6px}
 
+/* 交通方案弹窗 */
+.sheet{position:fixed;inset:0;z-index:9100;background:rgba(40,18,29,.55);
+  display:flex;align-items:flex-end;justify-content:center}
+.sheet[hidden]{display:none!important}
+.sheet-in{background:var(--bg);width:100%;max-width:560px;border-radius:24px 24px 0 0;
+  max-height:86vh;overflow-y:auto;padding:18px 16px calc(22px + env(safe-area-inset-bottom,0px))}
+.sheet-h{display:flex;align-items:center;gap:9px;margin-bottom:4px}
+.sheet-h h3{margin:0;font-size:18px;font-weight:700;font-family:var(--jp)}
+.sheet-h .cnt{background:var(--chip);color:var(--chip-tx);font-size:12px;font-weight:700;
+  padding:3px 10px;border-radius:999px}
+.sheet-sub{font-size:13.5px;color:var(--label2);margin:0 0 14px;font-family:var(--jp);font-weight:600}
+.sheet-sub b{color:var(--pink-deep)}
+.opt{background:var(--card);border-radius:16px;padding:12px 13px;margin-bottom:9px;
+  display:grid;grid-template-columns:auto 1fr auto;gap:11px;align-items:start;box-shadow:var(--shadow)}
+.opt .ic{font-size:24px;line-height:1.1}
+.opt .l{font-size:15.5px;font-weight:700;font-family:var(--jp);line-height:1.3}
+.opt .d{font-size:13px;color:var(--label2);margin-top:3px;line-height:1.45}
+.opt .d b{color:var(--label);font-weight:700}
+.opt .fn{font-size:11.5px;color:var(--label3);margin-top:4px;font-family:var(--mono)}
+.opt .r{text-align:right;white-space:nowrap}
+.opt .fare{font-size:17px;font-weight:700;color:var(--pink-deep);font-family:var(--mono)}
+.opt .fare.free{color:var(--ok-tx);font-family:var(--sans);font-size:15px}
+.opt .tm{font-size:12px;color:var(--label3);font-family:var(--mono);margin-top:2px}
+.rec{background:var(--ok-bg);color:var(--ok-tx);font-size:11px;font-weight:700;
+  padding:2px 8px;border-radius:999px;margin-left:6px;vertical-align:2px}
+.estflag{background:var(--warn-bg);color:var(--warn-tx);font-size:11px;font-weight:700;
+  padding:2px 8px;border-radius:999px;margin-left:6px;vertical-align:2px}
+.sheet .gmap{display:block;text-align:center;background:var(--chip);color:var(--pink-deep);
+  border-radius:999px;padding:12px;font-weight:700;font-size:14.5px;margin-top:4px;min-height:44px}
+.sheet .close{width:100%;background:var(--pink);color:#fff;border:none;border-radius:999px;
+  padding:13px;font-size:15.5px;font-weight:700;font-family:var(--sans);cursor:pointer;margin-top:9px;min-height:46px}
+.sheet .none{font-size:14px;color:var(--label2);background:var(--card);border-radius:16px;padding:14px;margin-bottom:9px}
+
 /* 票券灯箱 */
 .lb{position:fixed;inset:0;z-index:9000;background:rgba(40,18,29,.94);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
@@ -187,6 +220,16 @@ a.gomap:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-ra
 </div>
 <div class="wrap" id="pane"></div>
 
+<div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-label="交通方案">
+  <div class="sheet-in">
+    <div class="sheet-h"><span style="font-size:22px">🚋</span><h3>交通方案</h3><span class="cnt" id="shcnt"></span></div>
+    <p class="sheet-sub" id="shsub"></p>
+    <div id="shopts"></div>
+    <a class="gmap" id="shgmap" target="_blank" rel="noopener">在 Google 地图看实时路线 →</a>
+    <button class="close" id="shclose" type="button">关闭</button>
+  </div>
+</div>
+
 <div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="票券">
   <div class="cap" id="lbcap"></div>
   <img id="lbimg" alt="票券 / 二维码">
@@ -204,6 +247,89 @@ function dir(from,to){
   var u="https://www.google.com/maps/dir/?api=1&travelmode=transit&destination="+encodeURIComponent(to);
   if(from) u+="&origin="+encodeURIComponent(from);
   return u;
+}
+
+/* ---------- 交通方案 ----------
+   已核实的票价写死在这里，离线也能看。est:1 = 估算，未逐一核实。
+   没有对应条目的路段，只给「步行估算 + Google 实时」两项。 */
+var LEG={
+ "dtosaka>castle":[{m:"walk",l:"沿大手前通",d:"酒店正对公园西口",t:"~2min",f:0,rec:1}],
+ "castle>shinsai":[
+   {m:"metro",l:"大阪メトロ 中央线 → 御堂筋线",d:"谷町四丁目 → 本町 换乘 → 心斋桥",t:"~12min",f:190,est:1,rec:1},
+   {m:"taxi",l:"出租车",d:"直达约4km",t:"~15min",f:1600,est:1}],
+ "shinsai>doton":[{m:"walk",l:"沿心斋桥筋商店街",d:"一路都是店，边逛边走",t:"~8min",f:0,rec:1}],
+ "kitashinchi>osakastn":[{m:"walk",l:"步行",d:"北新地 → 大阪站",t:"~10min",f:0,rec:1}],
+ "osakastn>kyotostn":[
+   {m:"train",l:"JR 京都线 新快速",d:"7・8号站台 · 京都方向 · 约15分钟一班",t:"~30min",f:580,rec:1},
+   {m:"train",l:"JR 京都线 普通",d:"站站停，没必要",t:"~50min",f:580}],
+ "kyotostn>hgikyoto":[
+   {m:"metro",l:"地铁乌丸线",d:"京都站 → 四条站，1站",t:"~5min",f:220,rec:1},
+   {m:"walk",l:"沿乌丸通步行",d:"约1.5km，一条直路",t:"~20min",f:0}],
+ "hgikyoto>kameoka":[
+   {m:"train",l:"地铁 + JR 山阴本线",d:"四条 → 京都站 → 马堀站，再步行8分钟",t:"~60min",f:640,est:1,rec:1}],
+ "kameoka>torokkoara":[
+   {m:"train",l:"嵯峨野观光小火车",d:"龟冈 → 岚山 · 全程景观段",t:"~20min",f:880,rec:1}],
+ "torokkoara>jojakko":[{m:"walk",l:"步行",d:"出站往北",t:"~12min",f:0,rec:1}],
+ "jojakko>bamboo":[{m:"walk",l:"步行",d:"下坡穿过竹林北口",t:"~10min",f:0,rec:1}],
+ "bamboo>yusai":[{m:"walk",l:"步行",d:"往渡月桥方向",t:"~23min",f:0,rec:1}],
+ "yusai>togetsu":[{m:"walk",l:"步行",d:"沿桂川",t:"~12min",f:0,rec:1}],
+ "togetsu>nishiki":[
+   {m:"train",l:"阪急 嵐山线 → 京都线",d:"岚山 → 桂 换乘 → 乌丸站",t:"~40min",f:250,est:1,rec:1},
+   {m:"train",l:"JR 山阴本线",d:"嵯峨岚山 → 京都站，再转地铁",t:"~45min",f:420,est:1}],
+ "kiyomizu>yasaka":[{m:"walk",l:"经二年坂・三年坂",d:"这段路本身就是景点",t:"~20min",f:0,rec:1}],
+ "yasaka>nishiki":[
+   {m:"walk",l:"沿四条通步行",d:"过鸭川，一路购物街",t:"~20min",f:0,rec:1},
+   {m:"metro",l:"阪急 京都线",d:"祇园四条 → 河原町",t:"~5min",f:170,est:1}],
+ "fushimi>hgikyoto":[
+   {m:"train",l:"JR 奈良线 + 地铁乌丸线",d:"稻荷站 → 京都站 → 四条站",t:"~25min",f:370,est:1,rec:1}],
+ "hgikyoto>tokyostn":[
+   {m:"shink",l:"のぞみ 指定席",d:"京都 → 东京 · <b>坐 E 席看富士山</b>",t:"~2h15",f:14170,fn:"通常期。繁忙期 +¥200，最繁忙期 +¥400",rec:1},
+   {m:"shink",l:"のぞみ 自由席",d:"黄金周不建议赌自由席",t:"~2h15",f:13320,est:1}],
+ "tokyostn>roynet":[
+   {m:"train",l:"JR 山手线 / 京滨东北线",d:"东京 → 新桥，1站",t:"~3min",f:150,est:1,rec:1},
+   {m:"walk",l:"步行",d:"经银座，约2km",t:"~25min",f:0}],
+ "roynet>tokyostn":[
+   {m:"train",l:"JR 山手线",d:"新桥 → 东京，1站",t:"~3min",f:150,est:1,rec:1},
+   {m:"walk",l:"步行经银座",d:"顺路逛一番街",t:"~25min",f:0}],
+ "meiji>omote":[{m:"walk",l:"穿过原宿",d:"出神宫南口沿表参道",t:"~15min",f:0,rec:1}],
+ "omote>shibuya":[
+   {m:"walk",l:"沿表参道下坡",d:"到涩谷 Scramble",t:"~18min",f:0,rec:1},
+   {m:"metro",l:"东京地铁 银座线",d:"表参道 → 涩谷，1站",t:"~3min",f:180,est:1}],
+ "sensoji>skytree":[
+   {m:"walk",l:"过隅田川步行",d:"沿途能拍到塔全景",t:"~22min",f:0,rec:1},
+   {m:"train",l:"东武 晴空塔线",d:"浅草 → 东京晴空塔，1站",t:"~3min",f:150,est:1}],
+ "skytree>ginza":[
+   {m:"metro",l:"半藏门线 → 银座线",d:"押上 → 三越前 换乘 → 银座",t:"~25min",f:290,est:1,rec:1}],
+ "roynet>disney":[
+   {m:"train",l:"都营浅草线 → 日比谷线 → JR京叶线",d:"新桥 → 东银座 → 八丁堀 → 舞浜",t:"~30min",f:550,fn:"IC ¥539 · 2次换乘",rec:1},
+   {m:"train",l:"JR 山手线 → 京叶线",d:"新桥 → 东京站，站内走约15分钟到京叶线",t:"~35min",f:380,est:1}],
+ "roynet>tsukiji":[{m:"walk",l:"步行",d:"新桥 → 筑地场外，早上很舒服",t:"~15min",f:0,rec:1}],
+ "tsukiji>roynet":[{m:"walk",l:"步行",d:"原路返回",t:"~15min",f:0,rec:1}],
+ "roynet>ginza":[{m:"walk",l:"步行",d:"新桥 → 银座四丁目",t:"~10min",f:0,rec:1}],
+ "ginza>roynet":[{m:"walk",l:"步行",d:"银座 → 新桥",t:"~10min",f:0,rec:1}],
+ "ginza>hnd":[
+   {m:"train",l:"都营浅草线 · 京急直通",d:"新桥 → 羽田第3航站楼 · <b>不用换车</b>",t:"~25min",f:510,fn:"IC ¥505 · 22–29分钟",rec:1},
+   {m:"taxi",l:"出租车",d:"直达，堵车风险",t:"~35min",f:7000,est:1}],
+ "roynet>hnd":[
+   {m:"train",l:"都营浅草线 · 京急直通",d:"新桥 → 羽田第3航站楼 · <b>不用换车</b>",t:"~25min",f:510,fn:"IC ¥505 · 22–29分钟",rec:1}]
+};
+var MODE={walk:["🚶","步行"],metro:["🚇","地铁"],train:["🚆","电车"],shink:["🚄","新干线"],taxi:["🚕","出租车"],bus:["🚌","巴士"]};
+
+function haversine(a,b){
+  var R=6371,dLat=(b[0]-a[0])*Math.PI/180,dLon=(b[1]-a[1])*Math.PI/180;
+  var la1=a[0]*Math.PI/180,la2=b[0]*Math.PI/180;
+  var h=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.sin(dLon/2)*Math.sin(dLon/2)*Math.cos(la1)*Math.cos(la2);
+  return 2*R*Math.asin(Math.sqrt(h));
+}
+function legOptions(fk,tk){
+  var key=fk+">"+tk;
+  if(LEG[key]) return LEG[key];
+  if(fk&&P[fk]&&P[tk]){
+    var km=haversine(P[fk],P[tk]);
+    if(km<2.2) return [{m:"walk",l:"步行（直线估算）",d:"直线约"+km.toFixed(1)+"km，实际路线会更长",
+      t:"~"+Math.round(km*1.3/0.08)+"min",f:0,est:1,rec:1}];
+  }
+  return [];
 }
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c];});}
 var BOW='<svg class="bow" viewBox="0 0 52 40" aria-hidden="true"><path d="M26 20c-6-9-13-13-18-10-4 3-4 12 0 15 5 3 12-1 18-5z" fill="var(--pink)"/><path d="M26 20c6-9 13-13 18-10 4 3 4 12 0 15-5 3-12-1-18-5z" fill="var(--pink)"/><circle cx="26" cy="20" r="5.5" fill="var(--pink-deep)"/></svg>';
@@ -555,7 +681,7 @@ function renderDay(i){
   if(d.badges) h+='<div class="badges">'+d.badges.map(function(b){
     return '<span class="badge '+b[0]+'">'+esc(b[1])+'</span>';}).join("")+'</div>';
   h+='<div class="tl">';
-  var prev=null;
+  var prev=null, prevKey=null;
   d.ev.forEach(function(e){
     var pl=(e.p&&P[e.p])?P[e.p]:null;
     h+='<div class="row" data-k="'+(e.k||"")+'"><div class="rt">'+esc(e.t)+'</div>'+
@@ -566,7 +692,7 @@ function renderDay(i){
     if(e.m) h+='<div class="meta">'+esc(e.m)+'</div>';
     if(e.note) h+='<div class="note">'+e.note+'</div>';
     var bt="";
-    if(pl) bt+='<a class="btn" href="'+dir(prev,pl[4])+'" target="_blank" rel="noopener">🚇 路线</a>';
+    if(pl) bt+='<button class="btn rt-btn" type="button" data-from="'+esc(prevKey||"")+'" data-to="'+esc(e.p)+'">🚇 路线</button>';
     if(e.ticket) bt+='<button class="btn tkt" type="button" data-img="'+esc(e.ticket)+'" data-cap="'+esc(e.n)+'">🎫 票券</button>';
     if(bt) h+='<div class="btns">'+bt+'</div>';
     if(e.c&&e.c.length){
@@ -574,7 +700,7 @@ function renderDay(i){
       h+='<div class="cands">'+e.c.map(function(k){return candCard(k,dow,from);}).join("")+'</div>';
     }
     h+='</div></div></div>';
-    if(pl) prev=pl[4];
+    if(pl){ prev=pl[4]; prevKey=e.p; }
   });
   h+='</div>';
   if(d.call) h+='<div class="call '+(d.call.cls||"")+'"><h3>'+esc(d.call.h)+'</h3>'+
@@ -593,6 +719,35 @@ function foot(){
    '<p>营业时间、休息日、价格来自你自己的笔记；新增的部分已于 2026-09-22 用 Tabelog 和店家官网核对。日本比上海快1小时。重要的当天一定再确认一次。</p></div>';
 }
 
+/* 交通方案弹窗 */
+var sheet=document.getElementById("sheet");
+function closeSheet(){ sheet.hidden=true; }
+document.getElementById("shclose").onclick=closeSheet;
+sheet.addEventListener("click",function(ev){ if(ev.target===sheet) closeSheet(); });
+
+function openSheet(fk,tk){
+  var opts=legOptions(fk,tk);
+  var fromName=fk&&P[fk]?P[fk][2]:"当前位置";
+  var toName=P[tk]?P[tk][2]:tk;
+  document.getElementById("shsub").innerHTML=esc(fromName)+" <b>→</b> "+esc(toName);
+  document.getElementById("shcnt").textContent=opts.length?opts.length+" 个方案":"无数据";
+  var h="";
+  if(!opts.length){
+    h='<div class="none">这一段我没有核实过的班次数据，别让我编。点下面用 Google 地图查实时路线。</div>';
+  }
+  opts.forEach(function(o){
+    var mi=MODE[o.m]||["🚇","交通"];
+    h+='<div class="opt"><div class="ic">'+mi[0]+'</div><div><div class="l">'+esc(o.l)+
+       (o.rec?'<span class="rec">推荐</span>':"")+(o.est?'<span class="estflag">估算</span>':"")+'</div>'+
+       '<div class="d">'+o.d+'</div>'+(o.fn?'<div class="fn">'+esc(o.fn)+'</div>':"")+'</div>'+
+       '<div class="r"><div class="fare'+(o.f?"":" free")+'">'+(o.f?"¥"+o.f.toLocaleString():"免费")+'</div>'+
+       '<div class="tm">'+esc(o.t)+'</div></div></div>';
+  });
+  document.getElementById("shopts").innerHTML=h;
+  document.getElementById("shgmap").href=dir(fk&&P[fk]?P[fk][4]:null, P[tk]?P[tk][4]:tk);
+  sheet.hidden=false;
+}
+
 /* 票券灯箱 */
 var lb=document.getElementById("lb"), lbimg=document.getElementById("lbimg"), lbcap=document.getElementById("lbcap");
 function closeLb(){ lb.hidden=true; lbimg.removeAttribute("src"); }
@@ -600,12 +755,18 @@ document.getElementById("lbclose").onclick=closeLb;
 lb.addEventListener("click",function(ev){ if(ev.target===lb) closeLb(); });
 document.addEventListener("keydown",function(ev){ if(ev.key==="Escape"&&!lb.hidden) closeLb(); });
 pane.addEventListener("click",function(ev){
-  var b=ev.target.closest&&ev.target.closest(".tkt");
-  if(!b) return;
-  lbcap.textContent=b.getAttribute("data-cap")||"票券";
-  lbimg.src=b.getAttribute("data-img");
-  lb.hidden=false;
+  if(!ev.target.closest) return;
+  var t=ev.target.closest(".tkt");
+  if(t){
+    lbcap.textContent=t.getAttribute("data-cap")||"票券";
+    lbimg.src=t.getAttribute("data-img");
+    lb.hidden=false;
+    return;
+  }
+  var r=ev.target.closest(".rt-btn");
+  if(r) openSheet(r.getAttribute("data-from")||null, r.getAttribute("data-to"));
 });
+document.addEventListener("keydown",function(ev){ if(ev.key==="Escape"&&!sheet.hidden) closeSheet(); });
 
 show(-1);
 setTimeout(function(){ map.invalidateSize(); },150);
