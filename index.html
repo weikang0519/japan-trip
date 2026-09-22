@@ -1,15 +1,15 @@
 <!doctype html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=5">
 <title>関西 → 関東</title>
-<meta name="description" content="大阪・京都・東京 2026-09-28 → 10-06">
+<meta name="description" content="大阪・京都・东京 2026-09-28 → 10-06">
 <meta name="robots" content="noindex,nofollow,noarchive">
-<meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme:light)">
-<meta name="theme-color" content="#000000" media="(prefers-color-scheme:dark)">
+<meta name="theme-color" content="#FFF0F5" media="(prefers-color-scheme:light)">
+<meta name="theme-color" content="#1A0F16" media="(prefers-color-scheme:dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="関西→関東">
+<meta name="apple-mobile-web-app-title" content="关西→关东">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -17,66 +17,74 @@
 <link rel="stylesheet" href="leaflet.css">
 <style>
 :root{
-  --bg:#F2F2F7; --card:#FFFFFF; --card2:#F7F7FA;
-  --label:#000000; --label2:#6E6E73; --label3:#A1A1A6;
-  --sep:#D8D8DC; --sep2:#E9E9EC;
-  --blue:#007AFF; --red:#FF3B30; --green:#2FA35B; --amber:#B25E00;
-  --chip:#F0F0F3; --chip-tx:#48484A;
-  --ok-bg:#E6F4EC; --ok-tx:#1C7A45;
-  --warn-bg:#FDF0DC; --warn-tx:#9A5E00;
-  --stop-bg:#FDE8E7; --stop-tx:#C0231A;
-  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;
-  --jp:"Hiragino Sans","Hiragino Kaku Gothic ProN","PingFang SC","Yu Gothic Medium","Microsoft YaHei","Noto Sans JP",-apple-system,sans-serif;
+  --bg:#FFF0F5; --card:#FFFFFF; --card2:#FFF7FA;
+  --label:#3A1F2B; --label2:#8B6675; --label3:#B993A4;
+  --sep:#F6D8E4; --sep2:#FBE8F0;
+  --pink:#EC4E8C; --pink-soft:#FFD3E4; --pink-deep:#C4266A;
+  --blue:#EC4E8C; --amber:#D98324; --green:#3E9B6B; --red:#E0446B;
+  --chip:#FDEBF2; --chip-tx:#9A5C77;
+  --ok-bg:#E4F5EC; --ok-tx:#2E7A54;
+  --warn-bg:#FDF0DB; --warn-tx:#9A5E00;
+  --stop-bg:#FFE4EC; --stop-tx:#C0265C;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Segoe UI",system-ui,sans-serif;
+  --jp:"PingFang SC","Hiragino Sans GB","Hiragino Sans","Microsoft YaHei","Noto Sans SC",-apple-system,sans-serif;
   --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
-  --r:13px; --maph:38vh;
+  --r:18px; --maph:36vh;
+  --shadow:0 2px 10px rgba(236,78,140,.10);
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#000000; --card:#1C1C1E; --card2:#2C2C2E;
-  --label:#FFFFFF; --label2:#98989D; --label3:#6E6E73;
-  --sep:#38383A; --sep2:#2C2C2E;
-  --blue:#0A84FF; --red:#FF453A; --green:#30D158; --amber:#FF9F0A;
-  --chip:#2C2C2E; --chip-tx:#C7C7CC;
-  --ok-bg:#12301F; --ok-tx:#4FD37F;
+  --bg:#1A0F16; --card:#261823; --card2:#2F1E2B;
+  --label:#FFEAF3; --label2:#C9A3B5; --label3:#9B7688;
+  --sep:#3E2835; --sep2:#33202C;
+  --pink:#FF7FB0; --pink-soft:#5A2E44; --pink-deep:#FFA6C8;
+  --blue:#FF7FB0; --amber:#F0A93B; --green:#5FD198; --red:#FF8FAB;
+  --chip:#3A2431; --chip-tx:#E0B9CB;
+  --ok-bg:#16301F; --ok-tx:#6FD3A0;
   --warn-bg:#33270F; --warn-tx:#F0A93B;
-  --stop-bg:#3A1A18; --stop-tx:#FF6961;
+  --stop-bg:#42202F; --stop-tx:#FF9FBC;
+  --shadow:0 2px 10px rgba(0,0,0,.35);
 }}
 :root[data-theme="dark"]{
-  --bg:#000000; --card:#1C1C1E; --card2:#2C2C2E;
-  --label:#FFFFFF; --label2:#98989D; --label3:#6E6E73;
-  --sep:#38383A; --sep2:#2C2C2E;
-  --blue:#0A84FF; --red:#FF453A; --green:#30D158; --amber:#FF9F0A;
-  --chip:#2C2C2E; --chip-tx:#C7C7CC;
-  --ok-bg:#12301F; --ok-tx:#4FD37F;
+  --bg:#1A0F16; --card:#261823; --card2:#2F1E2B;
+  --label:#FFEAF3; --label2:#C9A3B5; --label3:#9B7688;
+  --sep:#3E2835; --sep2:#33202C;
+  --pink:#FF7FB0; --pink-soft:#5A2E44; --pink-deep:#FFA6C8;
+  --blue:#FF7FB0; --amber:#F0A93B; --green:#5FD198; --red:#FF8FAB;
+  --chip:#3A2431; --chip-tx:#E0B9CB;
+  --ok-bg:#16301F; --ok-tx:#6FD3A0;
   --warn-bg:#33270F; --warn-tx:#F0A93B;
-  --stop-bg:#3A1A18; --stop-tx:#FF6961;
+  --stop-bg:#42202F; --stop-tx:#FF9FBC;
+  --shadow:0 2px 10px rgba(0,0,0,.35);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
-body{background:var(--bg);color:var(--label);font-family:var(--sans);font-size:16px;line-height:1.45;
+body{background:var(--bg);color:var(--label);font-family:var(--sans);font-size:16px;line-height:1.5;
   -webkit-text-size-adjust:100%}
 a{color:inherit;text-decoration:none}
 
 .top{position:sticky;top:0;z-index:500;background:var(--bg);
-  padding-top:env(safe-area-inset-top,0px);box-shadow:0 1px 0 var(--sep2)}
-#map{height:var(--maph);width:100%;background:var(--card2);z-index:1}
+  padding-top:env(safe-area-inset-top,0px);box-shadow:0 2px 8px rgba(236,78,140,.08)}
+#map{height:var(--maph);width:100%;background:var(--card2);z-index:1;
+  border-bottom-left-radius:22px;border-bottom-right-radius:22px}
 .leaflet-container{background:var(--card2);font-family:var(--sans)}
-.pills{display:flex;gap:7px;overflow-x:auto;padding:9px 14px 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.pills{display:flex;gap:7px;overflow-x:auto;padding:10px 14px 11px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .pills::-webkit-scrollbar{display:none}
 .pill{flex:0 0 auto;border:none;background:var(--chip);color:var(--label);font-family:var(--sans);
-  font-size:14.5px;font-weight:600;padding:7px 14px;border-radius:999px;cursor:pointer;white-space:nowrap;
+  font-size:14.5px;font-weight:600;padding:8px 15px;border-radius:999px;cursor:pointer;white-space:nowrap;
   display:flex;align-items:center;gap:6px}
 .pill i{width:8px;height:8px;border-radius:50%;display:block;flex:0 0 auto}
-.pill[aria-selected="true"]{background:var(--blue);color:#fff}
+.pill[aria-selected="true"]{background:var(--pink);color:#fff;box-shadow:0 2px 8px rgba(236,78,140,.35)}
 .pill[aria-selected="true"] i{background:#fff!important}
-.pill:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.pill:focus-visible{outline:2px solid var(--pink);outline-offset:2px}
 
-.wrap{padding:0 0 calc(40px + env(safe-area-inset-bottom,0px))}
-.dhead{padding:16px 16px 4px}
-.dhead h1{margin:0;font-family:var(--jp);font-size:25px;font-weight:700;letter-spacing:-.01em;line-height:1.2}
-.dhead .sub{color:var(--label2);font-size:14.5px;margin-top:3px}
-.dhead .dt{font-family:var(--mono);font-size:12.5px;color:var(--label3);margin-top:2px}
-.badges{display:flex;gap:6px;flex-wrap:wrap;padding:10px 16px 0}
-.badge{font-size:12.5px;font-weight:600;padding:4px 9px;border-radius:7px}
+.wrap{padding:0 0 calc(44px + env(safe-area-inset-bottom,0px))}
+.dhead{padding:18px 16px 4px;position:relative}
+.dhead h1{margin:0;font-family:var(--jp);font-size:26px;font-weight:700;letter-spacing:-.01em;line-height:1.25}
+.dhead .sub{color:var(--label2);font-size:14.5px;margin-top:4px}
+.dhead .dt{font-family:var(--mono);font-size:12.5px;color:var(--label3);margin-top:3px}
+.bow{width:26px;height:20px;vertical-align:-2px;margin-right:7px}
+.badges{display:flex;gap:6px;flex-wrap:wrap;padding:11px 16px 0}
+.badge{font-size:12.5px;font-weight:700;padding:5px 11px;border-radius:999px}
 .badge.ok{background:var(--ok-bg);color:var(--ok-tx)}
 .badge.warn{background:var(--warn-bg);color:var(--warn-tx)}
 .badge.stop{background:var(--stop-bg);color:var(--stop-tx)}
@@ -84,22 +92,23 @@ a{color:inherit;text-decoration:none}
 
 .tl{padding:14px 16px 0;display:grid;gap:0}
 .row{display:grid;grid-template-columns:46px 1fr;gap:10px;position:relative}
-.row::before{content:"";position:absolute;left:52px;top:20px;bottom:0;width:2px;background:var(--sep2);border-radius:2px}
+.row::before{content:"";position:absolute;left:52px;top:22px;bottom:0;width:2px;
+  background:repeating-linear-gradient(to bottom,var(--sep) 0 5px,transparent 5px 10px)}
 .row:last-child::before{display:none}
-.rt{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--label2);text-align:right;padding-top:13px;letter-spacing:-.03em}
-.rb{position:relative;padding:0 0 12px 16px}
-.rb::before{content:"";position:absolute;left:-4px;top:15px;width:11px;height:11px;border-radius:50%;
-  background:var(--dc,var(--label3));box-shadow:0 0 0 3px var(--bg);z-index:2}
-.row[data-k="move"] .rb::before{background:var(--bg);border:2.5px solid var(--label3);width:12px;height:12px;left:-4.5px}
+.rt{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--label2);text-align:right;padding-top:15px;letter-spacing:-.03em}
+.rb{position:relative;padding:0 0 13px 17px}
+.rb::before{content:"";position:absolute;left:-5px;top:16px;width:13px;height:13px;border-radius:50%;
+  background:var(--dc,var(--label3));box-shadow:0 0 0 3.5px var(--bg);z-index:2}
+.row[data-k="move"] .rb::before{background:var(--bg);border:3px solid var(--dc,var(--label3))}
 
-.card{background:var(--card);border-radius:var(--r);padding:12px 13px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
-.nm{font-family:var(--jp);font-size:17px;font-weight:600;letter-spacing:-.01em;line-height:1.3}
-.en{color:var(--label2);font-size:14px;margin-top:1px}
-.meta{font-family:var(--mono);font-size:12px;color:var(--label3);margin-top:5px}
-.note{font-size:14px;color:var(--label2);margin-top:7px;line-height:1.45}
+.card{background:var(--card);border-radius:var(--r);padding:14px 15px;box-shadow:var(--shadow)}
+.nm{font-family:var(--jp);font-size:17.5px;font-weight:700;letter-spacing:-.01em;line-height:1.35}
+.en{color:var(--label2);font-size:13.5px;margin-top:2px}
+.meta{font-family:var(--mono);font-size:12px;color:var(--label3);margin-top:6px}
+.note{font-size:14px;color:var(--label2);margin-top:8px;line-height:1.6}
 
-.chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;align-items:center}
-.chip{font-size:12px;font-weight:600;padding:3px 8px;border-radius:6px;background:var(--chip);color:var(--chip-tx);
+.chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px;align-items:center}
+.chip{font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--chip);color:var(--chip-tx);
   font-family:var(--mono)}
 .chip.yen{font-weight:700}
 .chip.pay{background:var(--ok-bg);color:var(--ok-tx);font-family:var(--sans)}
@@ -107,45 +116,47 @@ a{color:inherit;text-decoration:none}
 .chip.resv{background:var(--warn-bg);color:var(--warn-tx);font-family:var(--sans)}
 .chip.shut{background:var(--stop-bg);color:var(--stop-tx);font-family:var(--sans)}
 
-.btns{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap}
+.btns{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;
-  font-size:14.5px;font-weight:600;padding:9px 15px;border-radius:9px;background:var(--blue);color:#fff;
-  min-height:38px;font-family:var(--sans)}
-.btn.tab{background:var(--chip);color:var(--label)}
-.btn:active{opacity:.7}
-.btn:focus-visible{outline:2px solid var(--label);outline-offset:2px}
+  font-size:14.5px;font-weight:700;padding:10px 17px;border-radius:999px;background:var(--pink);color:#fff;
+  min-height:40px;font-family:var(--sans);box-shadow:0 2px 7px rgba(236,78,140,.28)}
+.btn.tab{background:var(--chip);color:var(--pink-deep);box-shadow:none}
+.btn:active{transform:scale(.96)}
+.btn:focus-visible{outline:2px solid var(--pink-deep);outline-offset:2px}
 
-.cands{margin-top:10px;display:grid;gap:8px}
-.cand{background:var(--card2);border-radius:11px;padding:10px 12px}
-.cand.shut{opacity:.55}
+.cands{margin-top:11px;display:grid;gap:9px}
+.cand{background:var(--card2);border-radius:15px;padding:11px 13px;border:1.5px solid var(--sep2)}
+.cand.shut{opacity:.5}
 .cand.shut .cnm{text-decoration:line-through;text-decoration-thickness:1.5px}
-.cnm{font-family:var(--jp);font-size:15.5px;font-weight:600;line-height:1.3}
+.cnm{font-family:var(--jp);font-size:15.5px;font-weight:700;line-height:1.35}
 .crom{display:block;color:var(--label3);font-size:12.5px;font-weight:400;font-family:var(--sans);margin-top:1px}
 
-.call{margin:16px 16px 0;background:var(--card);border-radius:var(--r);padding:13px;border-left:4px solid var(--amber)}
-.call.risk{border-left-color:var(--red)} .call.good{border-left-color:var(--green)}
-.call h3{margin:0 0 5px;font-family:var(--jp);font-size:15px;font-weight:700}
-.call p{margin:0;font-size:14px;color:var(--label2)} .call p+p{margin-top:7px}
-.call b{color:var(--label);font-weight:600}
-.cut{margin:16px 16px 0;background:var(--card);border-radius:var(--r);padding:13px}
-.cut h3{margin:0 0 8px;font-size:13px;font-weight:600;color:var(--label2)}
-.cut div{font-size:13.5px;color:var(--label3);padding:5px 0;border-top:1px solid var(--sep2)}
+.call{margin:16px 16px 0;background:var(--card);border-radius:var(--r);padding:14px 15px;
+  border:2px solid var(--amber);box-shadow:var(--shadow)}
+.call.risk{border-color:var(--red)} .call.good{border-color:var(--green)}
+.call h3{margin:0 0 6px;font-family:var(--jp);font-size:15.5px;font-weight:700}
+.call p{margin:0;font-size:14px;color:var(--label2);line-height:1.6} .call p+p{margin-top:8px}
+.call b{color:var(--label);font-weight:700}
+.cut{margin:16px 16px 0;background:var(--card);border-radius:var(--r);padding:14px 15px;box-shadow:var(--shadow)}
+.cut h3{margin:0 0 9px;font-size:13.5px;font-weight:700;color:var(--label2)}
+.cut div{font-size:13.5px;color:var(--label3);padding:6px 0;border-top:1.5px dashed var(--sep2);line-height:1.55}
 .cut div:first-of-type{border-top:none}
-.cut b{color:var(--label2);font-family:var(--jp);font-weight:600}
+.cut b{color:var(--label2);font-family:var(--jp);font-weight:700}
 
-.ov{padding:12px 16px 0;display:grid;gap:9px}
-.ovc{background:var(--card);border-radius:var(--r);padding:13px;display:grid;grid-template-columns:auto 1fr auto;
-  gap:11px;align-items:center;cursor:pointer;text-align:left;border:none;font-family:var(--sans);width:100%}
-.ovc i{width:11px;height:11px;border-radius:50%;display:block}
-.ovc .t{font-family:var(--jp);font-size:16.5px;font-weight:600;color:var(--label);line-height:1.25;display:block}
-.ovc .s{font-size:13.5px;color:var(--label2);margin-top:1px;display:block}
+.ov{padding:12px 16px 0;display:grid;gap:10px}
+.ovc{background:var(--card);border-radius:var(--r);padding:14px 15px;display:grid;grid-template-columns:auto 1fr auto;
+  gap:12px;align-items:center;cursor:pointer;text-align:left;border:none;font-family:var(--sans);width:100%;
+  box-shadow:var(--shadow)}
+.ovc i{width:12px;height:12px;border-radius:50%;display:block}
+.ovc .t{font-family:var(--jp);font-size:16.5px;font-weight:700;color:var(--label);line-height:1.3;display:block}
+.ovc .s{font-size:13.5px;color:var(--label2);margin-top:2px;display:block}
 .ovc .d{font-family:var(--mono);font-size:12.5px;color:var(--label3);text-align:right}
-.ovc:active{opacity:.6}
+.ovc:active{transform:scale(.985)}
 
-.foot{padding:26px 16px 0;color:var(--label3);font-size:12.5px;line-height:1.5}
+.foot{padding:28px 16px 0;color:var(--label3);font-size:12.5px;line-height:1.6}
 .foot p{margin:0 0 8px;max-width:60ch}
 .legend{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
-@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;transform:none!important}}
 </style>
 </head>
 <body>
@@ -158,242 +169,244 @@ a{color:inherit;text-decoration:none}
 
 <script src="leaflet.js"></script>
 <script>
-var W=["日","一","二","三","四","五","六"];
-var WE=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+var W=["周日","周一","周二","周三","周四","周五","周六"];
 function g(n,a){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(n+" "+(a||""));}
 function tabelog(n){return "https://tabelog.com/rstLst/?sk="+encodeURIComponent(n);}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c];});}
+var BOW='<svg class="bow" viewBox="0 0 52 40" aria-hidden="true"><path d="M26 20c-6-9-13-13-18-10-4 3-4 12 0 15 5 3 12-1 18-5z" fill="var(--pink)"/><path d="M26 20c6-9 13-13 18-10 4 3 4 12 0 15-5 3-12-1-18-5z" fill="var(--pink)"/><circle cx="26" cy="20" r="5.5" fill="var(--pink-deep)"/></svg>';
 
+/* 店铺：cn 中文名 · en 英文名 · ja 日文名（仅用于地图搜索，保证搜得到） */
 var R={
- ajinoya:{jp:"味乃家 本店",rom:"Ajinoya Honten · okonomiyaki",area:"Namba Osaka",hrs:"11:00–22:00",yen:5000,shut:[1]},
- dorajuu:{jp:"どら十",rom:"Dora Juu · okonomiyaki",area:"Osaka",hrs:"18:00–02:00",yen:4000},
- haruno:{jp:"焼焼 春の華",rom:"Yaki Yaki Haru no Hana",area:"Osaka",hrs:"17:00–22:00",yen:5000,shut:[1],pay:"🍉"},
- itto:{jp:"板前焼肉 一斗",rom:"Itamae Yakiniku Itto · Higashi-Shinsaibashi",area:"東心斎橋 大阪",hrs:"17:00–24:00",yen:12000,shut:[3],pay:"💳🍉",resv:1},
- nanichien:{jp:"南一園",rom:"Nan Ichien · yakiniku",area:"Osaka",hrs:"16:00–22:00",yen:8000,shut:[1],pay:"🍉"},
- rikimaru:{jp:"焼肉 力丸 心斎橋店",rom:"Yakiniku Rikimaru",area:"心斎橋 大阪",hrs:"16:00–24:00",yen:7000,pay:"💳🍉"},
- benzaiten:{jp:"覚王山フルーツ大福 弁才天",rom:"fruit daifuku",area:"Osaka",hrs:"10:00–19:00",yen:800,pay:"💳🍉"},
- kajitsu:{jp:"果実の花 心斎橋",rom:"Kajitsu no Hana",area:"心斎橋 大阪",hrs:"11:00–23:00"},
- hanadako:{jp:"はなだこ",rom:"Hanadako · takoyaki",area:"梅田 大阪",hrs:"10:00–21:45",yen:800},
- juhachiban:{jp:"たこ焼き 十八番",rom:"Juhachiban",area:"心斎橋 大阪",hrs:"12:00–22:00",yen:600},
- tanjirou:{jp:"たこ焼き たんじろう",rom:"Tanjirou",area:"梅田 大阪",hrs:"11:00–23:00",yen:700},
- kamesushi:{jp:"亀寿司",rom:"Kame Sushi",area:"Osaka",hrs:"17:00–22:00",yen:8000,shut:[1],pay:"💳"},
- gansosushi:{jp:"元祖寿司",rom:"Ganso Sushi",area:"Osaka",hrs:"11:00–21:00",pay:"💳"},
- mooken:{jp:"Mooken",rom:"cream puff",area:"Osaka",hrs:"11:00–15:00",yen:800,shut:[1,2],pay:"💳🍉"},
- lecroissant:{jp:"Le Croissant 北新地",rom:"bakery",area:"北新地 大阪",hrs:"07:30–21:00",yen:800,pay:"🍉"},
- gorichan:{jp:"おにぎり ごりちゃん",rom:"Onigiri Gorichan",area:"心斎橋 大阪",hrs:"11:00–20:00",yen:2000,pay:"💳"},
- ourlog:{jp:"Ourlog Coffee Roasters",rom:"",area:"Osaka",hrs:"11:00–18:30",yen:2000},
+ ajinoya:{cn:"味乃家 本店",en:"Ajinoya Honten · 大阪烧",ja:"味乃家 本店",area:"難波 大阪",hrs:"11:00–22:00",yen:5000,shut:[1]},
+ dorajuu:{cn:"多啦十",en:"Dora Juu · 大阪烧",ja:"どら十",area:"大阪",hrs:"18:00–02:00",yen:4000},
+ haruno:{cn:"烧烧 春之华",en:"Yaki Yaki Haru no Hana",ja:"焼焼 春の華",area:"大阪",hrs:"17:00–22:00",yen:5000,shut:[1],pay:"🍉"},
+ itto:{cn:"板前烧肉 一斗",en:"Itamae Yakiniku Itto · 东心斋桥",ja:"板前焼肉 一斗",area:"東心斎橋 大阪",hrs:"17:00–24:00",yen:12000,shut:[3],pay:"💳🍉",resv:1},
+ nanichien:{cn:"南一园",en:"Nan Ichien · 烧肉",ja:"南一園",area:"大阪",hrs:"16:00–22:00",yen:8000,shut:[1],pay:"🍉"},
+ rikimaru:{cn:"烧肉 力丸 心斋桥店",en:"Yakiniku Rikimaru",ja:"焼肉 力丸 心斎橋店",area:"心斎橋 大阪",hrs:"16:00–24:00",yen:7000,pay:"💳🍉"},
+ benzaiten:{cn:"觉王山水果大福 弁才天",en:"Kakuozan Fruits Daifuku",ja:"覚王山フルーツ大福 弁才天",area:"大阪",hrs:"10:00–19:00",yen:800,pay:"💳🍉"},
+ kajitsu:{cn:"果实之花 心斋桥",en:"Kajitsu no Hana",ja:"果実の花 心斎橋",area:"心斎橋 大阪",hrs:"11:00–23:00"},
+ hanadako:{cn:"花たこ（梅田）",en:"Hanadako · 章鱼烧",ja:"はなだこ",area:"梅田 大阪",hrs:"10:00–21:45",yen:800},
+ juhachiban:{cn:"章鱼烧 十八番",en:"Takoyaki Juhachiban",ja:"たこ焼き 十八番",area:"心斎橋 大阪",hrs:"12:00–22:00",yen:600},
+ tanjirou:{cn:"章鱼烧 丹次郎（梅田）",en:"Takoyaki Tanjirou",ja:"たこ焼き たんじろう",area:"梅田 大阪",hrs:"11:00–23:00",yen:700},
+ kamesushi:{cn:"龟寿司",en:"Kame Sushi",ja:"亀寿司",area:"大阪",hrs:"17:00–22:00",yen:8000,shut:[1],pay:"💳"},
+ gansosushi:{cn:"元祖寿司",en:"Ganso Sushi",ja:"元祖寿司",area:"大阪",hrs:"11:00–21:00",pay:"💳"},
+ mooken:{cn:"Mooken 泡芙",en:"cream puff",ja:"Mooken",area:"大阪",hrs:"11:00–15:00",yen:800,shut:[1,2],pay:"💳🍉"},
+ lecroissant:{cn:"Le Croissant 北新地",en:"可颂面包店",ja:"ル・クロワッサン 北新地",area:"北新地 大阪",hrs:"07:30–21:00",yen:800,pay:"🍉"},
+ gorichan:{cn:"饭团 五里酱",en:"Onigiri Gorichan",ja:"おにぎり ごりちゃん",area:"心斎橋 大阪",hrs:"11:00–20:00",yen:2000,pay:"💳"},
+ ourlog:{cn:"Ourlog 咖啡烘焙",en:"Ourlog Coffee Roasters",ja:"Ourlog Coffee Roasters",area:"大阪",hrs:"11:00–18:30",yen:2000},
 
- taisushi:{jp:"たい鮨",rom:"tuna · uni · scallop",area:"Kyoto",hrs:"17:00–22:00",yen:5000,shut:[4]},
- sashisu:{jp:"さしす",rom:"Sashisu · 京都駅",area:"京都駅",hrs:"18:00–02:00",yen:4000},
- izuu:{jp:"いづう",rom:"Izuu · 鯖姿寿司, est. 1781",area:"367 Kiyomotocho Higashiyama Kyoto 605-0084",hrs:"11:00–22:00 · 日祝 –21:00",shut:[2],note:"367 清本町 · 寿司 L.O. 21:30"},
- izuju:{jp:"いづ重",rom:"Izuju · 鯖寿司, est. 1892",area:"祇園 京都",hrs:"10:30–19:00",shut:[3],note:"八坂神社の石段下"},
- hanamichi:{jp:"うなぎや 花道",rom:"unagi · 錦市場",area:"錦市場 京都",hrs:"11:00–16:00 / 17:00–22:00",yen:9000,pay:"💳"},
- kikukawa:{jp:"四代目 菊川",rom:"unagi · 東山",area:"東山 京都",hrs:"11:00–14:30 / 17:00–21:00",yen:14000,pay:"💳🍉"},
- hiroshige:{jp:"すき焼き 肉の広重",rom:"sukiyaki",area:"錦市場 京都",hrs:"11:00–21:00",yen:18000,pay:"💳🍉"},
- campanella:{jp:"KITCHEN カンパネラ",rom:"curry",area:"Kyoto",hrs:"11:30–17:00",yen:4000,shut:[1,6],pay:"💳"},
- konnamonja:{jp:"こんなもんじゃ",rom:"豆乳ドーナツ + ice cream",area:"錦市場 京都",hrs:"10:00–18:00",yen:1000},
- terakoya:{jp:"おかき処 寺子屋本舗",rom:"senbei",area:"錦市場 京都",hrs:"10:00–18:00",yen:300,pay:"💳🍉"},
- sallys:{jp:"Sally's Kitchen",rom:"fruit sandwich",area:"錦市場 京都",hrs:"11:00–18:00",yen:1000,pay:"🍉"},
- ichiha:{jp:"錦 いちは",rom:"taiyaki",area:"錦市場 京都",hrs:"10:00–20:00",yen:800},
- onimaru:{jp:"おにぎり 鬼丸",rom:"onigiri",area:"四条河原町 京都",hrs:"10:00–21:00",yen:1000,pay:"💳🍉"},
- mensho:{jp:"麺匠 たか松",rom:"tsukemen",area:"Kyoto",hrs:"11:00–22:00",yen:3000,pay:"💳🍉"},
- ginjo:{jp:"ぎん龍",rom:"ramen",area:"Kyoto",hrs:"11:00–14:30 / 18:00–21:30",yen:2000},
- inaridaifuku:{jp:"稲荷 豆大福",rom:"",area:"伏見稲荷 京都",hrs:"09:00–18:00",yen:300,shut:[3,4]},
- ichika:{jp:"大福 一果",rom:"fruit daifuku",area:"伏見稲荷 京都",hrs:"09:00–18:00"},
- chanoka:{jp:"茶の菓",rom:"matcha chocolate",area:"清水 京都",hrs:"店舗時間",yen:570,note:"¥570/3 · ¥1,520/8 · ¥4,560/24"},
+ taisushi:{cn:"鲷寿司",en:"taisushi · 金枪鱼/海胆/扇贝",ja:"たい鮨",area:"京都",hrs:"17:00–22:00",yen:5000,shut:[4]},
+ sashisu:{cn:"さしす（京都站）",en:"Sashisu",ja:"さしす 京都駅",area:"京都駅",hrs:"18:00–02:00",yen:4000},
+ izuu:{cn:"いづう Izuu · 鲭鱼寿司",en:"est. 1781 · 清本町367",ja:"いづう",area:"367 Kiyomotocho Higashiyama Kyoto",hrs:"11:00–22:00 · 周日/节假日 –21:00",shut:[2],note:"寿司最后点单 21:30"},
+ izuju:{cn:"いづ重 Izuju · 鲭鱼寿司",en:"est. 1892 · 八坂神社石阶下",ja:"いづ重",area:"祇園 京都",hrs:"10:30–19:00",shut:[3],note:"正对八坂神社朱红鸟居"},
+ hanamichi:{cn:"鳗鱼屋 花道",en:"Unagiya Hanamichi · 锦市场",ja:"うなぎや 花道",area:"錦市場 京都",hrs:"11:00–16:00 / 17:00–22:00",yen:9000,pay:"💳"},
+ kikukawa:{cn:"四代目 菊川",en:"Kikukawa · 鳗鱼饭 · 东山",ja:"四代目 菊川",area:"東山 京都",hrs:"11:00–14:30 / 17:00–21:00",yen:14000,pay:"💳🍉"},
+ hiroshige:{cn:"寿喜烧 肉の广重",en:"Sukiyaki Hiroshige · 锦市场",ja:"すき焼き 肉の広重",area:"錦市場 京都",hrs:"11:00–21:00",yen:18000,pay:"💳🍉"},
+ campanella:{cn:"KITCHEN 坎帕内拉",en:"Campanella · 咖喱饭",ja:"KITCHEN カンパネラ",area:"京都",hrs:"11:30–17:00",yen:4000,shut:[1,6],pay:"💳"},
+ konnamonja:{cn:"こんなもんじゃ",en:"豆乳甜甜圈 + 冰淇淋",ja:"こんなもんじゃ",area:"錦市場 京都",hrs:"10:00–18:00",yen:1000},
+ terakoya:{cn:"寺子屋本铺",en:"仙贝 senbei",ja:"おかき処 寺子屋本舗",area:"錦市場 京都",hrs:"10:00–18:00",yen:300,pay:"💳🍉"},
+ sallys:{cn:"Sally's Kitchen",en:"水果三明治",ja:"Sally's Kitchen",area:"錦市場 京都",hrs:"11:00–18:00",yen:1000,pay:"🍉"},
+ ichiha:{cn:"锦 いちは",en:"鲷鱼烧",ja:"錦 いちは",area:"錦市場 京都",hrs:"10:00–20:00",yen:800},
+ onimaru:{cn:"饭团 鬼丸",en:"Onimaru · 四条河原町",ja:"おにぎり 鬼丸",area:"四条河原町 京都",hrs:"10:00–21:00",yen:1000,pay:"💳🍉"},
+ mensho:{cn:"面匠 高松",en:"Mensho Takamatsu · 蘸面",ja:"麺匠 たか松",area:"京都",hrs:"11:00–22:00",yen:3000,pay:"💳🍉"},
+ ginjo:{cn:"银龙拉面",en:"ginjo ramen",ja:"ぎん龍",area:"京都",hrs:"11:00–14:30 / 18:00–21:30",yen:2000},
+ inaridaifuku:{cn:"稻荷 豆大福",en:"",ja:"稲荷 豆大福",area:"伏見稲荷 京都",hrs:"09:00–18:00",yen:300,shut:[3,4]},
+ ichika:{cn:"大福 一果",en:"水果大福",ja:"大福 一果",area:"伏見稲荷 京都",hrs:"09:00–18:00"},
+ chanoka:{cn:"茶の菓",en:"抹茶巧克力 · 清水寺",ja:"茶の菓",area:"清水 京都",hrs:"店铺营业时间",yen:570,note:"¥570/3片 · ¥1,520/8片 · ¥4,560/24片"},
 
- kurogin:{jp:"黒銀",rom:"Kurogin · maguro",area:"築地 東京",hrs:"08:30–13:00",yen:5000,shut:[3],pay:"💳🍉"},
- marutoyo:{jp:"丸豊",rom:"onigiri",area:"築地 東京",hrs:"市場時間"},
- unitora:{jp:"築地うに虎 中通り",rom:"uni bowl",area:"築地 東京",hrs:"市場時間"},
- itadori:{jp:"築地 虎杖 別館",rom:"uni",area:"築地 東京",hrs:"07:00–22:00"},
- maisen:{jp:"とんかつ まい泉 青山本店",rom:"Maisen",area:"青山 東京",hrs:"11:00–21:00"},
- butagumi:{jp:"豚組",rom:"Butagumi",area:"西麻布 東京",hrs:"11:30–22:00"},
- tonkatsujp:{jp:"tonkatsu.jp 表参道",rom:"",area:"表参道 東京",hrs:"11:00–21:00"},
- nagi:{jp:"煮干ラーメン 凪",rom:"Nagi · niboshi",area:"東京",hrs:"11:00–late"},
- afuri:{jp:"AFURI",rom:"柚子塩 / 柚子つけ麺",area:"東京",hrs:"11:00–23:00",pay:"🍉"},
- aburagumi:{jp:"油組総本店",rom:"abura soba",area:"渋谷 東京",hrs:"11:00–22:00",note:"銀座 / 新宿 / 渋谷"},
- hashigo:{jp:"支那麺 はしご 銀座本店",rom:"担担麺, est. 1964",area:"銀座6-3-5 東京",hrs:"月–金 11:00–05:00 · 土日 11:00–21:00",yen:1100,note:"銀座駅 C2 徒歩2分"},
- funabashiya:{jp:"船橋屋",rom:"tempura",area:"東京",hrs:"11:00–21:00"},
- unafuji:{jp:"炭焼 うな富士 有楽町店",rom:"unagi",area:"有楽町 東京",hrs:"11:00–21:00",pay:"💳",resv:1},
- bincho:{jp:"鰻 ひつまぶし備長 三越銀座店",rom:"",area:"銀座三越 東京",hrs:"11:00–20:00",resv:1},
- kisoji:{jp:"木曽路",rom:"sukiyaki",area:"東京",hrs:"11:00–22:00",pay:"💳"},
- kiwami:{jp:"和牛すき焼き 極",rom:"",area:"東京",hrs:"11:00–22:00",pay:"💳"},
- okada:{jp:"岡田謹製 あんぱん",rom:"東京駅一番街",area:"東京駅一番街",hrs:"売切れまで"},
- pista:{jp:"Pista & Tokyo",rom:"ピスタチオサンド",area:"東京駅一番街",hrs:"開店–売切 · 二便 17:30"},
- naruto:{jp:"鳴門鯛焼本舗",rom:"taiyaki",area:"東京",hrs:"10:00–21:00"},
- kimuraya:{jp:"銀座木村家",rom:"あんぱん, est. 1869",area:"銀座 東京",hrs:"10:00–20:00",pay:"💳"},
- ohayo:{jp:"オハヨー ブリュレ / 牛乳プリン",rom:"コンビニ",area:"",hrs:"どのコンビニでも",yen:250,nolink:1}
+ kurogin:{cn:"黑银",en:"Maguroya Kurogin · 金枪鱼刺身",ja:"黒銀",area:"築地 東京",hrs:"08:30–13:00",yen:5000,shut:[3],pay:"💳🍉"},
+ marutoyo:{cn:"丸丰",en:"Marutoyo · 饭团",ja:"丸豊",area:"築地 東京",hrs:"市场营业时间"},
+ unitora:{cn:"筑地海胆虎 中通",en:"Unitora Nakadori · 海胆饭",ja:"築地うに虎 中通り",area:"築地 東京",hrs:"市场营业时间"},
+ itadori:{cn:"筑地 虎杖 别馆",en:"Itadori Bekkan · 海胆饭",ja:"築地 虎杖 別館",area:"築地 東京",hrs:"07:00–22:00"},
+ maisen:{cn:"炸猪排 迈泉 青山本店",en:"Maisen Aoyama Honten",ja:"とんかつ まい泉 青山本店",area:"青山 東京",hrs:"11:00–21:00"},
+ butagumi:{cn:"豚组",en:"Butagumi · 炸猪排",ja:"豚組",area:"西麻布 東京",hrs:"11:30–22:00"},
+ tonkatsujp:{cn:"tonkatsu.jp 表参道",en:"炸猪排",ja:"tonkatsu.jp 表参道",area:"表参道 東京",hrs:"11:00–21:00"},
+ nagi:{cn:"煮干拉面 凪",en:"Nagi · 小鱼干拉面",ja:"煮干ラーメン 凪",area:"東京",hrs:"11:00–深夜"},
+ afuri:{cn:"AFURI 阿夫利",en:"柚子盐拉面 / 柚子蘸面",ja:"AFURI",area:"東京",hrs:"11:00–23:00",pay:"🍉"},
+ aburagumi:{cn:"油组总本店",en:"Aburagumi · 油拌面",ja:"油組総本店",area:"渋谷 東京",hrs:"11:00–22:00",note:"银座 / 新宿 / 涩谷 均有店"},
+ hashigo:{cn:"支那面 はしご 银座本店",en:"Hashigo · 担担面 · est. 1964",ja:"支那麺 はしご 銀座本店",area:"銀座6-3-5 東京",hrs:"周一–五 11:00–05:00 · 周六日 11:00–21:00",yen:1100,note:"银座站 C2 出口步行2分钟"},
+ funabashiya:{cn:"船桥屋",en:"Funabashiya · 天妇罗",ja:"船橋屋 天ぷら",area:"東京",hrs:"11:00–21:00"},
+ unafuji:{cn:"炭烧 鳗富士 有乐町店",en:"Unafuji Yurakucho · 鳗鱼饭",ja:"炭焼 うな富士 有楽町店",area:"有楽町 東京",hrs:"11:00–21:00",pay:"💳",resv:1},
+ bincho:{cn:"鳗 备长 三越银座店",en:"Bincho · 鳗鱼饭",ja:"鰻 ひつまぶし備長 三越銀座店",area:"銀座三越 東京",hrs:"11:00–20:00",resv:1},
+ kisoji:{cn:"木曾路",en:"Kisoji · 寿喜烧",ja:"木曽路",area:"東京",hrs:"11:00–22:00",pay:"💳"},
+ kiwami:{cn:"和牛寿喜烧 极",en:"Wagyu Sukiyaki Kiwami",ja:"和牛すき焼き 極",area:"東京",hrs:"11:00–22:00",pay:"💳"},
+ okada:{cn:"冈田谨制 红豆面包",en:"Okada · 东京站一番街",ja:"岡田謹製 あんぱん",area:"東京駅一番街",hrs:"售完为止"},
+ pista:{cn:"Pista & Tokyo",en:"开心果夹心饼干",ja:"Pista & Tokyo",area:"東京駅一番街",hrs:"开店–售完 · 第二批 17:30"},
+ naruto:{cn:"鸣门鲷烧本铺",en:"Naruto Taiyaki Honpo",ja:"鳴門鯛焼本舗",area:"東京",hrs:"10:00–21:00"},
+ kimuraya:{cn:"银座木村家",en:"Kimuraya · 红豆面包 · est. 1869",ja:"銀座木村家",area:"銀座 東京",hrs:"10:00–20:00",pay:"💳"},
+ ohayo:{cn:"欧哈优 焦糖布丁 / 牛奶布丁",en:"Ohayo brulee · 便利店",ja:"",area:"",hrs:"任何便利店都有",yen:250,nolink:1}
 };
 
+/* 地点：lat, lng, 中文名, 英文/说明, 日文名（地图搜索用） */
 var P={
- dtosaka:[34.6845,135.5165,"DoubleTree by Hilton Osaka Castle","大手前"],
- castle:[34.6873,135.5259,"大阪城公園","Osaka Castle Park"],
- shinsai:[34.6723,135.5010,"心斎橋","Shinsaibashi"],
- doton:[34.6687,135.5013,"道頓堀","Glico"],
- usj:[34.6654,135.4323,"ユニバーサル・スタジオ・ジャパン","USJ"],
- osakastn:[34.7025,135.4959,"大阪駅","7・8番のりば"],
- kitashinchi:[34.6959,135.4945,"北新地","Kitashinchi"],
- kyotostn:[34.9858,135.7588,"京都駅","Kyoto Station"],
- hgikyoto:[34.9975,135.7595,"Hilton Garden Inn Kyoto Shijo Karasuma","四条烏丸"],
- kameoka:[34.9967,135.6003,"トロッコ亀岡駅","Torokko Kameoka"],
- torokkoara:[35.0175,135.6759,"トロッコ嵐山駅","Torokko Arashiyama"],
- jojakko:[35.0234,135.6690,"常寂光寺","Jojakko-ji"],
- bamboo:[35.0170,135.6716,"竹林の小径","Bamboo Grove"],
- yusai:[35.0148,135.6742,"祐斎亭","17:00 閉館"],
- togetsu:[35.0132,135.6776,"渡月橋","Togetsukyo"],
- nishiki:[35.0050,135.7649,"錦市場","Nishiki Market"],
- kiyomizu:[34.9949,135.7850,"清水寺","Kiyomizu-dera"],
- yasaka:[35.0036,135.7786,"八坂神社","Yasaka Shrine"],
- fushimi:[34.9671,135.7727,"伏見稲荷大社","Fushimi Inari"],
- tokyostn:[35.6812,139.7671,"東京駅","Tokyo Station"],
- roynet:[35.6665,139.7570,"ダイワロイネットホテル東京新橋","新橋"],
- ginza:[35.6717,139.7650,"銀座四丁目","Ginza"],
- tsukiji:[35.6654,139.7707,"築地場外市場","Tsukiji Outer Market"],
- meiji:[35.6764,139.6993,"明治神宮","Meiji Jingu"],
- omote:[35.6654,139.7126,"表参道","Omotesando"],
- shibuya:[35.6580,139.7016,"渋谷スカイ","Shibuya Sky"],
- sensoji:[35.7148,139.7967,"浅草寺","Senso-ji"],
- skytree:[35.7101,139.8107,"東京スカイツリー","Skytree"],
- disney:[35.6329,139.8804,"東京ディズニーランド","Disneyland"],
- hnd:[35.5494,139.7798,"羽田空港 第3ターミナル","HND T3"]
+ dtosaka:[34.6845,135.5165,"大阪城希尔顿逸林酒店","DoubleTree by Hilton · 大手前","DoubleTree by Hilton Osaka Castle"],
+ castle:[34.6873,135.5259,"大阪城公园","Osaka Castle Park","大阪城公園"],
+ shinsai:[34.6723,135.5010,"心斋桥","Shinsaibashi","心斎橋"],
+ doton:[34.6687,135.5013,"道顿堀","Dotonbori · 固力果招牌","道頓堀"],
+ usj:[34.6654,135.4323,"日本环球影城","Universal Studios Japan","ユニバーサル・スタジオ・ジャパン"],
+ osakastn:[34.7025,135.4959,"大阪站","7・8号站台","大阪駅"],
+ kitashinchi:[34.6959,135.4945,"北新地","Kitashinchi","北新地"],
+ kyotostn:[34.9858,135.7588,"京都站","Kyoto Station","京都駅"],
+ hgikyoto:[34.9975,135.7595,"京都四条乌丸希尔顿花园酒店","Hilton Garden Inn","Hilton Garden Inn Kyoto Shijo Karasuma"],
+ kameoka:[34.9967,135.6003,"小火车 龟冈站","Torokko Kameoka","トロッコ亀岡駅"],
+ torokkoara:[35.0175,135.6759,"小火车 岚山站","Torokko Arashiyama","トロッコ嵐山駅"],
+ jojakko:[35.0234,135.6690,"常寂光寺","Jojakko-ji","常寂光寺"],
+ bamboo:[35.0170,135.6716,"竹林小径","Bamboo Grove","竹林の小径"],
+ yusai:[35.0148,135.6742,"祐斋亭","17:00 闭馆","祐斎亭"],
+ togetsu:[35.0132,135.6776,"渡月桥","Togetsukyo","渡月橋"],
+ nishiki:[35.0050,135.7649,"锦市场","Nishiki Market","錦市場"],
+ kiyomizu:[34.9949,135.7850,"清水寺","Kiyomizu-dera","清水寺"],
+ yasaka:[35.0036,135.7786,"八坂神社","Yasaka Shrine","八坂神社"],
+ fushimi:[34.9671,135.7727,"伏见稻荷大社","Fushimi Inari Taisha","伏見稲荷大社"],
+ tokyostn:[35.6812,139.7671,"东京站","Tokyo Station","東京駅"],
+ roynet:[35.6665,139.7570,"大和 Roynet 酒店 东京新桥","Daiwa Roynet · 新桥","ダイワロイネットホテル東京新橋"],
+ ginza:[35.6717,139.7650,"银座四丁目","Ginza","銀座四丁目"],
+ tsukiji:[35.6654,139.7707,"筑地场外市场","Tsukiji Outer Market","築地場外市場"],
+ meiji:[35.6764,139.6993,"明治神宫","Meiji Jingu","明治神宮"],
+ omote:[35.6654,139.7126,"表参道","Omotesando","表参道"],
+ shibuya:[35.6580,139.7016,"涩谷 SKY","Shibuya Sky","渋谷スカイ"],
+ sensoji:[35.7148,139.7967,"浅草寺","Senso-ji · 仲见世","浅草寺"],
+ skytree:[35.7101,139.8107,"东京晴空塔","Tokyo Skytree","東京スカイツリー"],
+ disney:[35.6329,139.8804,"东京迪士尼乐园","Tokyo Disneyland","東京ディズニーランド"],
+ hnd:[35.5494,139.7798,"羽田机场 第3航站楼","HND Terminal 3","羽田空港 第3ターミナル"]
 };
 
-var C=["#FF9500","#FF3B30","#34C759","#007AFF","#AF52DE","#FF2D55","#00A6A6","#C9A227","#8E7CC3"];
+var C=["#FF8FB1","#FF6FA5","#FFA9C9","#F06BA8","#FFB3D1","#E85D9B","#FF9EC4","#D96BA0","#FFC2DA"];
 
 var DAYS=[
-{d:"2026-09-28",t:"大阪 — 半日",en:"抵着 · 大阪城 · 心斎橋",
- badges:[["plain","HO1505"],["warn","一斗 未予約"]],
+{d:"2026-09-28",t:"大阪 — 半天",en:"抵达 · 大阪城 · 心斋桥",
+ badges:[["plain","HO1505"],["warn","一斗 未预约"]],
  ev:[
-  {t:"08:20",k:"move",n:"HO1505 上海浦東 → 関西",en:"PVG T2 → KIX T1 · 11:40 着",m:"吉祥航空 · 2×23kg／人"},
-  {t:"12:30",k:"move",n:"関空 → 市内",en:"南海 or JR はるか",m:"約75分"},
-  {t:"13:45",n:"DoubleTree by Hilton Osaka Castle",en:"中央区 大手前1-1-1",p:"dtosaka",m:"IN 15:00 · 荷物預け可 · +81-6-6335-9801"},
-  {t:"14:30",n:"大阪城公園",en:"Osaka Castle Park",p:"castle",m:"徒歩2分 · 24h · 無料",
-   note:"The one sight your hotel makes free. Everything else on the Osaka list costs a train ride you don't have."},
-  {t:"16:15",n:"心斎橋 → 道頓堀",en:"Shinsaibashi to Dotonbori",p:"shinsai",m:"徒歩"},
-  {t:"17:00",n:"夕食 — 焼肉",en:"Dinner · yakiniku",c:["itto","rikimaru","nanichien"],
-   note:"Itto needs a booking and is why the evening sits in Shinsaibashi. Rikimaru runs to midnight as the fallback."},
-  {t:"19:30",n:"道頓堀 夜",en:"Glico sign",p:"doton"},
-  {t:"—",n:"夜食",en:"Snacks, if there's room",c:["juhachiban","kajitsu","gorichan","dorajuu"]}],
- call:{cls:"risk",h:"大阪は半日しかない",p:["The 29th is Universal end to end and you leave at 08:30 on the 30th. This afternoon <b>is</b> Osaka.",
-  "Two conflicting plans existed for today. The first was impossible as written — 17:30 at Kuromon and 17:00 at Itto."]},
- cut:[["黒門市場","18:00 閉場、屋台はもっと早い — 17:00 の焼肉と衝突"],["難波八坂神社","17:00 閉門"],
-      ["通天閣 · 四天王寺","半日では遠すぎる"],["梅田スカイビル · HEP FIVE","心斎橋の夕食と正反対"],["木津市場","枠がない"]]},
+  {t:"08:20",k:"move",n:"HO1505 上海浦东 → 关西",en:"PVG T2 → KIX T1 · 11:40 抵达",m:"吉祥航空 · 行李 2×23kg／人"},
+  {t:"12:30",k:"move",n:"关西机场 → 市区",en:"南海电铁 或 JR 遥号",m:"约75分钟"},
+  {t:"13:45",n:"大阪城希尔顿逸林酒店",en:"中央区 大手前1-1-1",p:"dtosaka",m:"入住 15:00 · 可提前寄存行李 · +81-6-6335-9801"},
+  {t:"14:30",n:"大阪城公园",en:"Osaka Castle Park",p:"castle",m:"步行2分钟 · 24小时 · 免费",
+   note:"住这里唯一白捡的景点。大阪清单上其他地方都要坐车，而你没有那个时间。"},
+  {t:"16:15",n:"心斋桥 → 道顿堀",en:"Shinsaibashi → Dotonbori",p:"shinsai",m:"步行"},
+  {t:"17:00",n:"晚餐 — 烧肉",en:"Dinner · yakiniku",c:["itto","rikimaru","nanichien"],
+   note:"一斗需要预约，整个晚上留在心斋桥就是为了它。力丸开到半夜，是备胎。"},
+  {t:"19:30",n:"道顿堀 夜景",en:"固力果招牌",p:"doton"},
+  {t:"—",n:"宵夜",en:"还吃得下的话",c:["juhachiban","kajitsu","gorichan","dorajuu"]}],
+ call:{cls:"risk",h:"大阪只有半天",p:["29号一整天在环球影城，30号早上8:30 就要走。<b>大阪就只有今天下午。</b>",
+  "原本笔记里有两套互相冲突的方案（大阪城/通天阁/黑门 与 梅田空中庭园/HEP FIVE），在城市两端。而且第一套本身就走不通：17:30 逛黑门、17:00 吃一斗。"]},
+ cut:[["黑门市场","18:00 收市，摊位更早就收 — 和 17:00 的烧肉直接冲突"],["难波八坂神社","17:00 关门"],
+      ["通天阁 · 四天王寺","半天时间去不了那么远"],["梅田空中庭园 · HEP FIVE","和心斋桥晚餐在城市两端"],["木津市场","排不进任何时段"]]},
 
-{d:"2026-09-29",t:"ユニバーサル",en:"Universal Studios Japan",
- badges:[["ok","予約済"],["plain","終日"]],
+{d:"2026-09-29",t:"环球影城",en:"Universal Studios Japan",
+ badges:[["ok","已订票"],["plain","全天"]],
  ev:[
-  {t:"08:00",k:"move",n:"→ ユニバーサルシティ",en:"JR ゆめ咲線",m:"大阪駅から約35分"},
-  {t:"09:00",n:"ユニバーサル・スタジオ・ジャパン",en:"USJ",p:"usj",m:"チケット取得済",note:"Whole day. Nothing else gets planned around it."},
-  {t:"20:00",n:"遅い夕食",en:"Late dinner",c:["rikimaru","dorajuu","hanadako","tanjirou"],
-   note:"You'll come out tired and late. These are the only ones on your list still serving."}],
- call:{cls:"",h:"今夜のうちに荷造り",p:["You leave the hotel at 08:30 tomorrow for the Kyoto train. Pack before USJ, not after."]}},
+  {t:"08:00",k:"move",n:"→ 环球城站",en:"JR 樱岛线",m:"大阪站出发约35分钟"},
+  {t:"09:00",n:"日本环球影城",en:"USJ",p:"usj",m:"门票已购",note:"一整天。其他什么都别安排。"},
+  {t:"20:00",n:"迟来的晚餐",en:"Late dinner",c:["rikimaru","dorajuu","hanadako","tanjirou"],
+   note:"出来时会很累很晚。清单上这个点还在营业的就这几家。"}],
+ call:{cls:"",h:"今晚就把行李收好",p:["明早 8:30 要出发赶去京都的车。行李在去环球影城之前收，不要指望回来再收。"]}},
 
-{d:"2026-09-30",t:"大阪 → 京都 · 嵐山",en:"移動、そして嵐山",
- badges:[["stop","トロッコ 未予約"],["plain","OUT 11:00"]],
+{d:"2026-09-30",t:"大阪 → 京都 · 岚山",en:"移动日，下午岚山",
+ badges:[["stop","小火车 未预约"],["plain","退房 11:00"]],
  ev:[
-  {t:"08:00",n:"Le Croissant 北新地",en:"Breakfast",c:["lecroissant"],p:"kitashinchi",m:"07:30 開店"},
-  {t:"08:30",n:"大阪駅 7・8番のりば",en:"Osaka Stn platforms 7–8",p:"osakastn",m:"新快速 京都方面 · 約15分毎"},
-  {t:"09:00",k:"move",n:"新快速 → 京都",en:"約30分 · ¥580",p:"kyotostn"},
-  {t:"09:45",n:"Hilton Garden Inn 四条烏丸",en:"荷物預け · IN 15:00",p:"hgikyoto",m:"五条烏丸町397 · +81-75-320-5111"},
-  {t:"11:30",n:"昼食 — カレー",en:"Lunch · curry",c:["campanella"],m:"開店は11:30、11:00ではない"},
-  {t:"12:30",k:"move",n:"JR山陰本線 → 馬堀",en:"馬堀駅から徒歩8分",p:"kameoka",m:"ドアツードア約1時間"},
-  {t:"13:30",n:"嵯峨野トロッコ列車",en:"亀岡 → 嵐山",p:"torokkoara",m:"20分 · ¥880",
-   note:"NOT BOOKED. Car 5 — the open-air Rich car you wanted — is never sold in advance: same-day counter only, from ~09:10 at Kameoka. Arriving 13:00 means it's gone. Cars 1–4 opened online on 30 Aug."},
-  {t:"14:00",n:"常寂光寺",en:"45分 · ¥500",p:"jojakko"},
-  {t:"15:10",n:"竹林の小径",en:"Bamboo Grove · 20分",p:"bamboo"},
-  {t:"16:00",n:"祐斎亭",en:"¥2,000",p:"yusai",m:"17:00 閉館 — タイト、しかも未予約"},
-  {t:"17:15",n:"渡月橋",en:"Togetsukyo · ミッフィー",p:"togetsu",m:"日没 約17:45"},
-  {t:"19:00",n:"夕食 — すき焼き",en:"Dinner · sukiyaki",c:["hiroshige","mensho","sashisu"],p:"nishiki",
-   note:"Hiroshige is ¥18,000 a head and closes at 21:00. Mensho is the escape hatch if Arashiyama runs late."}],
- call:{cls:"risk",h:"今日は13:30の列車次第",p:["Check <b>sagano-kanko.co.jp</b> for remaining Cars 1–4 before you fly. If the 13:30 is gone, everything below it moves — and Yusai-tei's 17:00 closing breaks first."]},
- cut:[["稲荷豆大福","水曜定休"],["いづ重","水曜定休"],["黒門市場","水曜定休"]]},
+  {t:"08:00",n:"Le Croissant 北新地",en:"早餐",c:["lecroissant"],p:"kitashinchi",m:"07:30 开门"},
+  {t:"08:30",n:"大阪站 7・8号站台",en:"Osaka Stn platforms 7–8",p:"osakastn",m:"新快速 京都方向 · 约15分钟一班"},
+  {t:"09:00",k:"move",n:"新快速 → 京都",en:"约30分钟 · ¥580",p:"kyotostn"},
+  {t:"09:45",n:"京都四条乌丸希尔顿花园酒店",en:"寄存行李 · 入住 15:00",p:"hgikyoto",m:"五条乌丸町397 · +81-75-320-5111"},
+  {t:"11:30",n:"午餐 — 咖喱饭",en:"Lunch · curry",c:["campanella"],m:"11:30 才开门，不是 11:00"},
+  {t:"12:30",k:"move",n:"JR山阴本线 → 马堀站",en:"马堀站步行8分钟到小火车龟冈站",p:"kameoka",m:"门到门约1小时"},
+  {t:"13:30",n:"嵯峨野观光小火车",en:"龟冈 → 岚山",p:"torokkoara",m:"20分钟 · ¥880",
+   note:"还没订。你想坐的 5号车（开放式「富贵号」）从来不接受预售——只能当天在龟冈站柜台排队，约 09:10 开卖，先到先得。13:00 才到，必然没了。1〜4号车 8月30日已经开放网上预订。"},
+  {t:"14:00",n:"常寂光寺",en:"45分钟 · ¥500",p:"jojakko"},
+  {t:"15:10",n:"竹林小径",en:"Bamboo Grove · 20分钟",p:"bamboo"},
+  {t:"16:00",n:"祐斋亭",en:"¥2,000",p:"yusai",m:"17:00 闭馆 — 很赶，而且还没订"},
+  {t:"17:15",n:"渡月桥",en:"米菲兔店",p:"togetsu",m:"日落约 17:45"},
+  {t:"19:00",n:"晚餐 — 寿喜烧",en:"Dinner · sukiyaki",c:["hiroshige","mensho","sashisu"],p:"nishiki",
+   note:"广重一人 ¥18,000，21:00 关门。岚山如果拖晚了，面匠是退路。"}],
+ call:{cls:"risk",h:"今天全看 13:30 那班小火车",p:["出发前先去 <b>sagano-kanko.co.jp</b> 查 1〜4号车还有没有位。如果 13:30 没了，下面所有时间都要重排——最先崩的是祐斋亭 17:00 闭馆。"]},
+ cut:[["稻荷豆大福","周三休息"],["いづ重","周三休息"],["黑门市场","周三休息"]]},
 
-{d:"2026-10-01",t:"京都 — 着物",en:"着物 · 東山 · 錦市場",
- badges:[["ok","着物 予約済"],["warn","17:30 返却"]],
+{d:"2026-10-01",t:"京都 — 和服",en:"和服 · 东山 · 锦市场",
+ badges:[["ok","和服已约"],["warn","17:30 归还"]],
  ev:[
-  {t:"09:00",n:"mocomoco 着物レンタル",en:"約1時間",m:"返却 18:00 厳守 — 17:30 目標"},
-  {t:"10:00",n:"清水寺 + 二年坂・三年坂",en:"2–3時間",p:"kiyomizu",
-   note:"The whole reason for the kimono. Go up early — the slope is the photograph."},
-  {t:"13:15",n:"八坂神社",en:"30分",p:"yasaka"},
-  {t:"13:50",n:"昼食 — 鯖寿司 ほか",en:"Lunch · Gion",c:["izuu","izuju","onimaru","hanamichi"],
-   note:"Izuu — 367 Kiyomotocho — is the 1781 house and the serious plate, five minutes south of Yasaka. Izuju stands at the Gion steps facing Yasaka's gate, so it's the zero-detour version if you're late."},
-  {t:"15:30",n:"錦市場",en:"Nishiki Market",p:"nishiki",m:"多くは18:00閉店",c:["konnamonja","terakoya","sallys","ichiha"],
-   note:"Four eating events between 13:50 and 16:30 is a lot. Something here gets skipped — decide by how the unagi lands."},
-  {t:"17:30",n:"着物 返却",en:"Kimono returned",m:"18:00 が限界"},
-  {t:"18:30",n:"夕食",en:"Dinner",c:["ginjo","mensho","kikukawa","taisushi"]}],
- call:{cls:"good",h:"伏見稲荷は明日の朝に移した",p:["It was slotted 17:00–18:00, which collided with the kimono return and would have been dark. It now opens tomorrow at 07:30, when the gates are empty. Strictly better."]},
- cut:[["たい鮨","木曜定休"],["稲荷豆大福","水・木定休 — 伏見に行く日に閉まっている"]]},
+  {t:"09:00",n:"mocomoco 和服租借",en:"约1小时",m:"归还 18:00 死线 — 目标 17:30"},
+  {t:"10:00",n:"清水寺 + 二年坂・三年坂",en:"2–3小时",p:"kiyomizu",
+   note:"租和服就是为了这一段。尽量早上去，那条坡道才是照片本身。"},
+  {t:"13:15",n:"八坂神社",en:"30分钟",p:"yasaka"},
+  {t:"13:50",n:"午餐 — 鲭鱼寿司",en:"Lunch · 祇园",c:["izuu","izuju","onimaru","hanamichi"],
+   note:"いづう（清本町367）是 1781 年的老铺，认真吃的那家，在八坂南边五分钟。いづ重 就站在八坂神社石阶下、正对朱红鸟居——如果时间紧，它是零绕路的版本。两家周四都营业。"},
+  {t:"15:30",n:"锦市场",en:"Nishiki Market",p:"nishiki",m:"多数摊位 18:00 收",c:["konnamonja","terakoya","sallys","ichiha"],
+   note:"13:50 到 16:30 之间连吃四顿，太多了。总要砍掉一个——看鳗鱼饭吃完什么状态再定。"},
+  {t:"17:30",n:"归还和服",en:"Kimono returned",m:"18:00 是极限"},
+  {t:"18:30",n:"晚餐",en:"Dinner",c:["ginjo","mensho","kikukawa","taisushi"]}],
+ call:{cls:"good",h:"伏见稻荷挪到明天早上了",p:["原本排在 17:00–18:00，既撞和服归还，天也黑了。现在改到明早 07:30，千本鸟居基本没人。这不是妥协，是更好的安排。"]},
+ cut:[["鲷寿司","周四休息"],["稻荷豆大福","周三、周四都休 — 正好你去伏见那天关门"]]},
 
-{d:"2026-10-02",t:"伏見稲荷 → 東京",en:"早朝の鳥居、そして新幹線",
- badges:[["stop","新幹線 未予約"],["plain","夕食は上司と"]],
+{d:"2026-10-02",t:"伏见稻荷 → 东京",en:"清晨鸟居，然后新干线",
+ badges:[["stop","新干线 未预约"],["plain","晚餐 与老板"]],
  ev:[
-  {t:"07:30",n:"伏見稲荷大社",en:"Fushimi Inari Taisha",p:"fushimi",m:"24h · 無料 · 一周 約2時間",
-   note:"Moved here from last night. Before 09:00 the torii are effectively empty — the only hour it's worth photographing."},
-  {t:"09:45",n:"朝食 — 参道",en:"Breakfast at the approach",c:["ichika","inaridaifuku"]},
-  {t:"10:30",n:"ホテル",en:"Back to hotel",p:"hgikyoto",m:"OUT 12:00"},
-  {t:"11:00",k:"move",n:"宅急便 → 新橋",en:"Forward the luggage",m:"約¥2,000／個 · 翌日着",
-   note:"Do this. It turns the transfer from a hauling exercise into a train ride. Keep one overnight bag."},
-  {t:"12:30",k:"move",n:"のぞみ 京都 → 東京",en:"約2時間15分",p:"tokyostn",m:"E席 — C・D席ではない",
-   note:"Ordinary cars are 3+2 (A-B-C ‖ D-E). The two-seat side faces Fuji in both directions, but C and D are both aisles. E is the window. Fuji shows ~40–45 min out, near Shin-Fuji."},
-  {t:"15:15",n:"ダイワロイネットホテル東京新橋",en:"新橋1-17-2",p:"roynet",m:"IN 14:00 · +81-3-3500-5080"},
-  {t:"16:15",n:"東京駅一番街",en:"Tokyo Station Ichibangai",p:"tokyostn",c:["pista","okada"],
-   note:"Both sell out. Pista's second batch drops 17:30."},
-  {t:"19:00",n:"上司との夕食",en:"Dinner with WK's boss",m:"未定 — 空けてある"},
-  {t:"22:30",n:"〆のラーメン",en:"After dinner, if you're still up",c:["hashigo"],
-   note:"Friday, so Hashigo runs to 05:00 — a ten-minute walk from the hotel. Sat/Sun it stops at 21:00."}],
- call:{cls:"warn",h:"のぞみを予約",p:["Your Tokyo leg sits inside Chinese Golden Week. Unreserved is a gamble on the 2nd — book a seat, and make it E."]}},
+  {t:"07:30",n:"伏见稻荷大社",en:"Fushimi Inari Taisha",p:"fushimi",m:"24小时 · 免费 · 走一圈约2小时",
+   note:"从昨晚挪过来的。09:00 之前千本鸟居几乎空无一人，全天只有这个时段值得拍。"},
+  {t:"09:45",n:"早餐 — 参道",en:"神社参道",c:["ichika","inaridaifuku"]},
+  {t:"10:30",n:"回酒店",en:"Back to hotel",p:"hgikyoto",m:"退房 12:00"},
+  {t:"11:00",k:"move",n:"宅急便 行李直送新桥",en:"Luggage forwarding",m:"约 ¥2,000／件 · 隔天送达",
+   note:"一定要寄。这一步把「扛着箱子换车」变成「坐车」。随身留一个过夜小包就够。"},
+  {t:"12:30",k:"move",n:"のぞみ 京都 → 东京",en:"约2小时15分",p:"tokyostn",m:"坐 E 席 — 不是 C 或 D",
+   note:"普通车厢是 3+2 排（A-B-C ‖ D-E）。两人座那一侧两个方向都朝富士山，但 C 和 D 都是过道座，<b>E 才是靠窗</b>。出京都约 40–45 分钟、新富士附近能看到。"},
+  {t:"15:15",n:"大和 Roynet 酒店 东京新桥",en:"新桥1-17-2",p:"roynet",m:"入住 14:00 起 · +81-3-3500-5080"},
+  {t:"16:15",n:"东京站一番街",en:"Tokyo Station Ichibangai",p:"tokyostn",c:["pista","okada"],
+   note:"两家都会卖光。Pista 第二批 17:30 出。"},
+  {t:"19:00",n:"与老板的晚餐",en:"Dinner with WK's boss",m:"不安排 — 留空"},
+  {t:"22:30",n:"收尾拉面",en:"还撑得住的话",c:["hashigo"],
+   note:"周五，はしご 开到凌晨 05:00，离酒店步行十分钟。周六周日只到 21:00。"}],
+ call:{cls:"warn",h:"把のぞみ订了",p:["东京这几天正好撞上中国国庆黄金周。10月2日买自由席是赌博——订指定席，而且要 <b>E 席</b>。"]}},
 
-{d:"2026-10-03",t:"東京 西",en:"明治神宮 · 表参道 · 渋谷",
- badges:[["ok","渋谷スカイ 17:40"],["warn","土曜 + 黄金週"]],
+{d:"2026-10-03",t:"东京 西线",en:"明治神宫 · 表参道 · 涩谷",
+ badges:[["ok","涩谷SKY 17:40"],["warn","周六 + 黄金周"]],
  ev:[
-  {t:"08:30",n:"明治神宮",en:"Meiji Jingu",p:"meiji",m:"日の出開門 · 無料",
-   note:"Early is not optional. It's a Golden Week Saturday and this is the one part of the day that rewards an empty hour."},
+  {t:"08:30",n:"明治神宫",en:"Meiji Jingu",p:"meiji",m:"日出开门 · 免费",
+   note:"今天早起不是可选项。黄金周的周六，全天只有这一个小时是空的。"},
   {t:"10:30",n:"表参道・原宿",en:"Omotesando & Harajuku",p:"omote"},
-  {t:"12:00",n:"昼食 — とんかつ",en:"Lunch · tonkatsu",c:["tonkatsujp","maisen","butagumi"],
-   note:"All three are in this pocket. Maisen's Aoyama honten is the landmark; tonkatsu.jp is the quicker queue."},
-  {t:"14:00",n:"渋谷 スクランブル",en:"Shibuya",p:"shibuya"},
-  {t:"17:40",n:"渋谷スカイ",en:"Shibuya Sky",p:"shibuya",m:"9/18 KKday 予約済",
-   note:"Sunset is ≈17:25, so your slot lands squarely in blue hour. Well chosen — this is the good ticket."},
-  {t:"19:30",n:"夕食 — 渋谷",en:"Dinner",c:["aburagumi","afuri","nagi","kiwami"]}],
- cut:[["Kikanbo 池袋","どの日にも入らない — 削除"]]},
+  {t:"12:00",n:"午餐 — 炸猪排",en:"Lunch · tonkatsu",c:["tonkatsujp","maisen","butagumi"],
+   note:"三家都在这一带。迈泉青山本店是地标；tonkatsu.jp 队伍快一些。"},
+  {t:"14:00",n:"涩谷 十字路口",en:"Shibuya Scramble",p:"shibuya"},
+  {t:"17:40",n:"涩谷 SKY",en:"Shibuya Sky",p:"shibuya",m:"9/18 已在 KKday 抢到",
+   note:"日落约 17:25，你这个场次正好落在蓝调时刻。这张票抢得很好。"},
+  {t:"19:30",n:"晚餐 — 涩谷",en:"Dinner",c:["aburagumi","afuri","nagi","kiwami"]}],
+ cut:[["Kikanbo 池袋","哪一天都塞不进去 — 删掉"]]},
 
-{d:"2026-10-04",t:"東京 東",en:"浅草 · スカイツリー · 銀座",
- badges:[["stop","築地 日曜休み"],["plain","自由日"]],
+{d:"2026-10-04",t:"东京 东线",en:"浅草 · 晴空塔 · 银座",
+ badges:[["stop","筑地 周日休市"],["plain","自由日"]],
  ev:[
-  {t:"08:30",n:"浅草寺",en:"Senso-ji · 仲見世",p:"sensoji",m:"境内24h · 本堂06:00",
-   note:"Before 10:00 Nakamise is walkable. After, it isn't — and it's a Golden Week Sunday."},
-  {t:"11:30",n:"東京スカイツリー",en:"Skytree",p:"skytree",m:"徒歩約20分 or 2駅"},
-  {t:"12:30",n:"昼食",en:"Lunch · ソラマチ or 浅草",c:["naruto","funabashiya","nagi"]},
-  {t:"15:00",n:"銀座 歩行者天国",en:"Pedestrian paradise",p:"ginza",m:"日曜午後、車道が歩行者に開放",
-   note:"Only happens on a Sunday, and you happen to have one. Ginza on foot is a different place.",
+  {t:"08:30",n:"浅草寺",en:"Senso-ji · 仲见世",p:"sensoji",m:"境内24小时 · 本堂 06:00",
+   note:"10:00 之前仲见世还走得动，之后就不行了——何况是黄金周的周日。"},
+  {t:"11:30",n:"东京晴空塔",en:"Tokyo Skytree",p:"skytree",m:"步行约20分钟 或 坐2站"},
+  {t:"12:30",n:"午餐",en:"晴空町 或 浅草",c:["naruto","funabashiya","nagi"]},
+  {t:"15:00",n:"银座 步行者天国",en:"Pedestrian paradise",p:"ginza",m:"周日下午，主街禁车开放步行",
+   note:"只有周日才有，而你正好有一个周日。银座能用走的，是完全不同的地方。",
    c:["kimuraya","ohayo"]},
-  {t:"18:30",n:"夕食 — すき焼き",en:"Dinner",c:["kisoji","kiwami","hashigo","bincho"],
-   note:"Hashigo stops at 21:00 on a Sunday, not 05:00."}],
- call:{cls:"risk",h:"今日、築地は休み",p:["The outer market closes every Sunday. It is not a question of going early. It moves to the 6th, a Tuesday — see the last day."]}},
+  {t:"18:30",n:"晚餐 — 寿喜烧",en:"Dinner",c:["kisoji","kiwami","hashigo","bincho"],
+   note:"周日 はしご 只开到 21:00，不是 05:00。"}],
+ call:{cls:"risk",h:"今天筑地休市",p:["场外市场每个周日都关。不是早起就能解决的问题。它挪到了10月6日——那天是周二，看最后一天。"]}},
 
-{d:"2026-10-05",t:"ディズニーランド",en:"Tokyo Disneyland",
- badges:[["ok","予約済"],["plain","終日"]],
+{d:"2026-10-05",t:"迪士尼乐园",en:"Tokyo Disneyland",
+ badges:[["ok","已订票"],["plain","全天"]],
  ev:[
-  {t:"07:30",k:"move",n:"新橋 → 舞浜",en:"JR京葉線",m:"約40分"},
-  {t:"09:00",n:"東京ディズニーランド",en:"Tokyo Disneyland",p:"disney",m:"アプリで予約済",
-   note:"A Monday, which is the best you could have done for it. Whole day."},
-  {t:"21:30",n:"帰りの一杯",en:"Back in Shimbashi",c:["hashigo","ohayo"],m:"月曜 — はしごは05:00まで"}],
- call:{cls:"warn",h:"買い残しは今夜が最後",p:["Tomorrow is Tsukiji, then the airport. If something on the Ginza or Tokyo Station list is still unbought, tonight is the last chance."]}},
+  {t:"07:30",k:"move",n:"新桥 → 舞浜",en:"JR 京叶线",m:"约40分钟"},
+  {t:"09:00",n:"东京迪士尼乐园",en:"Tokyo Disneyland",p:"disney",m:"APP 已购票",
+   note:"周一——已经是能选到的最好的一天了。一整天。"},
+  {t:"21:30",n:"回新桥来一碗",en:"Back in Shimbashi",c:["hashigo","ohayo"],m:"周一 — はしご 开到 05:00"}],
+ call:{cls:"warn",h:"今晚是最后的采购机会",p:["明天是筑地，然后直接去机场。银座和东京站清单上还没买到的东西，今晚是最后一次。"]}},
 
-{d:"2026-10-06",t:"築地 → 羽田",en:"市場の朝食、そして帰国",
- badges:[["ok","築地 火曜は営業"],["plain","17:20 発"]],
+{d:"2026-10-06",t:"筑地 → 羽田",en:"市场早餐，然后回家",
+ badges:[["ok","筑地 周二营业"],["plain","17:20 起飞"]],
  ev:[
-  {t:"07:30",n:"築地場外市場",en:"Tsukiji Outer Market",p:"tsukiji",m:"ホテルから徒歩約15分 · 07:00–09:00 が本番",
+  {t:"07:30",n:"筑地场外市场",en:"Tsukiji Outer Market",p:"tsukiji",m:"酒店步行约15分钟 · 07:00–09:00 最热闹",
    c:["kurogin","unitora","marutoyo","itadori"],
-   note:"The reason this sits on departure day: Tsukiji is closed Sundays, which killed the 4th. Today is a Tuesday and the market is fully open. Kurogin opens 08:30, shuts 13:00, closed Wednesdays — today works."},
-  {t:"10:30",n:"ホテル",en:"Back to hotel",p:"roynet",m:"OUT 11:00 — 荷物はフロント預け"},
-  {t:"11:30",n:"銀座",en:"Last buys",p:"ginza"},
-  {t:"12:30",n:"昼食",en:"Last lunch",c:["hashigo","unafuji","bincho","kimuraya"],
-   note:"Unafuji is in Yurakucho, eight minutes from the hotel — if the booking never happened, lunch is the walk-in hour."},
-  {t:"14:50",k:"move",n:"都営浅草線 直通 → 羽田",en:"約30分",p:"hnd"},
-  {t:"15:30",n:"羽田空港 第3ターミナル",en:"HND T3",p:"hnd",m:"国際線チェックイン"},
-  {t:"17:20",k:"move",n:"MU4183 / JL089 → 上海浦東",en:"19:45 着 · PVG T1",m:"中国東方航空 · 日本航空運航"}],
- call:{cls:"good",h:"死んでいた朝が最高の食事になった",p:["A 17:20 flight means the morning was free anyway. Tsukiji's Sunday closure forced this, and it turned out to be the right place for it."]}}
+   note:"它排在回程日是有原因的：筑地周日休市，10月4日去不了。今天是周二，全市场正常营业。黑银 08:30 开、13:00 收，周三休——今天刚好可以。"},
+  {t:"10:30",n:"回酒店",en:"Back to hotel",p:"roynet",m:"退房 11:00 — 行李寄存前台"},
+  {t:"11:30",n:"银座",en:"最后采购",p:"ginza"},
+  {t:"12:30",n:"最后一餐",en:"Last lunch",c:["hashigo","unafuji","bincho","kimuraya"],
+   note:"鳗富士在有乐町，离酒店八分钟——如果一直没订到位，午市是走进去最容易的时段。"},
+  {t:"14:50",k:"move",n:"都营浅草线 直通 → 羽田",en:"约30分钟",p:"hnd"},
+  {t:"15:30",n:"羽田机场 第3航站楼",en:"HND Terminal 3",p:"hnd",m:"国际线办理登机"},
+  {t:"17:20",k:"move",n:"MU4183 / JL089 → 上海浦东",en:"19:45 抵达 · PVG T1",m:"中国东方航空 · 日本航空执飞"}],
+ call:{cls:"good",h:"本来空掉的早上，变成了最好的一顿",p:["17:20 的飞机，整个上午本来就是空的。筑地周日休市把它逼到了今天，结果反而是最合适的位置。"]}}
 ];
 
 var map=L.map("map",{zoomControl:false,attributionControl:false});
@@ -406,21 +419,21 @@ function drawMap(idx){
   var pts=[],col=null;
   if(idx<0){
     DAYS.forEach(function(d,i){
-      d.ev.forEach(function(e){ if(e.p&&P[e.p]) pts.push([P[e.p][0],P[e.p][1],C[i],P[e.p][2]]); });
+      d.ev.forEach(function(e){ if(e.p&&P[e.p]) pts.push([P[e.p][0],P[e.p][1],C[i],P[e.p][2],P[e.p][4]]); });
     });
   }else{
     col=C[idx];
-    DAYS[idx].ev.forEach(function(e){ if(e.p&&P[e.p]) pts.push([P[e.p][0],P[e.p][1],col,P[e.p][2]]); });
+    DAYS[idx].ev.forEach(function(e){ if(e.p&&P[e.p]) pts.push([P[e.p][0],P[e.p][1],col,P[e.p][2],P[e.p][4]]); });
   }
   if(!pts.length){ map.setView([35.30,136.60],7); return; }
   if(idx>=0&&pts.length>1){
     L.polyline(pts.map(function(p){return [p[0],p[1]];}),
-      {color:col,weight:2.5,opacity:.55,dashArray:"5,6"}).addTo(layer);
+      {color:col,weight:3,opacity:.65,dashArray:"5,7"}).addTo(layer);
   }
   pts.forEach(function(p){
-    var m=L.circleMarker([p[0],p[1]],{radius:8,color:"#fff",weight:2.5,fillColor:p[2],fillOpacity:1}).addTo(layer);
+    var m=L.circleMarker([p[0],p[1]],{radius:8,color:"#fff",weight:3,fillColor:p[2],fillOpacity:1}).addTo(layer);
     m.bindTooltip(p[3],{direction:"top",offset:[0,-8]});
-    m.on("click",function(){ window.open(g(p[3],""),"_blank","noopener"); });
+    m.on("click",function(){ window.open(g(p[4],""),"_blank","noopener"); });
   });
   map.fitBounds(L.latLngBounds(pts.map(function(p){return [p[0],p[1]];})),{padding:[34,34],maxZoom:15});
 }
@@ -431,11 +444,11 @@ function mkPill(label,i,color){
   var b=document.createElement("button");
   b.className="pill"; b.setAttribute("role","tab");
   b.setAttribute("aria-selected", i===-1?"true":"false");
-  b.innerHTML=(color?'<i style="background:'+color+'"></i>':"")+esc(label);
+  b.innerHTML=(color?'<i style="background:'+color+'"></i>':"🎀 ")+esc(label);
   b.onclick=function(){show(i);};
   pills.appendChild(b);
 }
-mkPill("総覧",-1,null);
+mkPill("总览",-1,null);
 DAYS.forEach(function(d,i){
   var dt=new Date(d.d+"T00:00:00");
   mkPill("D"+(i+1)+" "+(dt.getMonth()+1)+"/"+dt.getDate(),i,C[i]);
@@ -443,10 +456,10 @@ DAYS.forEach(function(d,i){
 
 function payChips(r){
   var out="";
-  if(r.pay&&r.pay.indexOf("💳")>=0) out+='<span class="chip pay">カード</span>';
+  if(r.pay&&r.pay.indexOf("💳")>=0) out+='<span class="chip pay">可刷卡</span>';
   if(r.pay&&r.pay.indexOf("🍉")>=0) out+='<span class="chip pay">Suica</span>';
-  if(!r.pay) out+='<span class="chip cash">現金のみ？</span>';
-  if(r.resv) out+='<span class="chip resv">要予約</span>';
+  if(!r.pay) out+='<span class="chip cash">可能只收现金</span>';
+  if(r.resv) out+='<span class="chip resv">需预约</span>';
   return out;
 }
 
@@ -454,16 +467,16 @@ function candCard(key,dow){
   var r=R[key]; if(!r) return "";
   var shut=(r.shut||[]).indexOf(dow)>=0;
   var h='<div class="cand'+(shut?" shut":"")+'">';
-  h+='<div class="cnm">'+esc(r.jp)+(r.rom?'<span class="crom">'+esc(r.rom)+'</span>':"")+'</div>';
+  h+='<div class="cnm">'+esc(r.cn)+(r.en?'<span class="crom">'+esc(r.en)+'</span>':"")+'</div>';
   h+='<div class="chips">';
-  if(shut) h+='<span class="chip shut">'+W[dow]+'曜 休み</span>';
+  if(shut) h+='<span class="chip shut">'+W[dow]+' 休息</span>';
   if(r.hrs) h+='<span class="chip">'+esc(r.hrs)+'</span>';
   if(r.yen) h+='<span class="chip yen">¥'+r.yen.toLocaleString()+'</span>';
   h+=payChips(r)+'</div>';
   if(r.note) h+='<div class="note">'+esc(r.note)+'</div>';
   if(!r.nolink){
-    h+='<div class="btns"><a class="btn" href="'+g(r.jp,r.area)+'" target="_blank" rel="noopener">📍 導航</a>'+
-       '<a class="btn tab" href="'+tabelog(r.jp)+'" target="_blank" rel="noopener">食べログ</a></div>';
+    h+='<div class="btns"><a class="btn" href="'+g(r.ja||r.cn,r.area)+'" target="_blank" rel="noopener">📍 导航</a>'+
+       '<a class="btn tab" href="'+tabelog(r.ja||r.cn)+'" target="_blank" rel="noopener">⭐ 查评分</a></div>';
   }
   return h+'</div>';
 }
@@ -476,22 +489,22 @@ function show(idx){
 }
 
 function renderOverview(){
-  var h='<div class="dhead"><h1>関西 → 関東</h1>'+
-    '<div class="sub">大阪2泊 · 京都2泊 · 東京4泊 — 関空 IN、羽田 OUT</div>'+
-    '<div class="dt">2026-09-28 → 10-06 · 2名</div></div><div class="ov">';
+  var h='<div class="dhead"><h1>'+BOW+'关西 → 关东</h1>'+
+    '<div class="sub">大阪2晚 · 京都2晚 · 东京4晚 — 关西机场进，羽田出</div>'+
+    '<div class="dt">2026-09-28 → 10-06 · 2人</div></div><div class="ov">';
   DAYS.forEach(function(d,i){
     var dt=new Date(d.d+"T00:00:00");
     h+='<button class="ovc" data-i="'+i+'"><i style="background:'+C[i]+'"></i>'+
        '<span><span class="t">D'+(i+1)+' '+esc(d.t)+'</span><span class="s">'+esc(d.en)+'</span></span>'+
-       '<span class="d">'+(dt.getMonth()+1)+'/'+dt.getDate()+'<br>('+W[dt.getDay()]+')</span></button>';
+       '<span class="d">'+(dt.getMonth()+1)+'/'+dt.getDate()+'<br>'+W[dt.getDay()]+'</span></button>';
   });
   h+='</div>';
-  h+='<div class="call risk"><h3>出発前に片付けること</h3>'+
-     '<p><b>嵯峨野トロッコ 9/30 13:30</b> — 5号車（リッチ号）は事前販売なし。当日、亀岡09:10から先着のみ。13:00着では確実に売切。1〜4号車の残席を今すぐ確認。</p>'+
-     '<p><b>のぞみ 10/2 京都→東京</b> — 黄金週。<b>E席</b>を予約（C・D席は通路側）。</p>'+
-     '<p><b>要予約</b> — 板前焼肉一斗、祐斎亭、炭焼うな富士。<b>Suica</b> は出発前に Apple Wallet へ。</p></div>';
-  h+='<div class="call"><h3>支払いの目安</h3>'+
-     '<p>「現金のみ？」は、手元の記録にカード・IC の記載がなかった店。日本の個人店・屋台・市場は今も現金が基本です。<b>常に ¥20,000 前後は現金で。</b></p></div>';
+  h+='<div class="call risk"><h3>🎀 出发前必须办掉的事</h3>'+
+     '<p><b>嵯峨野小火车 9/30 13:30</b> — 5号车（富贵号）不接受预售，只能当天在龟冈站 09:10 起排队先到先得。13:00 才到＝必然没有。现在就去查 1〜4号车还有没有位。</p>'+
+     '<p><b>のぞみ 10/2 京都→东京</b> — 黄金周，务必订指定席，坐 <b>E 席</b>（C、D 都是过道座）。</p>'+
+     '<p><b>需要预约</b> — 板前烧肉一斗、祐斋亭、炭烧鳗富士。<b>Suica</b> 出发前就加进 Apple Wallet。</p></div>';
+  h+='<div class="call"><h3>🌸 付款提醒</h3>'+
+     '<p>标「可能只收现金」的，是笔记里没写明能刷卡或用 IC 的店。日本的个人小店、路边摊、市场至今仍以现金为主。<b>身上随时备 ¥20,000 左右现金。</b></p></div>';
   h+=foot();
   pane.innerHTML=h;
   [].forEach.call(pane.querySelectorAll(".ovc"),function(b){
@@ -501,8 +514,8 @@ function renderOverview(){
 
 function renderDay(i){
   var d=DAYS[i], dt=new Date(d.d+"T00:00:00"), dow=dt.getDay();
-  var h='<div class="dhead"><h1>'+esc(d.t)+'</h1><div class="sub">'+esc(d.en)+'</div>'+
-    '<div class="dt">'+d.d+'（'+W[dow]+'）· '+WE[dow]+'</div></div>';
+  var h='<div class="dhead"><h1>'+BOW+esc(d.t)+'</h1><div class="sub">'+esc(d.en)+'</div>'+
+    '<div class="dt">'+d.d+' · '+W[dow]+'</div></div>';
   if(d.badges) h+='<div class="badges">'+d.badges.map(function(b){
     return '<span class="badge '+b[0]+'">'+esc(b[1])+'</span>';}).join("")+'</div>';
   h+='<div class="tl">';
@@ -512,15 +525,15 @@ function renderDay(i){
     h+='<div class="nm">'+esc(e.n)+'</div>';
     if(e.en) h+='<div class="en">'+esc(e.en)+'</div>';
     if(e.m) h+='<div class="meta">'+esc(e.m)+'</div>';
-    if(e.note) h+='<div class="note">'+esc(e.note)+'</div>';
-    if(e.p&&P[e.p]) h+='<div class="btns"><a class="btn" href="'+g(P[e.p][2],P[e.p][3])+'" target="_blank" rel="noopener">📍 導航</a></div>';
+    if(e.note) h+='<div class="note">'+e.note+'</div>';
+    if(e.p&&P[e.p]) h+='<div class="btns"><a class="btn" href="'+g(P[e.p][4],"")+'" target="_blank" rel="noopener">📍 导航</a></div>';
     if(e.c&&e.c.length) h+='<div class="cands">'+e.c.map(function(k){return candCard(k,dow);}).join("")+'</div>';
     h+='</div></div></div>';
   });
   h+='</div>';
   if(d.call) h+='<div class="call '+(d.call.cls||"")+'"><h3>'+esc(d.call.h)+'</h3>'+
     d.call.p.map(function(p){return "<p>"+p+"</p>";}).join("")+'</div>';
-  if(d.cut) h+='<div class="cut"><h3>今日の削除</h3>'+d.cut.map(function(c){
+  if(d.cut) h+='<div class="cut"><h3>✂️ 今天砍掉的</h3>'+d.cut.map(function(c){
     return '<div><b>'+esc(c[0])+'</b> — '+esc(c[1])+'</div>';}).join("")+'</div>';
   h+=foot();
   pane.innerHTML=h;
@@ -528,10 +541,10 @@ function renderDay(i){
 
 function foot(){
   return '<div class="foot"><div class="legend">'+
-   '<span class="chip pay">カード</span><span class="chip pay">Suica</span>'+
-   '<span class="chip cash">現金のみ？</span><span class="chip resv">要予約</span></div>'+
-   '<p>店名の下のボタンで Google マップ、食べログ は営業時間・定休日・評価の確認用。地図のピンもタップできます。</p>'+
-   '<p>営業時間・定休日・価格は手元のメモ、追加分は Tabelog と店舗サイトで 2026-09-22 に確認。日本は上海より1時間進んでいます。重要なものは当日必ず再確認を。</p></div>';
+   '<span class="chip pay">可刷卡</span><span class="chip pay">Suica</span>'+
+   '<span class="chip cash">可能只收现金</span><span class="chip resv">需预约</span></div>'+
+   '<p>「导航」开 Google 地图（用日文店名搜索，日本当地才搜得准），「查评分」开 Tabelog 看营业时间、定休日和评分。地图上的粉点也可以直接点。</p>'+
+   '<p>营业时间、休息日、价格来自你自己的笔记；新增的部分已于 2026-09-22 用 Tabelog 和店家官网核对。日本比上海快1小时。重要的当天一定再确认一次。</p></div>';
 }
 
 show(-1);

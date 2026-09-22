@@ -1,13 +1,13 @@
 {
-  "name": "Kansai to Kanto",
-  "short_name": "Kansai\u2192Kanto",
-  "description": "Osaka, Kyoto and Tokyo itinerary, 28 Sep - 6 Oct 2026.",
+  "name": "关西 → 关东",
+  "short_name": "关西→关东",
+  "description": "大阪・京都・东京 2026-09-28 → 10-06",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#EEF1F4",
-  "theme_color": "#EEF1F4",
+  "background_color": "#FFF0F5",
+  "theme_color": "#FFF0F5",
   "icons": [
     { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
     { "src": "icon-180.png", "sizes": "180x180", "type": "image/png", "purpose": "any" },
