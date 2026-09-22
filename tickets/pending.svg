@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 300" width="420" height="300">
+  <rect width="420" height="300" rx="20" fill="#FFF0F5"/>
+  <rect x="16" y="16" width="388" height="268" rx="14" fill="none" stroke="#FFB7CE" stroke-width="3" stroke-dasharray="10 8"/>
+  <g fill="#EC4E8C">
+    <path d="M210 108c-30-45-66-65-92-50-21 13-21 62 0 75 26 15 62-5 92-25z"/>
+    <path d="M210 108c30-45 66-65 92-50 21 13 21 62 0 75-26 15-62-5-92-25z"/>
+  </g>
+  <circle cx="210" cy="108" r="26" fill="#C4266A"/>
+  <circle cx="210" cy="108" r="11" fill="#FFF0F5"/>
+  <text x="210" y="192" text-anchor="middle" font-family="PingFang SC,Hiragino Sans GB,Microsoft YaHei,sans-serif"
+        font-size="21" font-weight="700" fill="#3A1F2B">票券还没放进来</text>
+  <text x="210" y="226" text-anchor="middle" font-family="PingFang SC,Hiragino Sans GB,Microsoft YaHei,sans-serif"
+        font-size="15" fill="#8B6675">把二维码截图发给 Claude</text>
+  <text x="210" y="250" text-anchor="middle" font-family="PingFang SC,Hiragino Sans GB,Microsoft YaHei,sans-serif"
+        font-size="15" fill="#8B6675">下次更新就会显示在这里</text>
+</svg>

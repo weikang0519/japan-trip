@@ -121,6 +121,26 @@ a{color:inherit;text-decoration:none}
   font-size:14.5px;font-weight:700;padding:10px 17px;border-radius:999px;background:var(--pink);color:#fff;
   min-height:40px;font-family:var(--sans);box-shadow:0 2px 7px rgba(236,78,140,.28)}
 .btn.tab{background:var(--chip);color:var(--pink-deep);box-shadow:none}
+.btn.tkt{background:var(--pink-deep);border:none;cursor:pointer}
+a.gomap,.nm.gomap{display:block;color:inherit}
+.nm.gomap::after{content:" 📍";font-size:.72em;opacity:.75;vertical-align:1px}
+.cnm.gomap::after{content:" 📍";font-size:.72em;opacity:.75}
+a.gomap:active{opacity:.6}
+a.gomap:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:6px}
+
+/* 票券灯箱 */
+.lb{position:fixed;inset:0;z-index:9000;background:rgba(40,18,29,.94);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  padding:20px calc(18px + env(safe-area-inset-left,0px));
+  padding-top:calc(20px + env(safe-area-inset-top,0px));
+  padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))}
+.lb[hidden]{display:none!important}
+.lb img{max-width:100%;max-height:72vh;border-radius:16px;background:#fff;object-fit:contain;
+  box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.lb .cap{color:#FFEAF3;font-size:15px;font-weight:700;text-align:center;font-family:var(--jp)}
+.lb .hint{color:#E7BACE;font-size:12.5px;text-align:center;max-width:32ch;line-height:1.5}
+.lb .close{background:#fff;color:#C4266A;border:none;border-radius:999px;padding:11px 26px;
+  font-size:15px;font-weight:700;font-family:var(--sans);cursor:pointer;min-height:44px}
 .btn:active{transform:scale(.96)}
 .btn:focus-visible{outline:2px solid var(--pink-deep);outline-offset:2px}
 
@@ -167,11 +187,24 @@ a{color:inherit;text-decoration:none}
 </div>
 <div class="wrap" id="pane"></div>
 
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="票券">
+  <div class="cap" id="lbcap"></div>
+  <img id="lbimg" alt="票券 / 二维码">
+  <div class="hint">扫码前把屏幕亮度调到最高。此图已离线保存，没有信号也能打开。</div>
+  <button class="close" id="lbclose" type="button">关闭</button>
+</div>
+
 <script src="leaflet.js"></script>
 <script>
 var W=["周日","周一","周二","周三","周四","周五","周六"];
 function g(n,a){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(n+" "+(a||""));}
 function tabelog(n){return "https://tabelog.com/rstLst/?sk="+encodeURIComponent(n);}
+/* 路线：从上一个地点出发，公共交通模式（Google 会顺带显示票价） */
+function dir(from,to){
+  var u="https://www.google.com/maps/dir/?api=1&travelmode=transit&destination="+encodeURIComponent(to);
+  if(from) u+="&origin="+encodeURIComponent(from);
+  return u;
+}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c];});}
 var BOW='<svg class="bow" viewBox="0 0 52 40" aria-hidden="true"><path d="M26 20c-6-9-13-13-18-10-4 3-4 12 0 15 5 3 12-1 18-5z" fill="var(--pink)"/><path d="M26 20c6-9 13-13 18-10 4 3 4 12 0 15-5 3-12-1-18-5z" fill="var(--pink)"/><circle cx="26" cy="20" r="5.5" fill="var(--pink-deep)"/></svg>';
 
@@ -296,7 +329,7 @@ var DAYS=[
  badges:[["ok","已订票"],["plain","全天"]],
  ev:[
   {t:"08:00",k:"move",n:"→ 环球城站",en:"JR 樱岛线",m:"大阪站出发约35分钟"},
-  {t:"09:00",n:"日本环球影城",en:"USJ",p:"usj",m:"门票已购",note:"一整天。其他什么都别安排。"},
+  {t:"09:00",n:"日本环球影城",ticket:"tickets/pending.svg",en:"USJ",p:"usj",m:"门票已购",note:"一整天。其他什么都别安排。"},
   {t:"20:00",n:"迟来的晚餐",en:"Late dinner",c:["rikimaru","dorajuu","hanadako","tanjirou"],
    note:"出来时会很累很晚。清单上这个点还在营业的就这几家。"}],
  call:{cls:"",h:"今晚就把行李收好",p:["明早 8:30 要出发赶去京都的车。行李在去环球影城之前收，不要指望回来再收。"]}},
@@ -310,7 +343,7 @@ var DAYS=[
   {t:"09:45",n:"京都四条乌丸希尔顿花园酒店",en:"寄存行李 · 入住 15:00",p:"hgikyoto",m:"五条乌丸町397 · +81-75-320-5111"},
   {t:"11:30",n:"午餐 — 咖喱饭",en:"Lunch · curry",c:["campanella"],m:"11:30 才开门，不是 11:00"},
   {t:"12:30",k:"move",n:"JR山阴本线 → 马堀站",en:"马堀站步行8分钟到小火车龟冈站",p:"kameoka",m:"门到门约1小时"},
-  {t:"13:30",n:"嵯峨野观光小火车",en:"龟冈 → 岚山",p:"torokkoara",m:"20分钟 · ¥880",
+  {t:"13:30",n:"嵯峨野观光小火车",ticket:"tickets/pending.svg",en:"龟冈 → 岚山",p:"torokkoara",m:"20分钟 · ¥880",
    note:"还没订。你想坐的 5号车（开放式「富贵号」）从来不接受预售——只能当天在龟冈站柜台排队，约 09:10 开卖，先到先得。13:00 才到，必然没了。1〜4号车 8月30日已经开放网上预订。"},
   {t:"14:00",n:"常寂光寺",en:"45分钟 · ¥500",p:"jojakko"},
   {t:"15:10",n:"竹林小径",en:"Bamboo Grove · 20分钟",p:"bamboo"},
@@ -324,7 +357,7 @@ var DAYS=[
 {d:"2026-10-01",t:"京都 — 和服",en:"和服 · 东山 · 锦市场",
  badges:[["ok","和服已约"],["warn","17:30 归还"]],
  ev:[
-  {t:"09:00",n:"mocomoco 和服租借",en:"约1小时",m:"归还 18:00 死线 — 目标 17:30"},
+  {t:"09:00",n:"mocomoco 和服租借",ticket:"tickets/pending.svg",en:"约1小时",m:"归还 18:00 死线 — 目标 17:30"},
   {t:"10:00",n:"清水寺 + 二年坂・三年坂",en:"2–3小时",p:"kiyomizu",
    note:"租和服就是为了这一段。尽量早上去，那条坡道才是照片本身。"},
   {t:"13:15",n:"八坂神社",en:"30分钟",p:"yasaka"},
@@ -365,7 +398,7 @@ var DAYS=[
   {t:"12:00",n:"午餐 — 炸猪排",en:"Lunch · tonkatsu",c:["tonkatsujp","maisen","butagumi"],
    note:"三家都在这一带。迈泉青山本店是地标；tonkatsu.jp 队伍快一些。"},
   {t:"14:00",n:"涩谷 十字路口",en:"Shibuya Scramble",p:"shibuya"},
-  {t:"17:40",n:"涩谷 SKY",en:"Shibuya Sky",p:"shibuya",m:"9/18 已在 KKday 抢到",
+  {t:"17:40",n:"涩谷 SKY",ticket:"tickets/pending.svg",en:"Shibuya Sky",p:"shibuya",m:"9/18 已在 KKday 抢到",
    note:"日落约 17:25，你这个场次正好落在蓝调时刻。这张票抢得很好。"},
   {t:"19:30",n:"晚餐 — 涩谷",en:"Dinner",c:["aburagumi","afuri","nagi","kiwami"]}],
  cut:[["Kikanbo 池袋","哪一天都塞不进去 — 删掉"]]},
@@ -388,7 +421,7 @@ var DAYS=[
  badges:[["ok","已订票"],["plain","全天"]],
  ev:[
   {t:"07:30",k:"move",n:"新桥 → 舞浜",en:"JR 京叶线",m:"约40分钟"},
-  {t:"09:00",n:"东京迪士尼乐园",en:"Tokyo Disneyland",p:"disney",m:"APP 已购票",
+  {t:"09:00",n:"东京迪士尼乐园",ticket:"tickets/pending.svg",en:"Tokyo Disneyland",p:"disney",m:"APP 已购票",
    note:"周一——已经是能选到的最好的一天了。一整天。"},
   {t:"21:30",n:"回新桥来一碗",en:"Back in Shimbashi",c:["hashigo","ohayo"],m:"周一 — はしご 开到 05:00"}],
  call:{cls:"warn",h:"今晚是最后的采购机会",p:["明天是筑地，然后直接去机场。银座和东京站清单上还没买到的东西，今晚是最后一次。"]}},
@@ -463,11 +496,14 @@ function payChips(r){
   return out;
 }
 
-function candCard(key,dow){
+function candCard(key,dow,from){
   var r=R[key]; if(!r) return "";
   var shut=(r.shut||[]).indexOf(dow)>=0;
+  var target=r.ja||r.cn;
   var h='<div class="cand'+(shut?" shut":"")+'">';
-  h+='<div class="cnm">'+esc(r.cn)+(r.en?'<span class="crom">'+esc(r.en)+'</span>':"")+'</div>';
+  var inner=esc(r.cn)+(r.en?'<span class="crom">'+esc(r.en)+'</span>':"");
+  h+= r.nolink ? '<div class="cnm">'+inner+'</div>'
+    : '<a class="cnm gomap" href="'+g(target,r.area)+'" target="_blank" rel="noopener">'+inner+'</a>';
   h+='<div class="chips">';
   if(shut) h+='<span class="chip shut">'+W[dow]+' 休息</span>';
   if(r.hrs) h+='<span class="chip">'+esc(r.hrs)+'</span>';
@@ -475,8 +511,8 @@ function candCard(key,dow){
   h+=payChips(r)+'</div>';
   if(r.note) h+='<div class="note">'+esc(r.note)+'</div>';
   if(!r.nolink){
-    h+='<div class="btns"><a class="btn" href="'+g(r.ja||r.cn,r.area)+'" target="_blank" rel="noopener">📍 导航</a>'+
-       '<a class="btn tab" href="'+tabelog(r.ja||r.cn)+'" target="_blank" rel="noopener">⭐ 查评分</a></div>';
+    h+='<div class="btns"><a class="btn" href="'+dir(from,target)+'" target="_blank" rel="noopener">🚇 路线</a>'+
+       '<a class="btn tab" href="'+tabelog(target)+'" target="_blank" rel="noopener">⭐ 查评分</a></div>';
   }
   return h+'</div>';
 }
@@ -519,16 +555,26 @@ function renderDay(i){
   if(d.badges) h+='<div class="badges">'+d.badges.map(function(b){
     return '<span class="badge '+b[0]+'">'+esc(b[1])+'</span>';}).join("")+'</div>';
   h+='<div class="tl">';
+  var prev=null;
   d.ev.forEach(function(e){
+    var pl=(e.p&&P[e.p])?P[e.p]:null;
     h+='<div class="row" data-k="'+(e.k||"")+'"><div class="rt">'+esc(e.t)+'</div>'+
        '<div class="rb" style="--dc:'+C[i]+'"><div class="card">';
-    h+='<div class="nm">'+esc(e.n)+'</div>';
+    h+= pl ? '<a class="nm gomap" href="'+g(pl[4],"")+'" target="_blank" rel="noopener">'+esc(e.n)+'</a>'
+           : '<div class="nm">'+esc(e.n)+'</div>';
     if(e.en) h+='<div class="en">'+esc(e.en)+'</div>';
     if(e.m) h+='<div class="meta">'+esc(e.m)+'</div>';
     if(e.note) h+='<div class="note">'+e.note+'</div>';
-    if(e.p&&P[e.p]) h+='<div class="btns"><a class="btn" href="'+g(P[e.p][4],"")+'" target="_blank" rel="noopener">📍 导航</a></div>';
-    if(e.c&&e.c.length) h+='<div class="cands">'+e.c.map(function(k){return candCard(k,dow);}).join("")+'</div>';
+    var bt="";
+    if(pl) bt+='<a class="btn" href="'+dir(prev,pl[4])+'" target="_blank" rel="noopener">🚇 路线</a>';
+    if(e.ticket) bt+='<button class="btn tkt" type="button" data-img="'+esc(e.ticket)+'" data-cap="'+esc(e.n)+'">🎫 票券</button>';
+    if(bt) h+='<div class="btns">'+bt+'</div>';
+    if(e.c&&e.c.length){
+      var from=pl?pl[4]:prev;
+      h+='<div class="cands">'+e.c.map(function(k){return candCard(k,dow,from);}).join("")+'</div>';
+    }
     h+='</div></div></div>';
+    if(pl) prev=pl[4];
   });
   h+='</div>';
   if(d.call) h+='<div class="call '+(d.call.cls||"")+'"><h3>'+esc(d.call.h)+'</h3>'+
@@ -546,6 +592,20 @@ function foot(){
    '<p>「导航」开 Google 地图（用日文店名搜索，日本当地才搜得准），「查评分」开 Tabelog 看营业时间、定休日和评分。地图上的粉点也可以直接点。</p>'+
    '<p>营业时间、休息日、价格来自你自己的笔记；新增的部分已于 2026-09-22 用 Tabelog 和店家官网核对。日本比上海快1小时。重要的当天一定再确认一次。</p></div>';
 }
+
+/* 票券灯箱 */
+var lb=document.getElementById("lb"), lbimg=document.getElementById("lbimg"), lbcap=document.getElementById("lbcap");
+function closeLb(){ lb.hidden=true; lbimg.removeAttribute("src"); }
+document.getElementById("lbclose").onclick=closeLb;
+lb.addEventListener("click",function(ev){ if(ev.target===lb) closeLb(); });
+document.addEventListener("keydown",function(ev){ if(ev.key==="Escape"&&!lb.hidden) closeLb(); });
+pane.addEventListener("click",function(ev){
+  var b=ev.target.closest&&ev.target.closest(".tkt");
+  if(!b) return;
+  lbcap.textContent=b.getAttribute("data-cap")||"票券";
+  lbimg.src=b.getAttribute("data-img");
+  lb.hidden=false;
+});
 
 show(-1);
 setTimeout(function(){ map.invalidateSize(); },150);
