@@ -231,6 +231,22 @@ a.gomap:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-ra
 .ovc .d{font-family:var(--mono);font-size:12.5px;color:var(--label3);text-align:right}
 .ovc:active{transform:scale(.985)}
 
+.fhead{padding:18px 16px 2px}
+.fhead h1{margin:0;font-family:var(--jp);font-size:25px;font-weight:700}
+.fhead .sub{color:var(--label2);font-size:14px;margin-top:4px;line-height:1.55}
+.farea{padding:20px 16px 0}
+.farea h2{margin:0;font-family:var(--jp);font-size:17.5px;font-weight:700;color:var(--label);
+  display:flex;align-items:center;gap:7px}
+.farea .fit{font-size:13px;color:var(--label2);margin:4px 0 11px;line-height:1.5}
+.fcard{background:var(--card);border-radius:16px;padding:13px 14px;margin-bottom:10px;box-shadow:var(--shadow)}
+.fcard .fn{font-family:var(--jp);font-size:16px;font-weight:700;line-height:1.3}
+.fcard .fe{color:var(--label2);font-size:12.5px;margin-top:2px}
+.fcard .fa{font-size:12.5px;color:var(--label3);margin-top:7px;line-height:1.5;
+  padding-left:17px;text-indent:-17px}
+.rv{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px;font-family:var(--sans)}
+.rv.need{background:var(--stop-bg);color:var(--stop-tx)}
+.rv.can{background:var(--ok-bg);color:var(--ok-tx)}
+.rv.queue{background:var(--chip);color:var(--chip-tx)}
 .foot{padding:28px 16px 0;color:var(--label3);font-size:12.5px;line-height:1.6}
 .foot p{margin:0 0 8px;max-width:60ch}
 .legend{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
@@ -266,6 +282,7 @@ a.gomap:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-ra
 <script>
 var W=["周日","周一","周二","周三","周四","周五","周六"];
 function g(n,a){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(n+" "+(a||""));}
+var g_=g;
 function tabelog(n){return "https://tabelog.com/rstLst/?sk="+encodeURIComponent(n);}
 /* 路线：从上一个地点出发，公共交通模式（Google 会顺带显示票价） */
 function dir(from,to){
@@ -440,27 +457,28 @@ var R={
  ichika:{cn:"大福 一果",en:"水果大福",ja:"大福 一果",area:"伏見稲荷 京都",hrs:"09:00–18:00"},
  chanoka:{cn:"茶の菓",en:"抹茶巧克力 · 清水寺",ja:"茶の菓",area:"清水 京都",hrs:"店铺营业时间",yen:570,note:"¥570/3片 · ¥1,520/8片 · ¥4,560/24片"},
 
- kurogin:{cn:"黑银",en:"Maguroya Kurogin · 金枪鱼刺身",ja:"黒銀",area:"築地 東京",hrs:"08:30–13:00",yen:5000,shut:[3],pay:"💳🍉"},
- marutoyo:{cn:"丸丰",en:"Marutoyo · 饭团",ja:"丸豊",area:"築地 東京",hrs:"市场营业时间"},
- unitora:{cn:"筑地海胆虎 中通",en:"Unitora Nakadori · 海胆饭",ja:"築地うに虎 中通り",area:"築地 東京",hrs:"市场营业时间"},
- itadori:{cn:"筑地 虎杖 别馆",en:"Itadori Bekkan · 海胆饭",ja:"築地 虎杖 別館",area:"築地 東京",hrs:"07:00–22:00"},
- maisen:{cn:"炸猪排 迈泉 青山本店",en:"Maisen Aoyama Honten",ja:"とんかつ まい泉 青山本店",area:"青山 東京",hrs:"11:00–21:00"},
- butagumi:{cn:"豚组",en:"Butagumi · 炸猪排",ja:"豚組",area:"西麻布 東京",hrs:"11:30–22:00"},
- tonkatsujp:{cn:"tonkatsu.jp 表参道",en:"炸猪排",ja:"tonkatsu.jp 表参道",area:"表参道 東京",hrs:"11:00–21:00"},
- nagi:{cn:"煮干拉面 凪",en:"Nagi · 小鱼干拉面",ja:"煮干ラーメン 凪",area:"東京",hrs:"11:00–深夜"},
- afuri:{cn:"AFURI 阿夫利",en:"柚子盐拉面 / 柚子蘸面",ja:"AFURI",area:"東京",hrs:"11:00–23:00",pay:"🍉"},
- aburagumi:{cn:"油组总本店",en:"Aburagumi · 油拌面",ja:"油組総本店",area:"渋谷 東京",hrs:"11:00–22:00",note:"银座 / 新宿 / 涩谷 均有店"},
- hashigo:{cn:"支那面 はしご 银座本店",en:"Hashigo · 担担面 · est. 1964",ja:"支那麺 はしご 銀座本店",area:"銀座6-3-5 東京",hrs:"周一–五 11:00–05:00 · 周六日 11:00–21:00",yen:1100,note:"银座站 C2 出口步行2分钟"},
- funabashiya:{cn:"船桥屋",en:"Funabashiya · 天妇罗",ja:"船橋屋 天ぷら",area:"東京",hrs:"11:00–21:00"},
- unafuji:{cn:"炭烧 鳗富士 有乐町店",en:"Unafuji Yurakucho · 鳗鱼饭",ja:"炭焼 うな富士 有楽町店",area:"有楽町 東京",hrs:"11:00–21:00",pay:"💳",resv:1},
- bincho:{cn:"鳗 备长 三越银座店",en:"Bincho · 鳗鱼饭",ja:"鰻 ひつまぶし備長 三越銀座店",area:"銀座三越 東京",hrs:"11:00–20:00",resv:1},
- kisoji:{cn:"木曾路",en:"Kisoji · 寿喜烧",ja:"木曽路",area:"東京",hrs:"11:00–22:00",pay:"💳"},
- kiwami:{cn:"和牛寿喜烧 极",en:"Wagyu Sukiyaki Kiwami",ja:"和牛すき焼き 極",area:"東京",hrs:"11:00–22:00",pay:"💳"},
- okada:{cn:"冈田谨制 红豆面包",en:"Okada · 东京站一番街",ja:"岡田謹製 あんぱん",area:"東京駅一番街",hrs:"售完为止"},
- pista:{cn:"Pista & Tokyo",en:"开心果夹心饼干",ja:"Pista & Tokyo",area:"東京駅一番街",hrs:"开店–售完 · 第二批 17:30"},
- naruto:{cn:"鸣门鲷烧本铺",en:"Naruto Taiyaki Honpo",ja:"鳴門鯛焼本舗",area:"東京",hrs:"10:00–21:00"},
- kimuraya:{cn:"银座木村家",en:"Kimuraya · 红豆面包 · est. 1869",ja:"銀座木村家",area:"銀座 東京",hrs:"10:00–20:00",pay:"💳"},
- ohayo:{cn:"欧哈优 焦糖布丁 / 牛奶布丁",en:"Ohayo brulee · 便利店",ja:"",area:"",hrs:"任何便利店都有",yen:250,nolink:1}
+ kurogin:{addr:"筑地场外市场内 · 中央区筑地4丁目",rv:"排队",cn:"黑银",en:"Maguroya Kurogin · 金枪鱼刺身",ja:"黒銀",area:"築地 東京",hrs:"08:30–13:00",yen:5000,shut:[3],pay:"💳🍉"},
+ marutoyo:{addr:"筑地场外市场内",rv:"排队",cn:"丸丰",en:"Marutoyo · 饭团",ja:"丸豊",area:"築地 東京",hrs:"市场营业时间"},
+ unitora:{addr:"筑地场外市场 中通り",rv:"排队",cn:"筑地海胆虎 中通",en:"Unitora Nakadori · 海胆饭",ja:"築地うに虎 中通り",area:"築地 東京",hrs:"市场营业时间"},
+ itadori:{addr:"筑地场外市场内",rv:"排队",cn:"筑地 虎杖 别馆",en:"Itadori Bekkan · 海胆饭",ja:"築地 虎杖 別館",area:"築地 東京",hrs:"07:00–22:00"},
+ maisen:{addr:"涩谷区神宫前4-8-5 · 表参道站步行3分",rv:"可预约",cn:"炸猪排 迈泉 青山本店",en:"Maisen Aoyama Honten",ja:"とんかつ まい泉 青山本店",area:"青山 東京",hrs:"11:00–21:00"},
+ butagumi:{addr:"港区西麻布",rv:"可预约",cn:"豚组",en:"Butagumi · 炸猪排",ja:"豚組",area:"西麻布 東京",hrs:"11:30–22:00"},
+ tonkatsujp:{addr:"表参道",rv:"排队",cn:"tonkatsu.jp 表参道",en:"炸猪排",ja:"tonkatsu.jp 表参道",area:"表参道 東京",hrs:"11:00–21:00"},
+ nagi:{addr:"新宿区歌舞伎町1-1-10 2F · 新宿黄金街内",rv:"排队",cn:"超煮干拉面 凪",en:"Nagi · 黄金街本馆 · 小鱼干",ja:"すごい煮干ラーメン凪 新宿ゴールデン街店本館",area:"新宿ゴールデン街 東京",hrs:"24 小时营业"},
+ afuri:{addr:"原宿 / 惠比寿 / 中目黑 等多家分店",rv:"排队",cn:"AFURI 阿夫利",en:"柚子盐拉面 / 柚子蘸面",ja:"AFURI",area:"東京",hrs:"11:00–23:00",pay:"🍉"},
+ aburagumi:{addr:"银座 / 新宿 / 涩谷 均有分店",rv:"排队",cn:"油组总本店",en:"Aburagumi · 油拌面",ja:"油組総本店",area:"渋谷 東京",hrs:"11:00–22:00",note:"银座 / 新宿 / 涩谷 均有店"},
+ hashigo:{addr:"中央区银座6-3-5 · 银座站C2步行2分",rv:"排队",cn:"支那面 はしご 银座本店",en:"Hashigo · 担担面 · est. 1964",ja:"支那麺 はしご 銀座本店",area:"銀座6-3-5 東京",hrs:"周一–五 11:00–05:00 · 周六日 11:00–21:00",yen:1100,note:"银座站 C2 出口步行2分钟"},
+ funabashiya:{addr:"新宿区新宿3-28-14 · 新宿三丁目",rv:"可预约",cn:"天妇罗 船桥屋 本店",en:"Funabashiya · 创业 1886",ja:"天ぷら 船橋屋 本店",area:"新宿三丁目 東京",hrs:"11:30–21:00 (L.O.20:30)"},
+ unafuji:{addr:"千代田区内幸町1-7-1 日比谷OKUROJI · 新桥站7出口步行3分",rv:"需预约",cn:"炭烧 鳗富士 有乐町店",en:"Unafuji · 日比谷OKUROJI · 鳗鱼饭",ja:"炭焼 うな富士 有楽町店",area:"日比谷OKUROJI 内幸町 東京",hrs:"11:00–22:00 (L.O.21:00)",yen:8000,pay:"💳",resv:1},
+ bincho:{addr:"银座三越 · 中央区银座4-6-16",rv:"可预约",cn:"鳗 备长 三越银座店",en:"Bincho · 鳗鱼饭",ja:"鰻 ひつまぶし備長 三越銀座店",area:"銀座三越 東京",hrs:"11:00–20:00",resv:1},
+ kisoji:{addr:"多家分店",rv:"可预约",cn:"木曾路",en:"Kisoji · 寿喜烧",ja:"木曽路",area:"東京",hrs:"11:00–22:00",pay:"💳"},
+ kiwami:{addr:"分店待确认 — 用导航查最近的",rv:"可预约",cn:"和牛寿喜烧 极",en:"Wagyu Sukiyaki Kiwami",ja:"和牛すき焼き 極",area:"東京",hrs:"11:00–22:00",pay:"💳"},
+ okada:{addr:"千代田区丸之内1-9-1 东京站一番街",rv:"排队",cn:"冈田谨制 红豆面包",en:"Okada · 东京站一番街",ja:"岡田謹製 あんぱん",area:"東京駅一番街",hrs:"售完为止"},
+ pista:{addr:"千代田区丸之内1-9-1 东京站一番街",rv:"排队",cn:"Pista & Tokyo",en:"开心果夹心饼干",ja:"Pista & Tokyo",area:"東京駅一番街",hrs:"开店–售完 · 第二批 17:30"},
+ naruto:{addr:"多家分店",rv:"排队",cn:"鸣门鲷烧本铺",en:"Naruto Taiyaki Honpo",ja:"鳴門鯛焼本舗",area:"東京",hrs:"10:00–21:00"},
+ kimuraya:{addr:"中央区银座4-5-7",rv:"排队",cn:"银座木村家",en:"Kimuraya · 红豆面包 · est. 1869",ja:"銀座木村家",area:"銀座 東京",hrs:"10:00–20:00",pay:"💳"},
+ kikanbo:{addr:"池袋",rv:"排队",cn:"鬼金棒 池袋",en:"Kikanbo · 麻辣味噌拉面",ja:"鬼金棒 池袋店",area:"池袋 東京",hrs:"11:00–22:00"},
+ ohayo:{addr:"任何便利店",rv:"",cn:"欧哈优 焦糖布丁 / 牛奶布丁",en:"Ohayo brulee · 便利店",ja:"",area:"",hrs:"任何便利店都有",yen:250,nolink:1}
 };
 
 /* 地点：lat, lng, 中文名, 英文/说明, 日文名（地图搜索用） */
@@ -501,6 +519,27 @@ var P={
 };
 
 var C=["#FF8FB1","#FF6FA5","#FFA9C9","#F06BA8","#FFB3D1","#E85D9B","#FF9EC4","#D96BA0","#FFC2DA"];
+
+var FOOD=[
+ {a:"筑地 · 场外市场",fit:"✅ D9 10/6 早上 — 周二营业，已排进去",
+  keys:["kurogin","unitora","itadori","marutoyo"]},
+ {a:"银座 · 有乐町 · 新桥",fit:"✅ 酒店就在新桥，走路可达 — D5 / D7 / D9 都顺路",
+  keys:["unafuji","bincho","hashigo","kimuraya","aburagumi"]},
+ {a:"东京站一番街",fit:"✅ D5 10/2 下午到东京当天顺路",
+  keys:["pista","okada"]},
+ {a:"表参道 · 青山",fit:"✅ D6 10/3 上午明治神宫之后",
+  keys:["maisen","tonkatsujp"]},
+ {a:"涩谷",fit:"✅ D6 10/3 涩谷SKY 前后",
+  keys:["afuri"]},
+ {a:"新宿",fit:"⚠️ 目前九天里没有一天去新宿 — 想吃就得专程，或者挤进 D6 涩谷日的晚上",
+  keys:["nagi","funabashiya"]},
+ {a:"西麻布",fit:"⚠️ 不在任何一天的路线上 — 要专程去",
+  keys:["butagumi"]},
+ {a:"池袋",fit:"❌ 完全不顺路，九天里进不去",
+  keys:["kikanbo"]},
+ {a:"多家分店 · 不挑地方",fit:"哪天都行，看到就吃",
+  keys:["naruto","kisoji","kiwami","ohayo"]}
+];
 
 var DAYS=[
 {d:"2026-09-28",t:"大阪 — 半天",en:"心斋桥 · 黑门 · 通天阁 · 一斗",
@@ -669,6 +708,7 @@ var layer=L.layerGroup().addTo(map);
 function drawMap(idx){
   layer.clearLayers();
   var pts=[],col=null;
+  if(idx===-2){ map.setView([35.6762,139.7649],11); return; }
   if(idx<0){
     DAYS.forEach(function(d,i){
       d.ev.forEach(function(e){ if(e.p&&P[e.p]) pts.push([P[e.p][0],P[e.p][1],C[i],P[e.p][2],P[e.p][4]]); });
@@ -696,11 +736,12 @@ function mkPill(label,i,color){
   var b=document.createElement("button");
   b.className="pill"; b.setAttribute("role","tab");
   b.setAttribute("aria-selected", i===-1?"true":"false");
-  b.innerHTML=(color?'<i style="background:'+color+'"></i>':"🎀 ")+esc(label);
+  b.innerHTML=(color?'<i style="background:'+color+'"></i>':(i===-2?"🍜 ":"🎀 "))+esc(label);
   b.onclick=function(){show(i);};
   pills.appendChild(b);
 }
 mkPill("总览",-1,null);
+mkPill("东京美食",-2,null);
 DAYS.forEach(function(d,i){
   var dt=new Date(d.d+"T00:00:00");
   mkPill("D"+(i+1)+" "+(dt.getMonth()+1)+"/"+dt.getDate(),i,C[i]);
@@ -737,9 +778,11 @@ function candCard(key,dow,from){
 }
 
 function show(idx){
-  [].forEach.call(pills.children,function(b,j){ b.setAttribute("aria-selected",(j-1)===idx?"true":"false"); });
+  [].forEach.call(pills.children,function(b,j){
+    var mine = (j===0) ? (idx===-1) : (j===1) ? (idx===-2) : ((j-2)===idx);
+    b.setAttribute("aria-selected", mine?"true":"false"); });
   drawMap(idx);
-  if(idx<0) renderOverview(); else renderDay(idx);
+  if(idx===-2) renderFood(); else if(idx<0) renderOverview(); else renderDay(idx);
   window.scrollTo(0,0);
 }
 
@@ -765,6 +808,40 @@ function renderOverview(){
   [].forEach.call(pane.querySelectorAll(".ovc"),function(b){
     b.onclick=function(){ show(parseInt(b.getAttribute("data-i"),10)); };
   });
+}
+
+function renderFood(){
+  var h='<div class="fhead"><h1>🍜 东京美食 · 按区域</h1>'+
+    '<div class="sub">你清单上所有东京的店，按区域分好。看「适合哪天」那一行就知道能塞进哪一天 —— 挑好了告诉我，我排进行程里。</div></div>';
+  FOOD.forEach(function(g){
+    h+='<div class="farea"><h2>📍 '+esc(g.a)+'</h2><div class="fit">'+esc(g.fit)+'</div>';
+    g.keys.forEach(function(k){
+      var r=R[k]; if(!r) return;
+      h+='<div class="fcard"><div class="fn">'+esc(r.cn)+'</div>';
+      if(r.en) h+='<div class="fe">'+esc(r.en)+'</div>';
+      h+='<div class="chips">';
+      if(r.hrs) h+='<span class="chip">'+esc(r.hrs)+'</span>';
+      if(r.yen) h+='<span class="chip yen">¥'+r.yen.toLocaleString()+'</span>';
+      h+=payChips(r);
+      if(r.rv==="需预约") h+='<span class="rv need">需预约</span>';
+      else if(r.rv==="可预约") h+='<span class="rv can">可预约</span>';
+      else if(r.rv==="排队") h+='<span class="rv queue">只能排队</span>';
+      h+='</div>';
+      if(r.addr) h+='<div class="fa">📍 '+esc(r.addr)+'</div>';
+      if(r.note) h+='<div class="note">'+esc(r.note)+'</div>';
+      if(!r.nolink) h+='<div class="btns">'+
+        '<a class="btn" href="'+g_(r.ja||r.cn,r.area)+'" target="_blank" rel="noopener">📍 导航</a>'+
+        '<a class="btn tab" href="'+tabelog(r.ja||r.cn)+'" target="_blank" rel="noopener">⭐ 查评分</a></div>';
+      h+='</div>';
+    });
+    h+='</div>';
+  });
+  h+='<div class="call"><h3>🎀 几个提醒</h3>'+
+     '<p><b>新宿完全没安排。</b>凪（24小时）和船桥屋（明治19年创业）都在新宿，但九天里没有一天去 —— 要么专程，要么挤进 10/3 涩谷那晚。</p>'+
+     '<p><b>鳗富士在日比谷OKUROJI</b>，新桥站7出口走3分钟，其实就在酒店旁边。营业到 22:00，不是你笔记写的 21:00。<b>它是唯一必须提前订的。</b></p>'+
+     '<p>「只能排队」= 不接受预约，早去或错峰。价格是人均大概，以店家当天为准。</p></div>';
+  h+=foot();
+  pane.innerHTML=h;
 }
 
 function renderDay(i){
