@@ -192,6 +192,10 @@ a.gomap:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-ra
 .lb-rows div:first-child{border-top:none}
 .lb-rows b{color:var(--label2);font-weight:600}
 .lb-rows span{color:var(--label);font-weight:600;font-family:var(--jp)}
+.tset{margin-bottom:16px}
+.twho{font-family:var(--jp);font-size:15px;font-weight:700;color:var(--pink-deep);
+  background:var(--chip);border-radius:999px;padding:6px 14px;display:inline-block;margin-bottom:9px}
+.tlab{font-size:12px;font-weight:700;color:var(--label2);margin:0 0 5px 2px}
 .lb-card img{width:100%;border-radius:14px;background:#fff;margin-bottom:14px;display:block}
 .lb-card .tnote{font-size:13px;color:var(--label2);line-height:1.6;margin:0}
 .lb-card .tnote b{color:var(--label)}
@@ -390,11 +394,27 @@ var TICKETS={
    link:"https://t.linktivity.io/issueticket/sagano-kanko/JDKAB4L-Aq_67MrV/ARS_SAGANO_KANKO-20260923-N6D6/-?lang=ZH",
    linkLabel:"打开电子车票",
    note:"⚠️ 乘车二维码<b>只在 9/30 当天</b>才会显示，而且打开链接需要网络。上车前先在有信号的地方打开。座位是开放式的富贵号 —— 你想要的那节车厢，订到了。"},
+ usj:{t:"日本环球影城",sub:"2026-09-29（周二）· 入场券 + Express Pass 8",
+   rows:[["入园日","2026-09-29 仅限当日"],["入场券","1日影城入场券 ¥9,900 / 人"],
+         ["快速通行","Express Pass 8 ~Minion & MineCart~"],
+         ["查询号码","入场券 USJ-P1X000000DQ1CO"],["快通号码","USJ-P1X000000D25R5"],["代理","KLOOK Travel"]],
+   sets:[
+     {who:"WK",items:[{l:"入场券",img:"tickets/u7f3a1c-studio-a.jpg"},{l:"Express Pass 8",img:"tickets/u7f3a1c-express-a.jpg"}]},
+     {who:"BBJH",items:[{l:"入场券",img:"tickets/u7f3a1c-studio-b.jpg"},{l:"Express Pass 8",img:"tickets/u7f3a1c-express-b.jpg"}]}
+   ],
+   note:"<b>每人拿自己那一张</b>，入园闸机逐张扫。券面注明「请自行打印后携带」—— 出发前最好各打印一份纸质备用，闸机对手机屏幕通常也认，但纸本不会没电。<br>Express Pass 官方也建议截图存本地：园区里信号差时网页可能打不开。这里已经离线存好了。<br>快通时段：11:00 鹰马飞行 / 12:00 小黄人 / 15:00 马力欧卡丁车 / 15:00 任天堂世界 / 15:30 耀西 / 16:00 矿车 · 另可二选一。"},
+ sky:{t:"涩谷 SKY",sub:"SHIBUYA SKY 展望台",
+   rows:[["日期","2026-10-04（周日）"],["入场时段","17:20–17:39"],["票价","¥3,400 / 大人 ×2"],["购票","Webket"]],
+   sets:[{who:"两张票",items:[{l:"第 1 张",img:"tickets/s9d4e22-sky-1of2.png"},{l:"第 2 张",img:"tickets/s9d4e22-sky-2of2.png"}]}],
+   note:"<b>⚠️ 票面日期是 10 月 4 日，不是 3 日 —— 行程已经按这个改过来了。</b>入场时段 17:20–17:39，必须在这19分钟内进闸。当天日落约 17:22，等于一进去就是蓝调时刻。"},
  kimono:{t:"MOCOMOCO 和服",sub:"清水寺店取 · 伏见稻荷店还",
    code:"261001397",codeLabel:"预约 ID",
    rows:[["取衣","2026-10-01 09:00"],["取衣店","MOCOMOCO 清水寺店"],["还衣店","MOCOMOCO 伏见稻荷店"],
          ["还衣时间","17:30"],["方案","男性着物プラン ¥4,400"],["预约人数","1 名"]],
    note:"<b>⚠️ 邮件上写的是「人数：1名」。</b>你们是两个人 —— 确认另一位是不是另有单独预约。现在问还来得及，到店才发现就麻烦了。"},
+ disney:{t:"东京迪士尼乐园",sub:"2026-10-05（周一）",
+   rows:[["入园日","2026-10-05"],["票券在哪","东京迪士尼官方 APP 里"]],
+   note:"票留在官方 APP，不放这里。<b>出发前确认 APP 已登录、票在「我的行程」里能打开</b> —— 园区里信号很差，现场才发现没登录会很难受。"},
  pending:{t:"票券还没放进来",sub:"",img:"tickets/pending.svg",
    note:"把二维码截图发给 Claude，下次更新就会显示在这里。"}
 };
@@ -569,7 +589,7 @@ var DAYS=[
  badges:[["ok","已订票"],["plain","全天"],["warn","闭园时间待确认"]],
  ev:[
   {t:"08:00",k:"move",n:"酒店 → 环球城站",en:"地铁 + JR ゆめ咲线",p:"osakastn",m:"经大阪站换乘，全程约45分钟"},
-  {t:"09:00",n:"日本环球影城",tid:"pending",en:"USJ",p:"usj",m:"门票已购",
+  {t:"09:00",n:"日本环球影城",tid:"usj",en:"USJ",p:"usj",m:"门票已购",
    note:"一整天。其他什么都别安排。"},
   {t:"20:30",k:"move",n:"环球城站 → 大阪站（梅田）",en:"回程",p:"osakastn",
    m:"16:00–21:00 有直达车 · 约13分钟 · ¥190",
@@ -647,39 +667,41 @@ var DAYS=[
    note:"周五，はしご 开到凌晨 05:00，离酒店步行十分钟。周六周日只到 21:00。"}],
  call:{cls:"warn",h:"把のぞみ订了",p:["东京这几天正好撞上中国国庆黄金周。10月2日买自由席是赌博——订指定席，而且要 <b>E 席</b>。"]}},
 
-{d:"2026-10-03",t:"东京 西线",en:"明治神宫 · 表参道 · 涩谷",
- badges:[["ok","涩谷SKY 17:40"],["warn","周六 + 黄金周"]],
- ev:[
-  {t:"08:30",n:"明治神宫",en:"Meiji Jingu",p:"meiji",m:"日出开门 · 免费",
-   note:"今天早起不是可选项。黄金周的周六，全天只有这一个小时是空的。"},
-  {t:"10:30",n:"表参道・原宿",en:"Omotesando & Harajuku",p:"omote"},
-  {t:"12:00",n:"午餐 — 炸猪排",en:"Lunch · tonkatsu",c:["tonkatsujp","maisen","butagumi"],
-   note:"三家都在这一带。迈泉青山本店是地标；tonkatsu.jp 队伍快一些。"},
-  {t:"14:00",n:"涩谷 十字路口",en:"Shibuya Scramble",p:"shibuya"},
-  {t:"17:40",n:"涩谷 SKY",tid:"pending",en:"Shibuya Sky",p:"shibuya",m:"9/18 已在 KKday 抢到",
-   note:"日落约 17:25，你这个场次正好落在蓝调时刻。这张票抢得很好。"},
-  {t:"19:30",n:"晚餐 — 涩谷",en:"Dinner",c:["aburagumi","afuri","nagi","kiwami"]}],
- cut:[["Kikanbo 池袋","哪一天都塞不进去 — 删掉"]]},
-
-{d:"2026-10-04",t:"东京 东线",en:"浅草 · 晴空塔 · 银座",
- badges:[["stop","筑地 周日休市"],["plain","自由日"]],
+{d:"2026-10-03",t:"东京 东线",en:"浅草 · 晴空塔 · 银座",
+ badges:[["plain","自由日"],["warn","周六 + 黄金周"]],
  ev:[
   {t:"08:30",n:"浅草寺",en:"Senso-ji · 仲见世",p:"sensoji",m:"境内24小时 · 本堂 06:00",
-   note:"10:00 之前仲见世还走得动，之后就不行了——何况是黄金周的周日。"},
+   note:"10:00 之前仲见世还走得动，之后就不行了 —— 何况是黄金周的周六。"},
   {t:"11:30",n:"东京晴空塔",en:"Tokyo Skytree",p:"skytree",m:"步行约20分钟 或 坐2站"},
-  {t:"12:30",n:"午餐",en:"晴空町 或 浅草",c:["naruto","funabashiya","nagi"]},
-  {t:"15:00",n:"银座 步行者天国",en:"Pedestrian paradise",p:"ginza",m:"周日下午，主街禁车开放步行",
-   note:"只有周日才有，而你正好有一个周日。银座能用走的，是完全不同的地方。",
+  {t:"12:30",n:"午餐",en:"晴空町 或 浅草",c:["naruto","funabashiya"]},
+  {t:"15:00",n:"银座 步行者天国",en:"Pedestrian paradise",p:"ginza",m:"周六・周日・节假日，中午12点起中央通禁车",
+   note:"周六也有，不是只有周日 —— 这一天换过来之后依然赶得上。银座能用走的，是完全不同的地方。",
    c:["kimuraya","ohayo"]},
   {t:"18:30",n:"晚餐 — 寿喜烧",en:"Dinner",c:["kisoji","kiwami","hashigo","bincho"],
-   note:"周日 はしご 只开到 21:00，不是 05:00。"}],
- call:{cls:"risk",h:"今天筑地休市",p:["场外市场每个周日都关。不是早起就能解决的问题。它挪到了10月6日——那天是周二，看最后一天。"]}},
+   note:"周六 はしご 只开到 21:00，不是 05:00。"}],
+ call:{cls:"good",h:"这天和 10/4 对调了",p:["涩谷SKY 的票面日期是 <b>10 月 4 日</b>，不是 3 日。所以西线（明治神宫・表参道・涩谷）整个挪到了 4 号，东线搬到今天。",
+  "顺带一个好处：<b>筑地场外市场周六是开的</b>（只有周日休市）。如果想早上先去筑地再来浅草，今天可以 —— 那样 10/6 回程日的早上就能睡个懒觉。要改告诉我。"]}},
+
+{d:"2026-10-04",t:"东京 西线",en:"明治神宫 · 表参道 · 涩谷SKY",
+ badges:[["ok","涩谷SKY 17:20 已购"],["stop","筑地 周日休市"],["warn","周日 + 黄金周"]],
+ ev:[
+  {t:"08:30",n:"明治神宫",en:"Meiji Jingu",p:"meiji",m:"日出开门 · 免费",
+   note:"周日的原宿比周六更挤，早起不是可选项。全天只有这一个小时是空的。"},
+  {t:"10:30",n:"表参道・原宿",en:"Omotesando & Harajuku",p:"omote"},
+  {t:"12:00",n:"午餐 — 炸猪排",en:"Lunch · tonkatsu",c:["tonkatsujp","maisen","butagumi"],
+   note:"三家都在这一带。迈泉青山本店营业到 22:00，表参道站步行3分钟。"},
+  {t:"14:00",n:"涩谷 十字路口",en:"Shibuya Scramble",p:"shibuya"},
+  {t:"17:20",n:"涩谷 SKY",tid:"sky",en:"Shibuya Sky · 入场 17:20–17:39",p:"shibuya",m:"¥3,400/人 · Webket · 已购",
+   note:"<b>必须在 17:20–17:39 这19分钟内进闸。</b>10月4日东京日落约 17:22 —— 一进去就是蓝调时刻，票抢得很好。"},
+  {t:"19:30",n:"晚餐 — 涩谷",en:"Dinner",c:["aburagumi","afuri","kiwami"],
+   note:"想去新宿吃凪（24小时）或船桥屋的话，今晚是唯一合理的时机 —— 涩谷坐山手线几分钟就到。"}],
+ cut:[["Kikanbo 池袋","哪一天都塞不进去 — 删掉"]]},
 
 {d:"2026-10-05",t:"迪士尼乐园",en:"Tokyo Disneyland",
  badges:[["ok","已订票"],["plain","全天"]],
  ev:[
   {t:"07:30",k:"move",n:"新桥 → 舞浜",en:"JR 京叶线",m:"约40分钟"},
-  {t:"09:00",n:"东京迪士尼乐园",tid:"pending",en:"Tokyo Disneyland",p:"disney",m:"APP 已购票",
+  {t:"09:00",n:"东京迪士尼乐园",tid:"disney",en:"Tokyo Disneyland",p:"disney",m:"APP 已购票",
    note:"周一——已经是能选到的最好的一天了。一整天。"},
   {t:"21:30",n:"回新桥来一碗",en:"Back in Shimbashi",c:["hashigo","ohayo"],m:"周一 — はしご 开到 05:00"}],
  call:{cls:"warn",h:"今晚是最后的采购机会",p:["明天是筑地，然后直接去机场。银座和东京站清单上还没买到的东西，今晚是最后一次。"]}},
@@ -962,6 +984,13 @@ function openTicket(id){
   if(k.code) h+='<div class="lb-code"><div class="cl">'+esc(k.codeLabel||"预约码")+'</div>'+
     '<div class="cv">'+esc(k.code)+'</div></div>';
   if(k.img) h+='<img src="'+esc(k.img)+'" alt="票券">';
+  if(k.sets) k.sets.forEach(function(st){
+    h+='<div class="tset"><div class="twho">'+esc(st.who)+'</div>';
+    st.items.forEach(function(it){
+      h+='<div class="tlab">'+esc(it.l)+'</div><img src="'+esc(it.img)+'" alt="'+esc(st.who+" "+it.l)+'">';
+    });
+    h+='</div>';
+  });
   if(k.rows&&k.rows.length) h+='<div class="lb-rows">'+k.rows.map(function(r){
     return '<div><b>'+esc(r[0])+'</b><span>'+esc(r[1])+'</span></div>';}).join("")+'</div>';
   if(k.link) h+='<a class="lb-link" href="'+esc(k.link)+'" target="_blank" rel="noopener">'+
