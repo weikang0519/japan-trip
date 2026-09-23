@@ -3,7 +3,7 @@
    when online, and still works from cache when there is no signal.
    Static assets and map tiles stay cache-first: they rarely change and are
    what make the app usable underground. */
-var CACHE = "kansai-kanto-v14";
+var CACHE = "kansai-kanto-v16";
 var TILES = "kansai-kanto-tiles-v1";
 var ASSETS = ["./", "./index.html", "./leaflet.js", "./leaflet.css",
               "./manifest.webmanifest", "./icon.svg", "./icon-180.png",
@@ -39,7 +39,7 @@ self.addEventListener("fetch", function (e) {
   var url = new URL(req.url);
 
   /* Map tiles: keep whatever has been viewed, capped so it can't grow forever. */
-  if (url.hostname.indexOf("tile.openstreetmap.org") >= 0) {
+  if (url.hostname.indexOf("cyberjapandata.gsi.go.jp") >= 0 || url.hostname.indexOf("arcgisonline.com") >= 0) {
     e.respondWith(
       caches.open(TILES).then(function (c) {
         return c.match(req).then(function (hit) {

@@ -521,21 +521,21 @@ var P={
 var C=["#FF8FB1","#FF6FA5","#FFA9C9","#F06BA8","#FFB3D1","#E85D9B","#FF9EC4","#D96BA0","#FFC2DA"];
 
 var FOOD=[
- {a:"筑地 · 场外市场",fit:"✅ D9 10/6 早上 — 周二营业，已排进去",
+ {ll:[35.6654,139.7707],a:"筑地 · 场外市场",fit:"✅ D9 10/6 早上 — 周二营业，已排进去",
   keys:["kurogin","unitora","itadori","marutoyo"]},
- {a:"银座 · 有乐町 · 新桥",fit:"✅ 酒店就在新桥，走路可达 — D5 / D7 / D9 都顺路",
+ {ll:[35.6690,139.7610],a:"银座 · 有乐町 · 新桥",fit:"✅ 酒店就在新桥，走路可达 — D5 / D7 / D9 都顺路",
   keys:["unafuji","bincho","hashigo","kimuraya","aburagumi"]},
- {a:"东京站一番街",fit:"✅ D5 10/2 下午到东京当天顺路",
+ {ll:[35.6812,139.7671],a:"东京站一番街",fit:"✅ D5 10/2 下午到东京当天顺路",
   keys:["pista","okada"]},
- {a:"表参道 · 青山",fit:"✅ D6 10/3 上午明治神宫之后",
+ {ll:[35.6654,139.7126],a:"表参道 · 青山",fit:"✅ D6 10/3 上午明治神宫之后",
   keys:["maisen","tonkatsujp"]},
- {a:"涩谷",fit:"✅ D6 10/3 涩谷SKY 前后",
+ {ll:[35.6580,139.7016],a:"涩谷",fit:"✅ D6 10/3 涩谷SKY 前后",
   keys:["afuri"]},
- {a:"新宿",fit:"⚠️ 目前九天里没有一天去新宿 — 想吃就得专程，或者挤进 D6 涩谷日的晚上",
+ {ll:[35.6940,139.7047],a:"新宿",fit:"⚠️ 目前九天里没有一天去新宿 — 想吃就得专程，或者挤进 D6 涩谷日的晚上",
   keys:["nagi","funabashiya"]},
- {a:"西麻布",fit:"⚠️ 不在任何一天的路线上 — 要专程去",
+ {ll:[35.6588,139.7222],a:"西麻布",fit:"⚠️ 不在任何一天的路线上 — 要专程去",
   keys:["butagumi"]},
- {a:"池袋",fit:"❌ 完全不顺路，九天里进不去",
+ {ll:[35.7295,139.7109],a:"池袋",fit:"❌ 完全不顺路，九天里进不去",
   keys:["kikanbo"]},
  {a:"多家分店 · 不挑地方",fit:"哪天都行，看到就吃",
   keys:["naruto","kisoji","kiwami","ohayo"]}
@@ -701,14 +701,48 @@ var DAYS=[
 ];
 
 var map=L.map("map",{zoomControl:false,attributionControl:false});
-L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18,minZoom:5,crossOrigin:true}).addTo(map);
-L.control.attribution({position:"bottomright",prefix:false}).addAttribution("&copy; OpenStreetMap").addTo(map);
+/* 底图都不需要 API key：
+   浅色＝日本国土地理院「淡色地图」，日本境内细节最好，标注是日文；
+   深色＝Esri Dark Gray Canvas。CARTO 现在要 key 了，用不了。 */
+var TILE_L="https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png";
+var TILE_D="https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}";
+function wantDark(){
+  var t=document.documentElement.getAttribute("data-theme");
+  if(t==="dark") return true;
+  if(t==="light") return false;
+  return !!(window.matchMedia&&matchMedia("(prefers-color-scheme:dark)").matches);
+}
+var tiles=L.tileLayer(wantDark()?TILE_D:TILE_L,
+  {maxZoom:18,minZoom:5,crossOrigin:true}).addTo(map);
+if(window.matchMedia){
+  try{ matchMedia("(prefers-color-scheme:dark)").addEventListener("change",function(){
+    tiles.setUrl(wantDark()?TILE_D:TILE_L);
+  }); }catch(e){}
+}
+L.control.attribution({position:"bottomright",prefix:false})
+  .addAttribution("国土地理院 / Esri").addTo(map);
 var layer=L.layerGroup().addTo(map);
 
 function drawMap(idx){
   layer.clearLayers();
   var pts=[],col=null;
-  if(idx===-2){ map.setView([35.6762,139.7649],11); return; }
+  if(idx===-2){
+    var fp=[];
+    FOOD.forEach(function(gr,gi){
+      if(!gr.ll) return;
+      var bad=gr.fit.indexOf("⚠️")===0||gr.fit.indexOf("❌")===0;
+      var m=L.circleMarker(gr.ll,{radius:10,color:"#fff",weight:3,
+        fillColor:bad?"#B993A4":"#EC4E8C",fillOpacity:1}).addTo(layer);
+      m.bindTooltip(gr.a+" · "+gr.keys.length+"家",{direction:"top",offset:[0,-9]});
+      m.on("click",function(){
+        var el=document.querySelectorAll(".farea")[gi];
+        if(el) el.scrollIntoView({behavior:"smooth",block:"start"});
+      });
+      fp.push(gr.ll);
+    });
+    if(fp.length) map.fitBounds(L.latLngBounds(fp),{padding:[38,38],maxZoom:13});
+    return;
+  }
   if(idx<0){
     DAYS.forEach(function(d,i){
       d.ev.forEach(function(e){ if(e.p&&P[e.p]) pts.push([P[e.p][0],P[e.p][1],C[i],P[e.p][2],P[e.p][4]]); });
@@ -812,7 +846,7 @@ function renderOverview(){
 
 function renderFood(){
   var h='<div class="fhead"><h1>🍜 东京美食 · 按区域</h1>'+
-    '<div class="sub">你清单上所有东京的店，按区域分好。看「适合哪天」那一行就知道能塞进哪一天 —— 挑好了告诉我，我排进行程里。</div></div>';
+    '<div class="sub">你清单上所有东京的店，按区域分好。看「适合哪天」那一行就知道能塞进哪一天 —— 挑好了告诉我，我排进行程里。<br><b>地图上的粉点＝各个区域</b>，点一下跳到那一段；灰点是不顺路的区域。</div></div>';
   FOOD.forEach(function(g){
     h+='<div class="farea"><h2>📍 '+esc(g.a)+'</h2><div class="fit">'+esc(g.fit)+'</div>';
     g.keys.forEach(function(k){
