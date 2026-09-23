@@ -178,10 +178,25 @@ a.gomap:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-ra
   padding-top:calc(20px + env(safe-area-inset-top,0px));
   padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))}
 .lb[hidden]{display:none!important}
-.lb img{max-width:100%;max-height:72vh;border-radius:16px;background:#fff;object-fit:contain;
-  box-shadow:0 8px 30px rgba(0,0,0,.4)}
-.lb .cap{color:#FFEAF3;font-size:15px;font-weight:700;text-align:center;font-family:var(--jp)}
-.lb .hint{color:#E7BACE;font-size:12.5px;text-align:center;max-width:32ch;line-height:1.5}
+.lb-card{background:var(--bg);border-radius:20px;padding:20px 18px;width:100%;max-width:400px;
+  max-height:74vh;overflow-y:auto;box-shadow:0 8px 34px rgba(0,0,0,.4)}
+.lb-card h4{margin:0;font-family:var(--jp);font-size:19px;font-weight:700;color:var(--label);text-align:center}
+.lb-card .sub{margin:3px 0 0;font-size:13px;color:var(--label2);text-align:center}
+.lb-code{margin:16px 0;background:var(--card);border:2px dashed var(--pink);border-radius:14px;padding:14px;text-align:center}
+.lb-code .cl{font-size:11.5px;font-weight:700;color:var(--label2);letter-spacing:.08em}
+.lb-code .cv{font-family:var(--mono);font-size:27px;font-weight:700;color:var(--pink-deep);
+  letter-spacing:.06em;margin-top:5px;word-break:break-all;-webkit-user-select:all;user-select:all}
+.lb-rows{background:var(--card);border-radius:14px;overflow:hidden;margin-bottom:14px}
+.lb-rows div{display:grid;grid-template-columns:78px 1fr;gap:10px;padding:9px 13px;
+  border-top:1px solid var(--sep2);font-size:13.5px}
+.lb-rows div:first-child{border-top:none}
+.lb-rows b{color:var(--label2);font-weight:600}
+.lb-rows span{color:var(--label);font-weight:600;font-family:var(--jp)}
+.lb-card img{width:100%;border-radius:14px;background:#fff;margin-bottom:14px;display:block}
+.lb-card .tnote{font-size:13px;color:var(--label2);line-height:1.6;margin:0}
+.lb-card .tnote b{color:var(--label)}
+.lb-link{display:block;text-align:center;background:var(--pink);color:#fff;border-radius:999px;
+  padding:13px;font-weight:700;font-size:15px;margin-bottom:13px;min-height:46px}
 .lb .close{background:#fff;color:#C4266A;border:none;border-radius:999px;padding:11px 26px;
   font-size:15px;font-weight:700;font-family:var(--sans);cursor:pointer;min-height:44px}
 .btn:active{transform:scale(.96)}
@@ -243,9 +258,7 @@ a.gomap:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-ra
 </div>
 
 <div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="票券">
-  <div class="cap" id="lbcap"></div>
-  <img id="lbimg" alt="票券 / 二维码">
-  <div class="hint">扫码前把屏幕亮度调到最高。此图已离线保存，没有信号也能打开。</div>
+  <div class="lb-card" id="lbcard"></div>
   <button class="close" id="lbclose" type="button">关闭</button>
 </div>
 
@@ -346,6 +359,23 @@ var LEG={
    {m:"train",l:"都营浅草线 · 京急直通",d:"新桥 → 羽田第3航站楼 · <b>不用换车</b>",t:"~25min",f:510,fn:"IC ¥505 · 22–29分钟",rec:1}]
 };
 var MODE={walk:["🚶","步行"],metro:["🚇","地铁"],train:["🚆","电车"],shink:["🚄","新干线"],taxi:["🚕","出租车"],bus:["🚌","巴士"]};
+
+/* ---------- 票券 ----------
+   code = 离线可用的预约码；link = 需要网络的电子票；img = 截图 */
+var TICKETS={
+ itto:{t:"板前烧肉 一斗",sub:"东心斋桥店本馆 · 美团 × Tabelog",
+   code:"QYZLKM47NX",codeLabel:"预约码",
+   rows:[["预约时间","2026-09-28 18:30"],["人数","2 人"],["地址","中央区东心斋桥 1-16-26"]],
+   note:"到店报这个预约码就行，不需要网络。"},
+ sagano:{t:"嵯峨野观光小火车",sub:"嵯峨野12号 · 龟冈 → 岚山",
+   rows:[["乘车日期","2026-09-30"],["座位","富贵 5号车厢 · 5A / 5B"],
+         ["出发","小火车龟冈 14:30"],["到达","小火车岚山 14:50"],["订单号","I-260923-1356527"]],
+   link:"https://t.linktivity.io/issueticket/sagano-kanko/JDKAB4L-Aq_67MrV/ARS_SAGANO_KANKO-20260923-N6D6/-?lang=ZH",
+   linkLabel:"打开电子车票",
+   note:"⚠️ 乘车二维码<b>只在 9/30 当天</b>才会显示，而且打开链接需要网络。上车前先在有信号的地方打开。座位是开放式的富贵号 —— 你想要的那节车厢，订到了。"},
+ pending:{t:"票券还没放进来",sub:"",img:"tickets/pending.svg",
+   note:"把二维码截图发给 Claude，下次更新就会显示在这里。"}
+};
 
 function haversine(a,b){
   var R=6371,dLat=(b[0]-a[0])*Math.PI/180,dLon=(b[1]-a[1])*Math.PI/180;
@@ -481,8 +511,8 @@ var DAYS=[
    note:"你把晚餐挪到 18:30 之后，这里才排得进来 —— 我之前删掉它是因为原本 17:00 就要吃饭。不过 18:00 收市，很多摊 17:30 就开始收，别指望逛很久。"},
   {t:"17:45",n:"通天阁",en:"Tsutenkaku",p:"tsutenkaku",m:"09:00–21:45 · 拍照机位在 Spa World 前",
    note:"到一斗要留 15 分钟车程，所以这里实际只有约 30 分钟 —— 够拍照，不够上塔排队。"},
-  {t:"18:30",n:"板前烧肉 一斗",en:"Itamae Yakiniku Itto · 东心斋桥本馆",c:["itto"],
-   m:"已预约 ✅",note:"今晚的锚点。迟到会很麻烦，从通天阁 18:10 前一定要动身。"},
+  {t:"18:30",n:"板前烧肉 一斗",tid:"itto",en:"Itamae Yakiniku Itto · 东心斋桥本馆",c:["itto"],
+   m:"已预约 ✅ · 预约码 QYZLKM47NX",note:"今晚的锚点。迟到会很麻烦，从通天阁 18:10 前一定要动身。"},
   {t:"19:30",n:"心斋桥 + 道顿堀 夜逛",en:"walk walk",p:"doton"},
   {t:"—",n:"宵夜 / 备选",en:"还吃得下的话",c:["kajitsu","gorichan","dorajuu"]}],
  call:{cls:"good",h:"这一版比我那版好",p:["把一斗挪到 18:30 之后，黑门市场和通天阁就都塞得进来了 —— 我之前删掉它们，是因为原本 17:00 就要吃饭。<b>现在不冲突了。</b>",
@@ -495,7 +525,7 @@ var DAYS=[
  badges:[["ok","已订票"],["plain","全天"],["warn","闭园时间待确认"]],
  ev:[
   {t:"08:00",k:"move",n:"酒店 → 环球城站",en:"地铁 + JR ゆめ咲线",p:"osakastn",m:"经大阪站换乘，全程约45分钟"},
-  {t:"09:00",n:"日本环球影城",ticket:"tickets/pending.svg",en:"USJ",p:"usj",m:"门票已购",
+  {t:"09:00",n:"日本环球影城",tid:"pending",en:"USJ",p:"usj",m:"门票已购",
    note:"一整天。其他什么都别安排。"},
   {t:"20:30",k:"move",n:"环球城站 → 大阪站（梅田）",en:"回程",p:"osakastn",
    m:"16:00–21:00 有直达车 · 约13分钟 · ¥190",
@@ -507,7 +537,7 @@ var DAYS=[
  cut:[["梅田空中庭园","闭园后才到梅田，展望台最后入场通常 22:30，时间太紧且看不到夕阳"]]},
 
 {d:"2026-09-30",t:"大阪 → 京都 · 岚山",en:"移动日，下午岚山",
- badges:[["stop","小火车 未预约"],["ok","广重 已预约"],["plain","退房 11:00"]],
+ badges:[["ok","小火车 已订 · 5号车"],["ok","广重 已预约"],["plain","退房 11:00"]],
  ev:[
   {t:"07:30",n:"退房出发",en:"Check out",p:"dtosaka",m:"退房 11:00 前，但今天 7:30 就走"},
   {t:"07:40",n:"大阪城公园",en:"Osaka Castle Park",p:"castle",m:"步行2分钟 · 24小时 · 免费 · 停留20分钟",
@@ -519,8 +549,8 @@ var DAYS=[
   {t:"11:30",n:"午餐 — 咖喱饭",en:"Lunch · curry · 无需预约",c:["campanella"],m:"11:30–13:00 · 整整90分钟",
    note:"你把小火车推到 14:30 之后，这顿就不赶了 —— 之前只剩45分钟。现点现做的咖喱，现在有时间好好吃。"},
   {t:"13:00",k:"move",n:"JR山阴本线 → 马堀站",en:"马堀站步行8分钟到小火车龟冈站",p:"kameoka",m:"约15分钟一趟 · 门到门约1小时"},
-  {t:"14:30",n:"嵯峨野观光小火车",ticket:"tickets/pending.svg",en:"龟冈 → 岚山 · 双数 AD 座位, 5号车厢",p:"torokkoara",m:"20分钟 · ¥880 · 14:00 到龟冈站",
-   note:"改到 14:30 之后，衔接从「卡点」变成「有30分钟余量」。但票还是没订：5号车（开放式富贵号）不接受预售，只能当天龟冈站 09:10 起排队先到先得 —— 14:00 才到，5号车基本没了。<b>1〜4号车现在还能网上订。</b>"},
+  {t:"14:30",n:"嵯峨野观光小火车",tid:"sagano",en:"嵯峨野12号 · 富贵5号车厢 5A/5B",p:"torokkoara",m:"14:50 到岚山 · ¥880 · 14:00 到龟冈站",
+   note:"<b>已订到，而且就是 5号车。</b>富贵号 5A / 5B 两个座位，嵯峨野12号。我之前说 5号车不能预售 —— 那是官网自己的规则，Linktivity 这类渠道照卖。是我说错了。<br>二维码只在 9/30 当天显示，点「票券」里的链接打开，需要网络。"},
   {t:"15:00",n:"常寂光寺",en:"45分钟 · ¥500",p:"jojakko"},
   {t:"15:50",n:"御发神社",en:"Mikami Shrine · 15分钟",p:"mikami",m:"日本唯一供奉头发之神的神社"},
   {t:"16:10",n:"竹林小径",en:"Bamboo Grove · 20分钟",p:"bamboo"},
@@ -536,7 +566,7 @@ var DAYS=[
  badges:[["ok","和服已约"],["warn","17:30 归还"]],
  ev:[
   {t:"08:30",k:"move",n:"酒店出发",en:"公交约20分钟",p:"hgikyoto"},
-  {t:"09:00",n:"mocomoco 和服租借",ticket:"tickets/pending.svg",en:"约1小时",m:"归还 18:00 死线 — 目标 17:30"},
+  {t:"09:00",n:"mocomoco 和服租借",tid:"pending",en:"约1小时",m:"归还 18:00 死线 — 目标 17:30"},
   {t:"10:00",n:"清水寺 + 二年坂・三年坂",en:"2–3小时",p:"kiyomizu",
    note:"租和服就是为了这一段。尽量早上去，那条坡道才是照片本身。"},
   {t:"13:15",n:"八坂神社",en:"30分钟",p:"yasaka"},
@@ -581,7 +611,7 @@ var DAYS=[
   {t:"12:00",n:"午餐 — 炸猪排",en:"Lunch · tonkatsu",c:["tonkatsujp","maisen","butagumi"],
    note:"三家都在这一带。迈泉青山本店是地标；tonkatsu.jp 队伍快一些。"},
   {t:"14:00",n:"涩谷 十字路口",en:"Shibuya Scramble",p:"shibuya"},
-  {t:"17:40",n:"涩谷 SKY",ticket:"tickets/pending.svg",en:"Shibuya Sky",p:"shibuya",m:"9/18 已在 KKday 抢到",
+  {t:"17:40",n:"涩谷 SKY",tid:"pending",en:"Shibuya Sky",p:"shibuya",m:"9/18 已在 KKday 抢到",
    note:"日落约 17:25，你这个场次正好落在蓝调时刻。这张票抢得很好。"},
   {t:"19:30",n:"晚餐 — 涩谷",en:"Dinner",c:["aburagumi","afuri","nagi","kiwami"]}],
  cut:[["Kikanbo 池袋","哪一天都塞不进去 — 删掉"]]},
@@ -604,7 +634,7 @@ var DAYS=[
  badges:[["ok","已订票"],["plain","全天"]],
  ev:[
   {t:"07:30",k:"move",n:"新桥 → 舞浜",en:"JR 京叶线",m:"约40分钟"},
-  {t:"09:00",n:"东京迪士尼乐园",ticket:"tickets/pending.svg",en:"Tokyo Disneyland",p:"disney",m:"APP 已购票",
+  {t:"09:00",n:"东京迪士尼乐园",tid:"pending",en:"Tokyo Disneyland",p:"disney",m:"APP 已购票",
    note:"周一——已经是能选到的最好的一天了。一整天。"},
   {t:"21:30",n:"回新桥来一碗",en:"Back in Shimbashi",c:["hashigo","ohayo"],m:"周一 — はしご 开到 05:00"}],
  call:{cls:"warn",h:"今晚是最后的采购机会",p:["明天是筑地，然后直接去机场。银座和东京站清单上还没买到的东西，今晚是最后一次。"]}},
@@ -750,7 +780,7 @@ function renderDay(i){
     if(e.note) h+='<div class="note">'+e.note+'</div>';
     var bt="";
     if(pl) bt+='<button class="btn rt-btn" type="button" data-from="'+esc(prevKey||"")+'" data-to="'+esc(e.p)+'">🚇 路线</button>';
-    if(e.ticket) bt+='<button class="btn tkt" type="button" data-img="'+esc(e.ticket)+'" data-cap="'+esc(e.n)+'">🎫 票券</button>';
+    if(e.tid) bt+='<button class="btn tkt" type="button" data-tid="'+esc(e.tid)+'">🎫 票券</button>';
     if(bt) h+='<div class="btns">'+bt+'</div>';
     if(e.c&&e.c.length){
       var from=pl?pl[4]:prev;
@@ -806,20 +836,30 @@ function openSheet(fk,tk){
 }
 
 /* 票券灯箱 */
-var lb=document.getElementById("lb"), lbimg=document.getElementById("lbimg"), lbcap=document.getElementById("lbcap");
-function closeLb(){ lb.hidden=true; lbimg.removeAttribute("src"); }
+var lb=document.getElementById("lb"), lbcard=document.getElementById("lbcard");
+function closeLb(){ lb.hidden=true; lbcard.innerHTML=""; }
+function openTicket(id){
+  var k=TICKETS[id]||TICKETS.pending, h="";
+  h+='<h4>'+esc(k.t)+'</h4>';
+  if(k.sub) h+='<p class="sub">'+esc(k.sub)+'</p>';
+  if(k.code) h+='<div class="lb-code"><div class="cl">'+esc(k.codeLabel||"预约码")+'</div>'+
+    '<div class="cv">'+esc(k.code)+'</div></div>';
+  if(k.img) h+='<img src="'+esc(k.img)+'" alt="票券">';
+  if(k.rows&&k.rows.length) h+='<div class="lb-rows">'+k.rows.map(function(r){
+    return '<div><b>'+esc(r[0])+'</b><span>'+esc(r[1])+'</span></div>';}).join("")+'</div>';
+  if(k.link) h+='<a class="lb-link" href="'+esc(k.link)+'" target="_blank" rel="noopener">'+
+    esc(k.linkLabel||"打开电子票")+' →</a>';
+  if(k.note) h+='<p class="tnote">'+k.note+'</p>';
+  lbcard.innerHTML=h;
+  lb.hidden=false;
+}
 document.getElementById("lbclose").onclick=closeLb;
 lb.addEventListener("click",function(ev){ if(ev.target===lb) closeLb(); });
 document.addEventListener("keydown",function(ev){ if(ev.key==="Escape"&&!lb.hidden) closeLb(); });
 pane.addEventListener("click",function(ev){
   if(!ev.target.closest) return;
   var t=ev.target.closest(".tkt");
-  if(t){
-    lbcap.textContent=t.getAttribute("data-cap")||"票券";
-    lbimg.src=t.getAttribute("data-img");
-    lb.hidden=false;
-    return;
-  }
+  if(t){ openTicket(t.getAttribute("data-tid")); return; }
   var r=ev.target.closest(".rt-btn");
   if(r) openSheet(r.getAttribute("data-from")||null, r.getAttribute("data-to"));
 });

@@ -1,6 +1,6 @@
 /* 関西 → 関東 — offline cache.
    Bump CACHE when the itinerary changes so phones pick up the new version. */
-var CACHE = "kansai-kanto-v10";
+var CACHE = "kansai-kanto-v11";
 var TILES = "kansai-kanto-tiles-v1";
 var ASSETS = ["./", "./index.html", "./leaflet.js", "./leaflet.css",
               "./manifest.webmanifest", "./icon.svg", "./icon-180.png", "./icon-512.png", "./robots.txt", "./tickets/pending.svg"];
