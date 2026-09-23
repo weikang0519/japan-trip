@@ -128,6 +128,16 @@ a.gomap,.nm.gomap{display:block;color:inherit}
 a.gomap:active{opacity:.6}
 a.gomap:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:6px}
 
+/* 更新提示 */
+.toast{position:fixed;left:14px;right:14px;z-index:9500;
+  bottom:calc(16px + env(safe-area-inset-bottom,0px));
+  background:var(--pink);color:#fff;border:none;border-radius:999px;
+  padding:14px 18px;font-size:15px;font-weight:700;font-family:var(--sans);
+  box-shadow:0 6px 22px rgba(236,78,140,.45);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px}
+.toast[hidden]{display:none!important}
+@media (min-width:560px){.toast{left:50%;right:auto;transform:translateX(-50%);min-width:320px}}
+
 /* 交通方案弹窗 */
 .sheet{position:fixed;inset:0;z-index:9100;background:rgba(40,18,29,.55);
   display:flex;align-items:flex-end;justify-content:center}
@@ -219,6 +229,8 @@ a.gomap:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-ra
   <div class="pills" id="pills" role="tablist" aria-label="行程日"></div>
 </div>
 <div class="wrap" id="pane"></div>
+
+<button class="toast" id="toast" type="button" hidden>🎀 行程已更新 · 点我刷新</button>
 
 <div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-label="交通方案">
   <div class="sheet-in">
@@ -807,8 +819,32 @@ setTimeout(function(){ map.invalidateSize(); },150);
 window.addEventListener("resize",function(){ map.invalidateSize(); });
 window.addEventListener("orientationchange",function(){ setTimeout(function(){map.invalidateSize();},250); });
 
+/* 更新检测：新版本装好后弹提示，点一下刷新 */
 if("serviceWorker" in navigator){
-  window.addEventListener("load",function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); });
+  var toast=document.getElementById("toast"), reg=null, hadController=!!navigator.serviceWorker.controller;
+  toast.onclick=function(){ location.reload(); };
+
+  navigator.serviceWorker.addEventListener("controllerchange",function(){
+    if(hadController) toast.hidden=false;   // 首次安装不提示，只有真正的更新才提示
+  });
+
+  window.addEventListener("load",function(){
+    navigator.serviceWorker.register("sw.js").then(function(r){
+      reg=r;
+      r.addEventListener("updatefound",function(){
+        var nw=r.installing;
+        if(!nw) return;
+        nw.addEventListener("statechange",function(){
+          if(nw.state==="activated"&&hadController) toast.hidden=false;
+        });
+      });
+    }).catch(function(){});
+  });
+
+  /* 每次把 App 切回前台都查一次有没有新版本 */
+  document.addEventListener("visibilitychange",function(){
+    if(document.visibilityState==="visible"&&reg) reg.update().catch(function(){});
+  });
 }
 </script>
 </body>
