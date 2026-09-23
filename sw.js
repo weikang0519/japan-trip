@@ -1,9 +1,13 @@
 /* 関西 → 関東 — offline cache.
-   Bump CACHE when the itinerary changes so phones pick up the new version. */
-var CACHE = "kansai-kanto-v13";
+   Navigations are NETWORK-FIRST so a pushed itinerary change lands immediately
+   when online, and still works from cache when there is no signal.
+   Static assets and map tiles stay cache-first: they rarely change and are
+   what make the app usable underground. */
+var CACHE = "kansai-kanto-v14";
 var TILES = "kansai-kanto-tiles-v1";
 var ASSETS = ["./", "./index.html", "./leaflet.js", "./leaflet.css",
-              "./manifest.webmanifest", "./icon.svg", "./icon-180.png", "./icon-512.png", "./robots.txt", "./tickets/pending.svg"];
+              "./manifest.webmanifest", "./icon.svg", "./icon-180.png",
+              "./icon-512.png", "./robots.txt", "./tickets/pending.svg"];
 
 self.addEventListener("install", function (e) {
   e.waitUntil(
@@ -23,13 +27,18 @@ self.addEventListener("activate", function (e) {
   );
 });
 
+function isPage(req, url) {
+  return req.mode === "navigate" ||
+         url.pathname.endsWith("/") ||
+         url.pathname.endsWith("/index.html");
+}
+
 self.addEventListener("fetch", function (e) {
   var req = e.request;
   if (req.method !== "GET") return;
   var url = new URL(req.url);
 
-  /* Map tiles: keep whatever has been viewed, capped so it can't grow forever.
-     Pan around each city once on wifi and those tiles are yours offline. */
+  /* Map tiles: keep whatever has been viewed, capped so it can't grow forever. */
   if (url.hostname.indexOf("tile.openstreetmap.org") >= 0) {
     e.respondWith(
       caches.open(TILES).then(function (c) {
@@ -48,9 +57,26 @@ self.addEventListener("fetch", function (e) {
     return;
   }
 
-  /* Google Maps and 小红书 links leave the app entirely — never intercepted. */
+  /* Google Maps, Tabelog and the e-ticket host leave the app — never intercepted. */
   if (url.origin !== self.location.origin) return;
 
+  /* The page itself: network first, so updates are never stuck behind the cache. */
+  if (isPage(req, url)) {
+    e.respondWith(
+      fetch(req).then(function (res) {
+        var copy = res.clone();
+        caches.open(CACHE).then(function (c) { c.put("./index.html", copy); });
+        return res;
+      }).catch(function () {
+        return caches.match("./index.html").then(function (hit) {
+          return hit || caches.match("./");
+        });
+      })
+    );
+    return;
+  }
+
+  /* Everything else (Leaflet, icons, ticket images): cache first. */
   e.respondWith(
     caches.match(req).then(function (hit) {
       if (hit) return hit;
