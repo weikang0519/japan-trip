@@ -3,14 +3,15 @@
    when online, and still works from cache when there is no signal.
    Static assets and map tiles stay cache-first: they rarely change and are
    what make the app usable underground. */
-var CACHE = "kansai-kanto-v21";
+var CACHE = "kansai-kanto-v22";
 var TILES = "kansai-kanto-tiles-v1";
 var ASSETS = ["./", "./index.html", "./leaflet.js", "./leaflet.css",
               "./manifest.webmanifest", "./icon.svg", "./icon-180.png",
               "./icon-512.png", "./robots.txt", "./tickets/pending.svg",
               "./tickets/u7f3a1c-studio-a.jpg", "./tickets/u7f3a1c-studio-b.jpg",
               "./tickets/u7f3a1c-express-a.jpg", "./tickets/u7f3a1c-express-b.jpg",
-              "./tickets/s9d4e22-sky-1of2.png", "./tickets/s9d4e22-sky-2of2.png"];
+              "./tickets/s9d4e22-sky-1of2.png", "./tickets/s9d4e22-sky-2of2.png",
+              "./tickets/n4b8e07-nozomi86.webp"];
 
 self.addEventListener("install", function (e) {
   e.waitUntil(
