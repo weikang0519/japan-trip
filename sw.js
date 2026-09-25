@@ -3,7 +3,7 @@
    when online, and still works from cache when there is no signal.
    Static assets and map tiles stay cache-first: they rarely change and are
    what make the app usable underground. */
-var CACHE = "kansai-kanto-v23";
+var CACHE = "kansai-kanto-v24";
 var TILES = "kansai-kanto-tiles-v1";
 var ASSETS = ["./", "./index.html", "./leaflet.js", "./leaflet.css",
               "./manifest.webmanifest", "./icon.svg", "./icon-180.png",
