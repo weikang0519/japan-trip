@@ -493,6 +493,13 @@ var LEG={
    {m:"train",l:"御堂筋线 → 京阪本线特急",
     d:"心斋桥 2号站台（新大阪行）2站 → 淀屋桥，换京阪 3号站台（出町柳行 特急）2站 → 天满桥",
     t:"13min",f:370,fn:"京阪 6号车是 Premium Car，要另收费"}],
+ "kix>castle":[
+   {m:"train",l:"南海空港线 空港急行 → JR 大阪环状线",
+    d:"航站楼步行5分钟到 <b>关西空港（铁道）站</b> → <b>1号站台</b> 空港急行（难波行 · 乘车位置 8两「中・后」）<b>10站</b> → <b>新今宫</b>，换 JR 大阪环状线内回り <b>1号站台</b>（天王寺・鹤桥方向）<b>7站</b> → 大阪城公园",
+    t:"1小时19分",f:1170,fn:"南海 ¥970 + JR ¥200 · 12:32 发 → 13:51 到",rec:1},
+   {m:"train",l:"JR 关空快速 → 大阪环状线",
+    d:"关西空港站 <b>3・4号站台</b> 关空快速（天王寺行）9站 → <b>天王寺</b>（18号站台到达），换环状线内回り <b>11号站台</b> 6站 → 大阪城公园",
+    t:"1小时21分",f:1180,fn:"全程 JR，一张票到底 · 12:40 发 → 14:01 到"}],
  "dtosaka>usj":[
    {m:"train",l:"地铁谷町线 → JR 大阪环状线（直通环球城）",
     d:"<b>天满桥 2号站台</b>（大日行 · 乘车位置 6两「前・中」）2站 → <b>东梅田</b>，步行到 <b>大阪站</b>，搭环状线内回り（西九条・弁天町方向）直通 5站 → 环球城",
@@ -670,6 +677,7 @@ var R={
 
 /* 地点：lat, lng, 中文名, 英文/说明, 日文名（地图搜索用） */
 var P={
+ kix:[34.4320,135.2304,"关西机场 T1","Kansai Airport · 国际到达层","関西空港"],
  dtosaka:[34.6845,135.5165,"大阪城希尔顿逸林酒店","DoubleTree by Hilton · 大手前","DoubleTree by Hilton Osaka Castle"],
  castle:[34.6873,135.5259,"大阪城公园","Osaka Castle Park","大阪城公園"],
  shinsai:[34.6723,135.5010,"心斋桥","Shinsaibashi","心斎橋"],
@@ -739,9 +747,8 @@ var DAYS=[
   {t:"11:50",n:"Airporter 行李寄送",tid:"airporter",en:"T1 国际到达层 1F · JALABC 柜台",
    m:"<b>12:30 截止</b> · 交易号 0926-7528 · 2件 · 20:00 送到酒店",
    note:"出关后第一件事，不是买水也不是办 Suica。落地 11:40、截止 12:30，中间只有 50 分钟。"},
-  {t:"12:30",k:"move",n:"关西机场 → 市区",en:"南海电铁 或 JR 遥号 · 空手上路",m:"约1.5小时"},
-  {t:"14:00",n:"大阪城公园",en:"Osaka Castle Park · 停留30分钟",p:"castle",m:"24小时 · 免费",
-   note:"行李已经寄走，直接进公园，不用先去酒店。"},
+  {t:"12:30",k:"move",n:"关西机场 → 大阪城公园",rf:"kix",rt:"castle",en:"南海空港急行 → JR 环状线 · 空手上路",m:"约1小时20分 · ¥1,170 · 13:51 到",note:"行李已经寄走，直接坐到大阪城公园，不用先去酒店。"},
+  {t:"14:00",n:"大阪城公园",en:"Osaka Castle Park · 停留30分钟",p:"castle",m:"24小时 · 免费 · 酒店就在旁边"},
   {t:"15:00",n:"心斋桥 + 道顿堀",en:"逛 1 小时 · 边走边吃",p:"doton",m:"固力果招牌 · 商店街",
    c:["kajitsu","excelsior","juhachiban","benzaiten"],
    note:"一个小时要塞四家，实际大概只吃得下两三样。走在同一条路上，看到哪家有位就进哪家。"},
@@ -1186,6 +1193,7 @@ function renderDay(i){
     if(e.note) h+='<div class="note">'+e.note+'</div>';
     var bt="";
     if(pl&&prevKey&&prevKey!==e.p) bt+='<button class="btn rt-btn" type="button" data-from="'+esc(prevKey)+'" data-to="'+esc(e.p)+'">🚇 路线</button>';
+    else if(e.rf&&e.rt) bt+='<button class="btn rt-btn" type="button" data-from="'+esc(e.rf)+'" data-to="'+esc(e.rt)+'">🚇 路线</button>';
     if(e.tid) bt+='<button class="btn tkt" type="button" data-tid="'+esc(e.tid)+'">🎫 票券</button>';
     if(bt) h+='<div class="btns">'+bt+'</div>';
     if(e.c&&e.c.length){
