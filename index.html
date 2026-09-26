@@ -128,6 +128,19 @@ a.gomap,.nm.gomap{display:block;color:inherit}
 a.gomap:active{opacity:.6}
 a.gomap:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:6px}
 
+/* 刷新按钮 */
+.top{position:relative}
+#rf{position:absolute;right:12px;z-index:600;
+  top:calc(10px + env(safe-area-inset-top,0px));
+  width:38px;height:38px;border-radius:50%;border:none;cursor:pointer;
+  background:rgba(255,255,255,.92);color:var(--pink-deep);
+  font-size:18px;line-height:1;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 8px rgba(0,0,0,.22)}
+#rf:active{transform:scale(.92)}
+#rf.spin{animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.vstamp{padding:14px 16px 0;font-family:var(--mono);font-size:11.5px;color:var(--label3)}
+
 /* 天气 */
 .wx{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:11px 16px 0;
   font-size:13.5px;color:var(--label2)}
@@ -305,6 +318,7 @@ a.gomap:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-ra
 <div class="top">
   <div id="map"></div>
   <div class="pills" id="pills" role="tablist" aria-label="行程日"></div>
+  <button id="rf" type="button" title="刷新" aria-label="刷新">⟳</button>
 </div>
 <div class="wrap" id="pane"></div>
 
@@ -1197,7 +1211,8 @@ function show(idx){
 function renderOverview(){
   var h='<div class="dhead"><h1>'+BOW+'关西 → 关东</h1>'+
     '<div class="sub">大阪2晚 · 京都2晚 · 东京4晚 — 关西机场进，羽田出</div>'+
-    '<div class="dt">2026-09-28 → 10-06 · 2人</div></div><div class="ov">';
+    '<div class="dt">2026-09-28 → 10-06 · 2人</div></div>'+
+    '<div class="vstamp">版本 '+APPV+' · 没更新就点右上角 ⟳</div><div class="ov">';
   DAYS.forEach(function(d,i){
     var dt=new Date(d.d+"T00:00:00");
     h+='<button class="ovc" data-i="'+i+'"><i style="background:'+C[i]+'"></i>'+
@@ -1369,6 +1384,18 @@ pane.addEventListener("click",function(ev){
   if(r) openSheet(r.getAttribute("data-from")||null, r.getAttribute("data-to"));
 });
 document.addEventListener("keydown",function(ev){ if(ev.key==="Escape"&&!sheet.hidden) closeSheet(); });
+
+/* 强制刷新：清掉 App 缓存（地图瓦片留着，重下很贵），再重新加载 */
+var APPV="v32";
+document.getElementById("rf").onclick=function(){
+  var b=this; b.classList.add("spin");
+  var done=function(){ location.reload(); };
+  if(!window.caches){ done(); return; }
+  caches.keys().then(function(ks){
+    return Promise.all(ks.filter(function(k){ return k.indexOf("tiles")<0; })
+                         .map(function(k){ return caches.delete(k); }));
+  }).catch(function(){}).then(done);
+};
 
 show(-1);
 loadWx();
