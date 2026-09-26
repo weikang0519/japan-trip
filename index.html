@@ -1130,12 +1130,6 @@ function renderOverview(){
        '<span class="d">'+(dt.getMonth()+1)+'/'+dt.getDate()+'<br>'+W[dt.getDay()]+'</span></button>';
   });
   h+='</div>';
-  h+='<div class="call risk"><h3>🎀 出发前必须办掉的事</h3>'+
-     '<p><b>嵯峨野小火车 9/30 13:30</b> — 5号车（富贵号）不接受预售，只能当天在龟冈站 09:10 起排队先到先得。13:00 才到＝必然没有。现在就去查 1〜4号车还有没有位。</p>'+
-     '<p><b>のぞみ 10/2 京都→东京</b> — 黄金周，务必订指定席，坐 <b>E 席</b>（C、D 都是过道座）。</p>'+
-     '<p><b>需要预约</b> — 板前烧肉一斗、祐斋亭、炭烧鳗富士。<b>Suica</b> 出发前就加进 Apple Wallet。</p></div>';
-  h+='<div class="call"><h3>🌸 付款提醒</h3>'+
-     '<p>标「可能只收现金」的，是笔记里没写明能刷卡或用 IC 的店。日本的个人小店、路边摊、市场至今仍以现金为主。<b>身上随时备 ¥20,000 左右现金。</b></p></div>';
   h+=foot();
   pane.innerHTML=h;
   [].forEach.call(pane.querySelectorAll(".ovc"),function(b){
@@ -1169,10 +1163,6 @@ function renderFood(){
     });
     h+='</div>';
   });
-  h+='<div class="call"><h3>🎀 几个提醒</h3>'+
-     '<p><b>新宿现在有了。</b>10/3 晚上逛丸井・伊势丹一带，10/4 整个上午都在新宿 —— 凪 已排在 10/4 11:00。船桥屋（明治19年创业，新宿三丁目）还没排，想吃就顶掉凪。</p>'+
-     '<p><b>鳗富士在日比谷OKUROJI</b>，新桥站7出口走3分钟，其实就在酒店旁边。营业到 22:00，不是你笔记写的 21:00。<b>它是唯一必须提前订的。</b></p>'+
-     '<p>「只能排队」= 不接受预约，早去或错峰。价格是人均大概，以店家当天为准。</p></div>';
   h+=foot();
   pane.innerHTML=h;
 }
@@ -1206,8 +1196,7 @@ function renderDay(i){
     if(pl){ prev=pl[4]; prevKey=e.p; }
   });
   h+='</div>';
-  if(d.call) h+='<div class="call '+(d.call.cls||"")+'"><h3>'+esc(d.call.h)+'</h3>'+
-    d.call.p.map(function(p){return "<p>"+p+"</p>";}).join("")+'</div>';
+  /* 每日提示已隐藏 —— 数据还在 d.call 里，想恢复把这段改回来就行 */
   if(d.cut) h+='<div class="cut"><h3>✂️ 今天砍掉的</h3>'+d.cut.map(function(c){
     return '<div><b>'+esc(c[0])+'</b> — '+esc(c[1])+'</div>';}).join("")+'</div>';
   h+=foot();
@@ -1215,12 +1204,9 @@ function renderDay(i){
 }
 
 function foot(){
-  return '<div class="foot"><div class="legend">'+
-   '<span class="chip pay">可刷卡</span><span class="chip pay">Suica</span>'+
-   '<span class="chip cash">可能只收现金</span><span class="chip resv">需预约</span></div>'+
-   '<p>「导航」开 Google 地图（用日文店名搜索，日本当地才搜得准），「查评分」开 Tabelog。<b>地图上的点按编号排序，箭头是当天的行进方向</b>；按一下会显示站名、那一站的吃的，以及跳到行程里的按钮 —— 小店本身没有单独的点，因为 OSM 上查不到它们的坐标，点店名会直接开 Google 地图。</p>'+'<p><b>交通方案的班次、站台、票价</b>已于 2026-09-26 按各段实际出行时间在 Yahoo!路線情報 上逐条查过。站台号偶尔会调整，以现场显示为准；还标着「估算」的是没逐条核实的。</p>'+
-   '<p>营业时间、休息日、价格来自你自己的笔记；新增的部分已于 2026-09-22 用 Tabelog 和店家官网核对。日本比上海快1小时。重要的当天一定再确认一次。</p></div>';
+  return "";   /* 页脚说明已移除 */
 }
+
 
 /* 交通方案弹窗 */
 var sheet=document.getElementById("sheet");
