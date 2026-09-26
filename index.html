@@ -820,7 +820,7 @@ var DAYS=[
    note:"租和服就是为了这一段。尽量早上去，那条坡道才是照片本身。"},
   {t:"13:15",n:"八坂神社",en:"30分钟",p:"yasaka"},
   {t:"14:00",n:"饭团 鬼丸 四条河原町",en:"15分钟 · 垫一下",c:["onimaru"]},
-  {t:"14:30",n:"鳗鱼屋 花道",en:"うなぎや花道 · 鳗鱼饭",c:["hanamichi","izuu","izuju"],
+  {t:"14:30",n:"午餐 — 鳗鱼饭 / 鲭鱼寿司",en:"三选一",c:["hanamichi","izuu","izuju"],
    note:"花道 ¥9,000，11:00–16:00 午市，是排队店。いづう（清本町367，1781年）和 いづ重（八坂石阶下）周四都开，想吃鲭鱼寿司就换它们。"},
   {t:"15:30",n:"锦市场",en:"Nishiki Market · 15:30–16:30",p:"nishiki",m:"多数摊位 18:00 收",
    c:["konnamonja","terakoya","sallys","ichiha"],
@@ -1191,12 +1191,31 @@ function renderDay(i){
     if(e.en) h+='<div class="en">'+esc(e.en)+'</div>';
     if(e.m) h+='<div class="meta">'+e.m+'</div>';
     if(e.note) h+='<div class="note">'+e.note+'</div>';
+    /* 只有一家候选、而且这一站本来就叫这个名字 —— 别再嵌一张一样的卡 */
+    var solo=null;
+    if(e.c&&e.c.length===1&&R[e.c[0]]){
+      var r0=R[e.c[0]];
+      var na=(e.n||"").replace(/\s/g,""), nb=(r0.cn||"").replace(/\s/g,"");
+      if(nb&&(na.indexOf(nb)>=0||nb.indexOf(na)>=0)) solo=r0;
+    }
+    if(solo){
+      var dow0=new Date(d.d+"T00:00:00").getDay();
+      var shut0=(solo.shut||[]).indexOf(dow0)>=0;
+      h+='<div class="chips">';
+      if(shut0) h+='<span class="chip shut">'+W[dow0]+' 休息</span>';
+      if(solo.hrs) h+='<span class="chip">'+esc(solo.hrs)+'</span>';
+      if(solo.yen) h+='<span class="chip yen">¥'+solo.yen.toLocaleString()+'</span>';
+      h+=payChips(solo)+'</div>';
+      if(solo.note) h+='<div class="note">'+esc(solo.note)+'</div>';
+    }
     var bt="";
     if(pl&&prevKey&&prevKey!==e.p) bt+='<button class="btn rt-btn" type="button" data-from="'+esc(prevKey)+'" data-to="'+esc(e.p)+'">🚇 路线</button>';
     else if(e.rf&&e.rt) bt+='<button class="btn rt-btn" type="button" data-from="'+esc(e.rf)+'" data-to="'+esc(e.rt)+'">🚇 路线</button>';
     if(e.tid) bt+='<button class="btn tkt" type="button" data-tid="'+esc(e.tid)+'">🎫 票券</button>';
+    if(solo&&!solo.nolink)
+      bt+='<a class="btn tab" href="'+tabelog(solo.ja||solo.cn)+'" target="_blank" rel="noopener">⭐ 查评分</a>';
     if(bt) h+='<div class="btns">'+bt+'</div>';
-    if(e.c&&e.c.length){
+    if(e.c&&e.c.length&&!solo){
       var from=pl?pl[4]:prev;
       h+='<div class="cands">'+e.c.map(function(k){return candCard(k,dow,from);}).join("")+'</div>';
     }
