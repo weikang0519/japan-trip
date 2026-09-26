@@ -128,6 +128,23 @@ a.gomap,.nm.gomap{display:block;color:inherit}
 a.gomap:active{opacity:.6}
 a.gomap:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:6px}
 
+/* 地图气泡 */
+.leaflet-popup-content-wrapper{background:var(--card);color:var(--label);border-radius:14px;
+  box-shadow:0 4px 18px rgba(0,0,0,.22)}
+.leaflet-popup-content{margin:11px 13px;font-family:var(--sans)}
+.leaflet-popup-tip{background:var(--card)}
+.leaflet-container a.leaflet-popup-close-button{color:var(--label3);padding:6px 7px 0 0}
+.pop b{font-family:var(--jp);font-size:15.5px;font-weight:700;display:block;line-height:1.3}
+.pop .pt{display:block;font-family:var(--mono);font-size:12px;color:var(--label2);margin-top:3px}
+.pop .pj{display:block;font-size:12px;color:var(--label3);margin-top:2px}
+.pop .pb{display:inline-block;margin-top:9px;background:var(--pink);color:#fff;
+  border-radius:999px;padding:7px 13px;font-size:13px;font-weight:700;border:none;
+  cursor:pointer;font-family:var(--sans)}
+.pop .pg{display:block;margin-top:7px;font-size:12.5px;color:var(--pink-deep);font-weight:600}
+
+/* 被点到的那一站 */
+.row.flash .card{outline:3px solid var(--pink);outline-offset:2px}
+
 /* 更新提示 */
 .toast{position:fixed;left:14px;right:14px;z-index:9500;
   bottom:calc(16px + env(safe-area-inset-bottom,0px));
@@ -921,11 +938,11 @@ function drawMap(idx){
   }
   if(idx<0){
     DAYS.forEach(function(d,i){
-      d.ev.forEach(function(e){ if(e.p&&P[e.p]) pts.push([P[e.p][0],P[e.p][1],C[i],P[e.p][2],P[e.p][4]]); });
+      d.ev.forEach(function(e,ei){ if(e.p&&P[e.p]) pts.push([P[e.p][0],P[e.p][1],C[i],P[e.p][2],P[e.p][4],i,ei,e.t,e.n]); });
     });
   }else{
     col=C[idx];
-    DAYS[idx].ev.forEach(function(e){ if(e.p&&P[e.p]) pts.push([P[e.p][0],P[e.p][1],col,P[e.p][2],P[e.p][4]]); });
+    DAYS[idx].ev.forEach(function(e,ei){ if(e.p&&P[e.p]) pts.push([P[e.p][0],P[e.p][1],col,P[e.p][2],P[e.p][4],idx,ei,e.t,e.n]); });
   }
   if(!pts.length){ map.setView([35.30,136.60],7); return; }
   if(idx>=0&&pts.length>1){
@@ -933,14 +950,36 @@ function drawMap(idx){
       {color:col,weight:3,opacity:.65,dashArray:"5,7"}).addTo(layer);
   }
   pts.forEach(function(p){
-    var m=L.circleMarker([p[0],p[1]],{radius:8,color:"#fff",weight:3,fillColor:p[2],fillOpacity:1}).addTo(layer);
-    m.bindTooltip(p[3],{direction:"top",offset:[0,-8]});
-    m.on("click",function(){ window.open(g(p[4],""),"_blank","noopener"); });
+    var m=L.circleMarker([p[0],p[1]],{radius:9,color:"#fff",weight:3,fillColor:p[2],fillOpacity:1}).addTo(layer);
+    var dt=new Date(DAYS[p[5]].d+"T00:00:00");
+    var label="D"+(p[5]+1)+" "+(dt.getMonth()+1)+"/"+dt.getDate();
+    var html='<div class="pop"><b>'+esc(p[3])+'</b>'+
+      (p[7]&&p[7]!=="—"?'<span class="pt">'+esc(label+" · "+p[7])+'</span>':'<span class="pt">'+esc(label)+'</span>')+
+      (p[8]&&p[8]!==p[3]?'<span class="pj">'+esc(p[8])+'</span>':'')+
+      '<button class="pb" onclick="jumpTo('+p[5]+','+p[6]+')">'+(idx<0?"跳到这一天":"看这一站")+'</button>'+
+      '<a class="pg" href="'+g(p[4],"")+'" target="_blank" rel="noopener">在 Google 地图打开 →</a></div>';
+    m.bindPopup(html,{closeButton:true,autoPan:true,maxWidth:240});
+    m.on("click",function(){ m.openPopup(); });
   });
   map.fitBounds(L.latLngBounds(pts.map(function(p){return [p[0],p[1]];})),{padding:[34,34],maxZoom:15});
 }
 
 var pills=document.getElementById("pills"), pane=document.getElementById("pane");
+
+/* 从地图上的点跳到对应的那一站 */
+function focusRow(ei){
+  var rows=pane.querySelectorAll(".row");
+  var el=rows[ei];
+  if(!el) return;
+  el.scrollIntoView({behavior:"smooth",block:"center"});
+  [].forEach.call(rows,function(r){ r.classList.remove("flash"); });
+  el.classList.add("flash");
+  setTimeout(function(){ el.classList.remove("flash"); },2200);
+}
+window.jumpTo=function(dayIdx,ei){
+  if(cur!==dayIdx){ show(dayIdx); setTimeout(function(){ focusRow(ei); },420); }
+  else focusRow(ei);
+};
 
 function mkPill(label,i,color){
   var b=document.createElement("button");
@@ -987,7 +1026,9 @@ function candCard(key,dow,from){
   return h+'</div>';
 }
 
+var cur=-1;
 function show(idx){
+  cur=idx;
   [].forEach.call(pills.children,function(b,j){
     var mine = (j===0) ? (idx===-1) : (j===1) ? (idx===-2) : ((j-2)===idx);
     b.setAttribute("aria-selected", mine?"true":"false"); });
