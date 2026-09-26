@@ -137,6 +137,12 @@ a.gomap:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-ra
 .pop b{font-family:var(--jp);font-size:15.5px;font-weight:700;display:block;line-height:1.3}
 .pop .pt{display:block;font-family:var(--mono);font-size:12px;color:var(--label2);margin-top:3px}
 .pop .pj{display:block;font-size:12px;color:var(--label3);margin-top:2px}
+.pop .pf{margin-top:9px;border-top:1px solid var(--sep2);padding-top:8px;max-height:150px;overflow-y:auto}
+.pop .pfh{font-size:11px;font-weight:700;color:var(--label3);letter-spacing:.04em;margin-bottom:5px}
+.pop .pfi{display:block;font-family:var(--jp);font-size:13px;font-weight:600;color:var(--pink-deep);
+  padding:4px 0;line-height:1.35;border-bottom:1px dashed var(--sep2)}
+.pop .pfi:last-child{border-bottom:none}
+.pop .pfi.x{color:var(--label3);text-decoration:line-through}
 .pop .pb{display:inline-block;margin-top:9px;background:var(--pink);color:#fff;
   border-radius:999px;padding:7px 13px;font-size:13px;font-weight:700;border:none;
   cursor:pointer;font-family:var(--sans)}
@@ -938,11 +944,11 @@ function drawMap(idx){
   }
   if(idx<0){
     DAYS.forEach(function(d,i){
-      d.ev.forEach(function(e,ei){ if(e.p&&P[e.p]) pts.push([P[e.p][0],P[e.p][1],C[i],P[e.p][2],P[e.p][4],i,ei,e.t,e.n]); });
+      d.ev.forEach(function(e,ei){ if(e.p&&P[e.p]) pts.push([P[e.p][0],P[e.p][1],C[i],P[e.p][2],P[e.p][4],i,ei,e.t,e.n,e.c]); });
     });
   }else{
     col=C[idx];
-    DAYS[idx].ev.forEach(function(e,ei){ if(e.p&&P[e.p]) pts.push([P[e.p][0],P[e.p][1],col,P[e.p][2],P[e.p][4],idx,ei,e.t,e.n]); });
+    DAYS[idx].ev.forEach(function(e,ei){ if(e.p&&P[e.p]) pts.push([P[e.p][0],P[e.p][1],col,P[e.p][2],P[e.p][4],idx,ei,e.t,e.n,e.c]); });
   }
   if(!pts.length){ map.setView([35.30,136.60],7); return; }
   if(idx>=0&&pts.length>1){
@@ -956,6 +962,20 @@ function drawMap(idx){
     var html='<div class="pop"><b>'+esc(p[3])+'</b>'+
       (p[7]&&p[7]!=="—"?'<span class="pt">'+esc(label+" · "+p[7])+'</span>':'<span class="pt">'+esc(label)+'</span>')+
       (p[8]&&p[8]!==p[3]?'<span class="pj">'+esc(p[8])+'</span>':'')+
+      (function(){
+        var ks=p[9]; if(!ks||!ks.length) return "";
+        var h='<div class="pf"><div class="pfh">这一站的吃的 · '+ks.length+' 家</div>';
+        ks.forEach(function(k){
+          var r=R[k]; if(!r) return;
+          var dow=new Date(DAYS[p[5]].d+"T00:00:00").getDay();
+          var shut=(r.shut||[]).indexOf(dow)>=0;
+          h+= r.nolink
+            ? '<span class="pfi'+(shut?" x":"")+'">'+esc(r.cn)+'</span>'
+            : '<a class="pfi'+(shut?" x":"")+'" href="'+g(r.ja||r.cn,r.area)+'" target="_blank" rel="noopener">'+
+              esc(r.cn)+(shut?' · 今天休':'')+'</a>';
+        });
+        return h+'</div>';
+      })()+
       '<button class="pb" onclick="jumpTo('+p[5]+','+p[6]+')">'+(idx<0?"跳到这一天":"看这一站")+'</button>'+
       '<a class="pg" href="'+g(p[4],"")+'" target="_blank" rel="noopener">在 Google 地图打开 →</a></div>';
     m.bindPopup(html,{closeButton:true,autoPan:true,maxWidth:240});
@@ -1136,7 +1156,7 @@ function foot(){
   return '<div class="foot"><div class="legend">'+
    '<span class="chip pay">可刷卡</span><span class="chip pay">Suica</span>'+
    '<span class="chip cash">可能只收现金</span><span class="chip resv">需预约</span></div>'+
-   '<p>「导航」开 Google 地图（用日文店名搜索，日本当地才搜得准），「查评分」开 Tabelog 看营业时间、定休日和评分。地图上的粉点也可以直接点。</p>'+'<p><b>交通方案的班次、站台、票价</b>已于 2026-09-26 按各段实际出行时间在 Yahoo!路線情報 上逐条查过。站台号偶尔会调整，以现场显示为准；还标着「估算」的是没逐条核实的。</p>'+
+   '<p>「导航」开 Google 地图（用日文店名搜索，日本当地才搜得准），「查评分」开 Tabelog。<b>地图上的点按一下会显示站名、那一站的吃的，以及跳到行程里的按钮</b> —— 小店本身没有单独的点，因为 OSM 上查不到它们的坐标，点店名会直接开 Google 地图。</p>'+'<p><b>交通方案的班次、站台、票价</b>已于 2026-09-26 按各段实际出行时间在 Yahoo!路線情報 上逐条查过。站台号偶尔会调整，以现场显示为准；还标着「估算」的是没逐条核实的。</p>'+
    '<p>营业时间、休息日、价格来自你自己的笔记；新增的部分已于 2026-09-22 用 Tabelog 和店家官网核对。日本比上海快1小时。重要的当天一定再确认一次。</p></div>';
 }
 
