@@ -128,12 +128,22 @@ a.gomap,.nm.gomap{display:block;color:inherit}
 a.gomap:active{opacity:.6}
 a.gomap:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:6px}
 
+/* 地图上的编号点 */
+.numpin{display:flex;align-items:center;justify-content:center;
+  width:27px;height:27px;border-radius:50%;border:3px solid #fff;
+  font-family:var(--mono);font-size:12px;font-weight:700;color:#fff;
+  box-shadow:0 1px 5px rgba(0,0,0,.35)}
+.leaflet-marker-icon.numwrap{background:none;border:none}
+
 /* 地图气泡 */
 .leaflet-popup-content-wrapper{background:var(--card);color:var(--label);border-radius:14px;
   box-shadow:0 4px 18px rgba(0,0,0,.22)}
 .leaflet-popup-content{margin:11px 13px;font-family:var(--sans)}
 .leaflet-popup-tip{background:var(--card)}
 .leaflet-container a.leaflet-popup-close-button{color:var(--label3);padding:6px 7px 0 0}
+.pop .pn{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;
+  border-radius:50%;background:var(--pink);color:#fff;font-family:var(--mono);font-size:11px;
+  font-weight:700;vertical-align:1px}
 .pop b{font-family:var(--jp);font-size:15.5px;font-weight:700;display:block;line-height:1.3}
 .pop .pt{display:block;font-family:var(--mono);font-size:12px;color:var(--label2);margin-top:3px}
 .pop .pj{display:block;font-size:12px;color:var(--label3);margin-top:2px}
@@ -922,6 +932,31 @@ L.control.attribution({position:"bottomright",prefix:false})
   .addAttribution("国土地理院 / Esri").addTo(map);
 var layer=L.layerGroup().addTo(map);
 
+/* 给路线加箭头：Leaflet 没有内建箭头，直接往它的 SVG 里塞一个 marker 定义 */
+function arrowDef(color){
+  var svg=document.querySelector(".leaflet-overlay-pane svg");
+  if(!svg) return null;
+  var defs=svg.querySelector("defs");
+  if(!defs){
+    defs=document.createElementNS("http://www.w3.org/2000/svg","defs");
+    svg.insertBefore(defs,svg.firstChild);
+  }
+  var id="arw";
+  var old=defs.querySelector("#"+id);
+  if(old) defs.removeChild(old);
+  var m=document.createElementNS("http://www.w3.org/2000/svg","marker");
+  m.setAttribute("id",id);
+  m.setAttribute("viewBox","0 0 10 10");
+  m.setAttribute("refX","8"); m.setAttribute("refY","5");
+  m.setAttribute("markerWidth","4.5"); m.setAttribute("markerHeight","4.5");
+  m.setAttribute("orient","auto-start-reverse");
+  var pth=document.createElementNS("http://www.w3.org/2000/svg","path");
+  pth.setAttribute("d","M0,0 L10,5 L0,10 z");
+  pth.setAttribute("fill",color);
+  m.appendChild(pth); defs.appendChild(m);
+  return id;
+}
+
 function drawMap(idx){
   layer.clearLayers();
   var pts=[],col=null;
@@ -951,15 +986,42 @@ function drawMap(idx){
     DAYS[idx].ev.forEach(function(e,ei){ if(e.p&&P[e.p]) pts.push([P[e.p][0],P[e.p][1],col,P[e.p][2],P[e.p][4],idx,ei,e.t,e.n,e.c]); });
   }
   if(!pts.length){ map.setView([35.30,136.60],7); return; }
-  if(idx>=0&&pts.length>1){
-    L.polyline(pts.map(function(p){return [p[0],p[1]];}),
-      {color:col,weight:3,opacity:.65,dashArray:"5,7"}).addTo(layer);
-  }
+  /* 同一个地点出现两次时错开一点，否则两个编号会完全重叠 */
+  var seen={};
   pts.forEach(function(p){
-    var m=L.circleMarker([p[0],p[1]],{radius:9,color:"#fff",weight:3,fillColor:p[2],fillOpacity:1}).addTo(layer);
+    var key=p[0].toFixed(5)+","+p[1].toFixed(5);
+    seen[key]=(seen[key]||0)+1;
+    if(seen[key]>1){
+      var n=seen[key]-1;
+      p[0]+=0.00016*n; p[1]+=0.00020*n;
+    }
+  });
+
+  if(idx>=0&&pts.length>1){
+    /* 每一段单独画，箭头指向下一站 */
+    for(var si=0;si<pts.length-1;si++){
+      var a=pts[si], b=pts[si+1];
+      if(a[0]===b[0]&&a[1]===b[1]) continue;
+      var seg=L.polyline([[a[0],a[1]],[b[0],b[1]]],
+        {color:col,weight:3,opacity:.72,dashArray:"6,6"}).addTo(layer);
+      if(seg._path){
+        var aid=arrowDef(col);
+        if(aid) seg._path.setAttribute("marker-end","url(#"+aid+")");
+      }
+    }
+  }
+  pts.forEach(function(p,pi){
+    var m;
+    if(idx>=0){
+      m=L.marker([p[0],p[1]],{icon:L.divIcon({className:"numwrap",
+        html:'<div class="numpin" style="background:'+p[2]+'">'+(pi+1)+'</div>',
+        iconSize:[27,27],iconAnchor:[13,13],popupAnchor:[0,-13]})}).addTo(layer);
+    }else{
+      m=L.circleMarker([p[0],p[1]],{radius:8,color:"#fff",weight:3,fillColor:p[2],fillOpacity:1}).addTo(layer);
+    }
     var dt=new Date(DAYS[p[5]].d+"T00:00:00");
     var label="D"+(p[5]+1)+" "+(dt.getMonth()+1)+"/"+dt.getDate();
-    var html='<div class="pop"><b>'+esc(p[3])+'</b>'+
+    var html='<div class="pop"><b>'+(idx>=0?'<span class="pn">'+(pi+1)+'</span> ':'')+esc(p[3])+'</b>'+
       (p[7]&&p[7]!=="—"?'<span class="pt">'+esc(label+" · "+p[7])+'</span>':'<span class="pt">'+esc(label)+'</span>')+
       (p[8]&&p[8]!==p[3]?'<span class="pj">'+esc(p[8])+'</span>':'')+
       (function(){
@@ -1130,7 +1192,7 @@ function renderDay(i){
     h+= pl ? '<a class="nm gomap" href="'+g(pl[4],"")+'" target="_blank" rel="noopener">'+esc(e.n)+'</a>'
            : '<div class="nm">'+esc(e.n)+'</div>';
     if(e.en) h+='<div class="en">'+esc(e.en)+'</div>';
-    if(e.m) h+='<div class="meta">'+esc(e.m)+'</div>';
+    if(e.m) h+='<div class="meta">'+e.m+'</div>';
     if(e.note) h+='<div class="note">'+e.note+'</div>';
     var bt="";
     if(pl&&prevKey&&prevKey!==e.p) bt+='<button class="btn rt-btn" type="button" data-from="'+esc(prevKey)+'" data-to="'+esc(e.p)+'">🚇 路线</button>';
@@ -1156,7 +1218,7 @@ function foot(){
   return '<div class="foot"><div class="legend">'+
    '<span class="chip pay">可刷卡</span><span class="chip pay">Suica</span>'+
    '<span class="chip cash">可能只收现金</span><span class="chip resv">需预约</span></div>'+
-   '<p>「导航」开 Google 地图（用日文店名搜索，日本当地才搜得准），「查评分」开 Tabelog。<b>地图上的点按一下会显示站名、那一站的吃的，以及跳到行程里的按钮</b> —— 小店本身没有单独的点，因为 OSM 上查不到它们的坐标，点店名会直接开 Google 地图。</p>'+'<p><b>交通方案的班次、站台、票价</b>已于 2026-09-26 按各段实际出行时间在 Yahoo!路線情報 上逐条查过。站台号偶尔会调整，以现场显示为准；还标着「估算」的是没逐条核实的。</p>'+
+   '<p>「导航」开 Google 地图（用日文店名搜索，日本当地才搜得准），「查评分」开 Tabelog。<b>地图上的点按编号排序，箭头是当天的行进方向</b>；按一下会显示站名、那一站的吃的，以及跳到行程里的按钮 —— 小店本身没有单独的点，因为 OSM 上查不到它们的坐标，点店名会直接开 Google 地图。</p>'+'<p><b>交通方案的班次、站台、票价</b>已于 2026-09-26 按各段实际出行时间在 Yahoo!路線情報 上逐条查过。站台号偶尔会调整，以现场显示为准；还标着「估算」的是没逐条核实的。</p>'+
    '<p>营业时间、休息日、价格来自你自己的笔记；新增的部分已于 2026-09-22 用 Tabelog 和店家官网核对。日本比上海快1小时。重要的当天一定再确认一次。</p></div>';
 }
 
