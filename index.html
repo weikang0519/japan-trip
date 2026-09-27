@@ -11,6 +11,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="关西→关东">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<script>
+/* 先于首屏渲染定主题，否则冷启动会白闪一下 */
+(function(){try{var t=localStorage.getItem("theme");
+  if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t);
+}catch(e){}})();
+</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -137,6 +143,13 @@ a.gomap:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-ra
   font-size:18px;line-height:1;display:flex;align-items:center;justify-content:center;
   box-shadow:0 2px 8px rgba(0,0,0,.22)}
 #rf:active{transform:scale(.92)}
+#th{position:absolute;right:58px;z-index:600;
+  top:calc(10px + env(safe-area-inset-top,0px));
+  width:38px;height:38px;border-radius:50%;border:none;cursor:pointer;
+  background:rgba(255,255,255,.92);
+  font-size:17px;line-height:1;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 8px rgba(0,0,0,.22)}
+#th:active{transform:scale(.92)}
 #rf.spin{animation:sp .8s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
 .vstamp{padding:14px 16px 0;font-family:var(--mono);font-size:11.5px;color:var(--label3)}
@@ -318,6 +331,7 @@ a.gomap:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-ra
 <div class="top">
   <div id="map"></div>
   <div class="pills" id="pills" role="tablist" aria-label="行程日"></div>
+  <button id="th" type="button" title="浅色 / 深色">🌗</button>
   <button id="rf" type="button" title="刷新" aria-label="刷新">⟳</button>
 </div>
 <div class="wrap" id="pane"></div>
@@ -962,6 +976,7 @@ if(window.matchMedia){
     tiles.setUrl(wantDark()?TILE_D:TILE_L);
   }); }catch(e){}
 }
+window.__syncTiles=function(){ try{ tiles.setUrl(wantDark()?TILE_D:TILE_L); }catch(e){} };
 L.control.attribution({position:"bottomright",prefix:false})
   .addAttribution("国土地理院 / Esri").addTo(map);
 var layer=L.layerGroup().addTo(map);
@@ -1393,7 +1408,38 @@ pane.addEventListener("click",function(ev){
 document.addEventListener("keydown",function(ev){ if(ev.key==="Escape"&&!sheet.hidden) closeSheet(); });
 
 /* 强制刷新：清掉 App 缓存（地图瓦片留着，重下很贵），再重新加载 */
-var APPV="v34";
+var APPV="v35";
+/* 主题：自动 → 浅色 → 深色 → 自动。CSS 认 data-theme，
+   地图瓦片和 iOS 状态栏颜色得手动跟上。 */
+(function(){
+  var btn=document.getElementById("th"), root=document.documentElement;
+  var ICON={auto:"🌗",light:"☀️",dark:"🌙"}, LBL={auto:"跟随系统",light:"浅色",dark:"深色"};
+  var NEXT={auto:"light",light:"dark",dark:"auto"};
+  var metas=[].slice.call(document.querySelectorAll('meta[name="theme-color"]'));
+  var orig=metas.map(function(m){ return m.content; });
+  var mode="auto";
+  try{ var v=localStorage.getItem("theme"); if(v==="light"||v==="dark") mode=v; }catch(e){}
+
+  function apply(){
+    if(mode==="auto") root.removeAttribute("data-theme");
+    else root.setAttribute("data-theme",mode);
+    /* 两个 meta 都写成同一个颜色，这样不管系统匹配到哪一个都对 */
+    if(mode==="auto") metas.forEach(function(m,i){ m.content=orig[i]; });
+    else metas.forEach(function(m){ m.content = mode==="dark" ? "#1A0F16" : "#FFF0F5"; });
+    btn.textContent=ICON[mode];
+    btn.setAttribute("aria-label","主题："+LBL[mode]+"（点击切换）");
+    btn.title=LBL[mode];
+    if(window.__syncTiles) window.__syncTiles();
+  }
+  btn.onclick=function(){
+    mode=NEXT[mode];
+    try{ mode==="auto" ? localStorage.removeItem("theme")
+                       : localStorage.setItem("theme",mode); }catch(e){}
+    apply();
+  };
+  apply();
+})();
+
 document.getElementById("rf").onclick=function(){
   var b=this; b.classList.add("spin");
   var done=function(){ location.reload(); };
