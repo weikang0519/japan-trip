@@ -894,8 +894,11 @@ var DAYS=[
   {t:"16:30",n:"东京塔",en:"Tokyo Tower · 16:30–17:30",p:"tokyotower",m:"银座过来约20分钟",
    note:"10月3日东京日落约 17:23 —— 这个时段上去正好看日落转夜景。比涩谷SKY更传统的角度，红色铁塔本身也是拍照点。"},
   {t:"18:00",n:"东京油组总本店 银座店",en:"油拌面 · 18:00–19:00",c:["aburagumi"],p:"ginza"},
-  {t:"19:30",n:"新宿",en:"Shinjuku · 19:30–20:30 · 从丸井百货开始",p:"shinjuku",m:"银座坐丸之内线直达约17分钟",
-   note:"丸井 → 伊势丹 → 纪伊国屋书店 → 三丽鸥 / 迪士尼旗舰店 → 歌舞伎町一番街（哥斯拉头）→ 东口 3D 猫猫大屏。Chiikawa 在丸井。"},
+  {t:"19:30",n:"Alpen TOKYO · On 专区",en:"新宿3-23-7 ユニカビル · 东口步行1分钟",p:"shinjuku",
+   m:"周六 10:00–22:00 · 03-5312-7681",
+   note:"<b>1楼跑步层的 On shop-in-shop，阿尔卑斯自己称是「国内最大级」。</b>整栋 B2–8F 都是运动用品。开到 22:00，所以这个时间来完全不赶。<br>银座那家 On 旗舰店 20:00 就关了，今天下午在银座先看、晚上来这里补尺码，是最顺的走法。"},
+  {t:"20:15",n:"新宿 逛街",en:"丸井 · 歌舞伎町 · 3D 猫猫",p:"shinjuku",
+   note:"丸井（Chiikawa 在这）→ 纪伊国屋书店 → 三丽鸥 / 迪士尼旗舰店 → 歌舞伎町一番街（哥斯拉头）→ 东口 3D 猫猫大屏。<br>⚠️ 伊势丹这类百货 20:00 前后就关，想逛要挪到明天上午 —— 明天整个上午都在新宿。"},
   {t:"21:00",n:"回酒店",en:"Back to hotel",p:"roynet"}],
  call:{cls:"warn",h:"今天走的路最多",p:["筑地 → 银座四小时 → 东京塔 → 回银座吃面 → 新宿 → 回新桥。<b>银座去了两趟</b>，中间夹一个东京塔来回。",
   "嫌折返的话：银座逛到 17:30，吃完油组直接从汐留上大江户线去东京塔看夜景，再回新桥 —— <b>新宿留到明天</b>，反正明天整个上午都在新宿。"]}},
@@ -1386,7 +1389,7 @@ pane.addEventListener("click",function(ev){
 document.addEventListener("keydown",function(ev){ if(ev.key==="Escape"&&!sheet.hidden) closeSheet(); });
 
 /* 强制刷新：清掉 App 缓存（地图瓦片留着，重下很贵），再重新加载 */
-var APPV="v32";
+var APPV="v33";
 document.getElementById("rf").onclick=function(){
   var b=this; b.classList.add("spin");
   var done=function(){ location.reload(); };
