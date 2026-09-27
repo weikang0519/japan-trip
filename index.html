@@ -606,7 +606,7 @@ var TICKETS={
      {who:"WK",items:[{l:"入场券",img:"tickets/u7f3a1c-studio-a.jpg"},{l:"Express Pass 8",img:"tickets/u7f3a1c-express-a.jpg"}]},
      {who:"BBJH",items:[{l:"入场券",img:"tickets/u7f3a1c-studio-b.jpg"},{l:"Express Pass 8",img:"tickets/u7f3a1c-express-b.jpg"}]}
    ],
-   note:"<b>每人拿自己那一张</b>，入园闸机逐张扫。券面注明「请自行打印后携带」—— 出发前最好各打印一份纸质备用，闸机对手机屏幕通常也认，但纸本不会没电。<br>Express Pass 官方也建议截图存本地：园区里信号差时网页可能打不开。这里已经离线存好了。<br>快通时段：11:00 鹰马飞行 / 12:00 小黄人 / 15:00 马力欧卡丁车 / 15:00 任天堂世界 / 15:30 耀西 / 16:00 矿车 · 另可二选一。"},
+   note:"<b>每人拿自己那一张</b>，入园闸机逐张扫。券面注明「请自行打印后携带」—— 出发前最好各打印一份纸质备用，闸机对手机屏幕通常也认，但纸本不会没电。<br>Express Pass 官方也建议截图存本地：园区里信号差时网页可能打不开。这里已经离线存好了。<br>快通 8 项 = 6 项定时 + 2 项自选。定时：10:00 哈利波特禁忌之旅 / 11:00 鹰马飞行 / 12:00 小黄人 / 15:00 马力欧卡丁车 / 15:30 耀西 / 16:00 矿车。自选已定：侏罗纪乘船游 + 飞天翼龙。<br>另附 <b>超级任天堂世界 15:00–16:00 定时入场</b>，是园区入场，不占快通项数。"},
  shink:{t:"のぞみ 86 号",sub:"京都 → 东京 · 2026-10-02（周五）· 绿色车厢",
    rows:[["车次","NOZOMI 86"],["京都 发","09:48"],["东京 到","12:03"],
          ["座位","9号车 16-D（靠窗・富士山侧）"],["同行","9号车 16-C（过道）"],
@@ -710,6 +710,18 @@ var R={
  naruto:{addr:"多家分店",rv:"排队",cn:"鸣门鲷烧本铺",en:"Naruto Taiyaki Honpo",ja:"鳴門鯛焼本舗",area:"東京",hrs:"10:00–21:00"},
  kimuraya:{addr:"中央区银座4-5-7",rv:"排队",cn:"银座木村家",en:"Kimuraya · 红豆面包 · est. 1869",ja:"銀座木村家",area:"銀座 東京",hrs:"10:00–20:00",pay:"💳"},
  kikanbo:{addr:"池袋",rv:"排队",cn:"鬼金棒 池袋",en:"Kikanbo · 麻辣味噌拉面",ja:"鬼金棒 池袋店",area:"池袋 東京",hrs:"11:00–22:00"},
+ usjdk:{cn:"咚奇刚热狗",en:"Donkey Kong hot dog",ja:"",area:"",
+   addr:"超级任天堂世界 · 咚奇刚园区",hrs:"园区营业时间",yen:1300,nolink:1,pay:"💳🍉"},
+ usjbw:{cn:"Boardwalk Snacks",en:"披萨 + 饮料",ja:"",area:"",
+   addr:"大白鲨斜对面 —— 哈利波特园区出来右转就是",hrs:"园区营业时间",yen:1600,nolink:1,pay:"💳🍉"},
+ usjbb:{cn:"黄油啤酒",en:"Butterbeer",ja:"",area:"",
+   addr:"哈利波特园区内 · 两家：一家在入口，一家在里面靠城堡和湖边",
+   hrs:"园区营业时间",yen:900,nolink:1,pay:"💳🍉",
+   note:"里面那家人少 —— 往里走。"},
+ usjam:{cn:"Amity Snacks",en:"火鸡腿",ja:"",area:"",
+   addr:"侏罗纪公园门口 · 摊位上方就是飞天翼龙",hrs:"园区营业时间",yen:1300,nolink:1,pay:"💳🍉"},
+ usjhd:{cn:"热狗餐车",en:"Hot dog cart",ja:"",area:"",
+   addr:"好莱坞园区",hrs:"园区营业时间",yen:950,nolink:1,pay:"💳🍉"},
  ohayo:{addr:"任何便利店",rv:"",cn:"欧哈优 焦糖布丁 / 牛奶布丁",en:"Ohayo brulee · 便利店",ja:"",area:"",hrs:"任何便利店都有",yen:250,nolink:1}
 };
 
@@ -808,11 +820,31 @@ var DAYS=[
       ["木津市场","排不进任何时段"]]},
 
 {d:"2026-09-29",t:"环球影城",en:"Universal Studios Japan · 晚餐在梅田",
- badges:[["ok","已订票"],["plain","全天"],["warn","闭园时间待确认"]],
+ badges:[["ok","已订票"],["ok","快通 8 项"],["plain","全天"],["warn","闭园时间待确认"]],
  ev:[
   {t:"08:00",k:"move",n:"酒店 → 环球城站",en:"地铁 + JR · 约30分钟",p:"dtosaka",m:"天满桥 → 东梅田 → 大阪站 → 环球城"},
-  {t:"09:00",n:"日本环球影城",tid:"usj",en:"USJ",p:"usj",m:"门票已购",
-   note:"一整天。其他什么都别安排。"},
+  {t:"09:00",n:"入园 — 日本环球影城",tid:"usj",en:"Universal Studios Japan",p:"usj",
+   m:"入场券 + Express Pass 8 · 每人扫自己那张"},
+  {t:"10:00",n:"哈利波特禁忌之旅",en:"Harry Potter and the Forbidden Journey",
+   m:"<b>快通</b> · 10:00–10:30"},
+  {t:"11:00",n:"鹰马飞行",en:"Flight of the Hippogriff",
+   m:"<b>快通</b> · 11:00–11:30"},
+  {t:"12:00",n:"小黄人反派大会",en:"Illumination Villain-Con Minion Blast",
+   m:"<b>快通</b> · 12:00–12:30"},
+  {t:"12:30",n:"园区美食",en:"Park food · 价格为单份",
+   c:["usjbb","usjbw","usjam","usjdk","usjhd"]},
+  {t:"13:30",n:"二选一 — 侏罗纪 / 飞天翼龙",
+   en:"Jurassic Park The Ride · The Flying Dinosaur",
+   m:"<b>快通</b> · 不限时段，自己挑时间去",
+   note:"快通 8 项里剩下的两项，已经选定这两个（大白鲨和小黄人乘车游放弃）。"},
+  {t:"15:00",n:"超级任天堂世界",en:"Super Nintendo World",
+   m:"<b>快通定时入场 15:00–16:00</b> · 必须在这个窗口进场，进去之后可以待到闭园"},
+  {t:"15:00",n:"马力欧卡丁车 — 库巴的挑战",en:"Mario Kart: Koopa's Challenge",
+   m:"<b>快通</b> · 15:00–15:30"},
+  {t:"15:30",n:"耀西冒险",en:"Yoshi's Adventure",
+   m:"<b>快通</b> · 15:30–16:00"},
+  {t:"16:00",n:"咚奇刚疯狂矿车",en:"Donkey Kong's Mine Cart Madness",
+   m:"<b>快通</b> · 16:00–16:30"},
   {t:"20:30",k:"move",n:"环球城站 → 大阪站（梅田）",en:"回程",p:"osakastn",
    m:"16:00–21:00 有直达车 · 约13分钟 · ¥190",
    note:"回程本来就经过梅田 —— 昨天删掉的梅田商圈，今晚顺路补上。"},
@@ -1201,6 +1233,7 @@ function candCard(key,dow,from){
   var inner=esc(r.cn)+(r.en?'<span class="crom">'+esc(r.en)+'</span>':"");
   h+= r.nolink ? '<div class="cnm">'+inner+'</div>'
     : '<a class="cnm gomap" href="'+g(target,r.area)+'" target="_blank" rel="noopener">'+inner+'</a>';
+  if(r.addr) h+='<div class="fa">📍 '+esc(r.addr)+'</div>';
   h+='<div class="chips">';
   if(shut) h+='<span class="chip shut">'+W[dow]+' 休息</span>';
   if(r.hrs) h+='<span class="chip">'+esc(r.hrs)+'</span>';
@@ -1408,7 +1441,7 @@ pane.addEventListener("click",function(ev){
 document.addEventListener("keydown",function(ev){ if(ev.key==="Escape"&&!sheet.hidden) closeSheet(); });
 
 /* 强制刷新：清掉 App 缓存（地图瓦片留着，重下很贵），再重新加载 */
-var APPV="v35";
+var APPV="v36";
 /* 主题：自动 → 浅色 → 深色 → 自动。CSS 认 data-theme，
    地图瓦片和 iOS 状态栏颜色得手动跟上。 */
 (function(){
