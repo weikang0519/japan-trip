@@ -684,7 +684,7 @@ var R={
  tonkatsujp:{addr:"表参道",rv:"排队",cn:"tonkatsu.jp 表参道",en:"炸猪排",ja:"tonkatsu.jp 表参道",area:"表参道 東京",hrs:"11:00–21:00"},
  nagi:{addr:"新宿区歌舞伎町1-1-10 2F · 新宿黄金街内",rv:"排队",cn:"超煮干拉面 凪",en:"Nagi · 黄金街本馆 · 小鱼干",ja:"すごい煮干ラーメン凪 新宿ゴールデン街店本館",area:"新宿ゴールデン街 東京",hrs:"24 小时营业"},
  afuri:{addr:"原宿 / 惠比寿 / 中目黑 等多家分店",rv:"排队",cn:"AFURI 阿夫利",en:"柚子盐拉面 / 柚子蘸面",ja:"AFURI",area:"東京",hrs:"11:00–23:00",pay:"🍉"},
- aburagumi:{addr:"银座 / 新宿 / 涩谷 均有分店",rv:"排队",cn:"油组总本店",en:"Aburagumi · 油拌面",ja:"油組総本店",area:"渋谷 東京",hrs:"11:00–22:00",note:"银座 / 新宿 / 涩谷 均有店"},
+ aburagumi:{addr:"银座 / 新宿 / 涩谷 均有分店",rv:"排队",cn:"东京油组总本店 银座店",en:"Aburagumi · 油拌面",ja:"東京油組総本店 銀座店",area:"銀座 東京",hrs:"11:00–22:00",note:"银座 / 新宿 / 涩谷 均有店"},
  hashigo:{addr:"中央区银座6-3-5 · 银座站C2步行2分",rv:"排队",cn:"支那面 はしご 银座本店",en:"Hashigo · 担担面 · est. 1964",ja:"支那麺 はしご 銀座本店",area:"銀座6-3-5 東京",hrs:"周一–五 11:00–05:00 · 周六日 11:00–21:00",yen:1100,note:"银座站 C2 出口步行2分钟"},
  funabashiya:{addr:"新宿区新宿3-28-14 · 新宿三丁目",rv:"可预约",cn:"天妇罗 船桥屋 本店",en:"Funabashiya · 创业 1886",ja:"天ぷら 船橋屋 本店",area:"新宿三丁目 東京",hrs:"11:30–21:00 (L.O.20:30)"},
  unafuji:{addr:"千代田区内幸町1-7-1 日比谷OKUROJI · 新桥站7出口步行3分",rv:"需预约",cn:"炭烧 鳗富士 有乐町店",en:"Unafuji · 日比谷OKUROJI · 鳗鱼饭",ja:"炭焼 うな富士 有楽町店",area:"日比谷OKUROJI 内幸町 東京",hrs:"11:00–22:00 (L.O.21:00)",yen:8000,pay:"💳",resv:1},
@@ -1271,20 +1271,22 @@ function renderDay(i){
   var prev=null, prevKey=null;
   d.ev.forEach(function(e){
     var pl=(e.p&&P[e.p])?P[e.p]:null;
-    h+='<div class="row" data-k="'+(e.k||"")+'"><div class="rt">'+esc(e.t)+'</div>'+
-       '<div class="rb" style="--dc:'+C[i]+'"><div class="card">';
-    h+= pl ? '<a class="nm gomap" href="'+g(pl[4],"")+'" target="_blank" rel="noopener">'+esc(e.n)+'</a>'
-           : '<div class="nm">'+esc(e.n)+'</div>';
-    if(e.en) h+='<div class="en">'+esc(e.en)+'</div>';
-    if(e.m) h+='<div class="meta">'+e.m+'</div>';
-    if(e.note) h+='<div class="note">'+e.note+'</div>';
-    /* 只有一家候选、而且这一站本来就叫这个名字 —— 别再嵌一张一样的卡 */
+    /* 只有一家候选、而且这一站本来就叫这个名字 —— 那这一站就是这家店 */
     var solo=null;
     if(e.c&&e.c.length===1&&R[e.c[0]]){
       var r0=R[e.c[0]];
       var na=(e.n||"").replace(/\s/g,""), nb=(r0.cn||"").replace(/\s/g,"");
       if(nb&&(na.indexOf(nb)>=0||nb.indexOf(na)>=0)) solo=r0;
     }
+    var soloUrl=(solo&&!solo.nolink)?g(solo.ja||solo.cn,solo.area):null;
+    h+='<div class="row" data-k="'+(e.k||"")+'"><div class="rt">'+esc(e.t)+'</div>'+
+       '<div class="rb" style="--dc:'+C[i]+'"><div class="card">';
+    h+= soloUrl ? '<a class="nm gomap" href="'+soloUrl+'" target="_blank" rel="noopener">'+esc(e.n)+'</a>'
+       : pl ? '<a class="nm gomap" href="'+g(pl[4],"")+'" target="_blank" rel="noopener">'+esc(e.n)+'</a>'
+            : '<div class="nm">'+esc(e.n)+'</div>';
+    if(e.en) h+='<div class="en">'+esc(e.en)+'</div>';
+    if(e.m) h+='<div class="meta">'+e.m+'</div>';
+    if(e.note) h+='<div class="note">'+e.note+'</div>';
     if(solo){
       var dow0=new Date(d.d+"T00:00:00").getDay();
       var shut0=(solo.shut||[]).indexOf(dow0)>=0;
@@ -1299,6 +1301,8 @@ function renderDay(i){
     if(pl&&prevKey&&prevKey!==e.p) bt+='<button class="btn rt-btn" type="button" data-from="'+esc(prevKey)+'" data-to="'+esc(e.p)+'">🚇 路线</button>';
     else if(e.rf&&e.rt) bt+='<button class="btn rt-btn" type="button" data-from="'+esc(e.rf)+'" data-to="'+esc(e.rt)+'">🚇 路线</button>';
     if(e.tid) bt+='<button class="btn tkt" type="button" data-tid="'+esc(e.tid)+'">🎫 票券</button>';
+    if(soloUrl)
+      bt+='<a class="btn" href="'+soloUrl+'" target="_blank" rel="noopener">📍 导航</a>';
     if(solo&&!solo.nolink)
       bt+='<a class="btn tab" href="'+tabelog(solo.ja||solo.cn)+'" target="_blank" rel="noopener">⭐ 查评分</a>';
     if(bt) h+='<div class="btns">'+bt+'</div>';
@@ -1389,7 +1393,7 @@ pane.addEventListener("click",function(ev){
 document.addEventListener("keydown",function(ev){ if(ev.key==="Escape"&&!sheet.hidden) closeSheet(); });
 
 /* 强制刷新：清掉 App 缓存（地图瓦片留着，重下很贵），再重新加载 */
-var APPV="v33";
+var APPV="v34";
 document.getElementById("rf").onclick=function(){
   var b=this; b.classList.add("spin");
   var done=function(){ location.reload(); };
