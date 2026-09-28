@@ -538,6 +538,16 @@ var LEG={
    {m:"train",l:"JR 关空快速 → 大阪环状线",
     d:"关西空港站 <b>3・4号站台</b> 关空快速（天王寺行）9站 → <b>天王寺</b>（18号站台到达），换环状线内回り <b>11号站台</b> 6站 → 大阪城公园",
     t:"1小时21分",f:1180,fn:"全程 JR，一张票到底 · 12:40 发 → 14:01 到"}],
+ "usj>namba":[
+   {m:"train",l:"JR ゆめ咲线 → 阪神难波线",
+    d:"<b>环球城 1号站台</b> JRゆめ咲线（西九条行）<b>2站</b> → <b>西九条</b>，同站换 <b>阪神难波线 1号站台</b>（东花园行）<b>4站</b> → 大阪难波（1号站台到达）",
+    t:"29min",f:400,fn:"只换一次 · JR ¥180 + 阪神 ¥220 · 20:32 发 → 21:01 到",rec:1},
+   {m:"train",l:"JR ゆめ咲线 → 大阪环状线 → 大和路线",
+    d:"环球城 1号站台 → 西九条，换 <b>大阪环状线内回り 4号站台</b>（弁天町・天王寺方面）4站 → <b>今宫</b>，换 JR 大和路线 <b>2号站台</b>（JR难波行）→ JR难波，步行约5分钟",
+    t:"32min",f:200,fn:"最便宜，但换两次、要走一段 · 20:32 发 → 21:04 到"},
+   {m:"train",l:"经梅田：JR → 四つ桥线",
+    d:"环球城 → 西九条，换 <b>JR 关空快速</b>（天王寺行）2站 → <b>大阪</b>，步行到 <b>西梅田</b>，换 <b>四つ桥线 2号站台</b>（住之江公园行）4站 → 难波",
+    t:"30min",f:440,fn:"想顺路逛梅田才选这条 · 20:32 发 → 21:02 到"}],
  "dtosaka>usj":[
    {m:"train",l:"地铁谷町线 → JR 大阪环状线（直通环球城）",
     d:"<b>天满桥 2号站台</b>（大日行 · 乘车位置 6两「前・中」）2站 → <b>东梅田</b>，步行到 <b>大阪站</b>，搭环状线内回り（西九条・弁天町方向）直通 5站 → 环球城",
@@ -650,7 +660,7 @@ var BOW='<svg class="bow" viewBox="0 0 52 40" aria-hidden="true"><path d="M26 20
 
 /* 店铺：cn 中文名 · en 英文名 · ja 日文名（仅用于地图搜索，保证搜得到） */
 var R={
- ajinoya:{cn:"味乃家 本店",en:"Ajinoya Honten · 大阪烧",ja:"味乃家 本店",area:"難波 大阪",hrs:"11:00–22:00",yen:5000,shut:[1]},
+ ajinoya:{cn:"味乃家 本店",en:"Ajinoya Honten · 大阪烧",ja:"味乃家 本店",area:"難波 大阪",addr:"中央区难波 1-7-16 二楼 · なんば站 14号出口步行1分钟",hrs:"11:00–22:00",yen:5000,shut:[1],note:"1965 年开到现在，常年排队。当天不收电话预约，但官网的 FastPass 可以先占位 —— 21:00 才到、22:00 就关门，建议出发前先订。"},
  dorajuu:{cn:"多啦十",en:"Dora Juu · 大阪烧",ja:"どら十",area:"大阪",hrs:"18:00–02:00",yen:4000},
  haruno:{cn:"烧烧 春之华",en:"Yaki Yaki Haru no Hana",ja:"焼焼 春の華",area:"大阪",hrs:"17:00–22:00",yen:5000,shut:[1],pay:"🍉"},
  itto:{cn:"板前烧肉 一斗",en:"Itamae Yakiniku Itto · 东心斋桥",ja:"板前焼肉 一斗",area:"東心斎橋 大阪",hrs:"17:00–24:00",yen:12000,shut:[3],pay:"💳🍉",resv:1},
@@ -735,6 +745,7 @@ var P={
  kuromon:[34.6654,135.5064,"黑门市场","Kuromon Market · 09:00–18:00","黒門市場"],
  tsutenkaku:[34.6525,135.5063,"通天阁","Tsutenkaku · 拍照机位在 Spa World 前","通天閣"],
  usj:[34.6654,135.4323,"日本环球影城","Universal Studios Japan","ユニバーサル・スタジオ・ジャパン"],
+ namba:[34.6661,135.4993,"大阪难波站","Osaka Namba · 阪神なんば线","大阪難波駅"],
  osakastn:[34.7025,135.4959,"大阪站","7・8号站台","大阪駅"],
  kitashinchi:[34.6959,135.4945,"北新地","Kitashinchi","北新地"],
  kyotostn:[34.9858,135.7588,"京都站","Kyoto Station","京都駅"],
@@ -819,7 +830,7 @@ var DAYS=[
  cut:[["四天王寺","8:30–16:00，今天下午到不了"],["难波八坂神社","17:00 关门，和黑门市场撞车"],
       ["木津市场","排不进任何时段"]]},
 
-{d:"2026-09-29",t:"环球影城",en:"Universal Studios Japan · 晚餐在梅田",
+{d:"2026-09-29",t:"环球影城",en:"Universal Studios Japan · 晚餐在难波",
  badges:[["ok","已订票"],["ok","快通 8 项"],["plain","全天"],["warn","闭园时间待确认"]],
  ev:[
   {t:"08:00",k:"move",n:"酒店 → 环球城站",en:"地铁 + JR · 约30分钟",p:"dtosaka",m:"天满桥 → 东梅田 → 大阪站 → 环球城"},
@@ -845,13 +856,14 @@ var DAYS=[
    m:"<b>快通</b> · 15:30–16:00"},
   {t:"16:00",n:"咚奇刚疯狂矿车",en:"Donkey Kong's Mine Cart Madness",
    m:"<b>快通</b> · 16:00–16:30"},
-  {t:"20:30",k:"move",n:"环球城站 → 大阪站（梅田）",en:"回程",p:"osakastn",
-   m:"16:00–21:00 有直达车 · 约13分钟 · ¥190",
-   note:"回程本来就经过梅田 —— 昨天删掉的梅田商圈，今晚顺路补上。"},
-  {t:"21:00",n:"晚餐 — 梅田",en:"Dinner · Umeda",c:["tanjirou","hanadako","rikimaru","dorajuu"],
-   note:"たんじろう 开到 23:00，はなだこ 只到 21:45（闭园晚就别指望）。想好好坐下吃，力丸开到 24:00、どら十 到凌晨 2 点，从梅田坐御堂筋线两站到心斋桥。"}],
+  {t:"20:30",k:"move",n:"环球城站 → 大阪难波",en:"回程 · 换一次",p:"namba",
+   m:"约29分钟 · ¥400 · 20:32 发 → 21:01 到"},
+  {t:"21:00",n:"晚餐 — 味乃家 本店",en:"Ajinoya Honten · 大阪烧 · 難波",p:"namba",c:["ajinoya"],
+   m:"<b>22:00 关门</b> · 21:01 到站，走过去约5分钟"},
+  {t:"备选",n:"吃不上的话",en:"Spares",c:["tanjirou","hanadako","dorajuu"],
+   note:"丹次郎 开到 23:00、はなだこ 只到 21:45 —— 这两家都在梅田，今晚的路线不经过梅田了，要去得选经梅田那条（见上面的路线）。どら十 开到凌晨 2 点，在心斋桥，从难波走过去或坐御堂筋线一站。"}],
  call:{cls:"warn",h:"先确认闭园时间",p:["USJ 9月的闭园时间在 19:00–22:00 之间浮动，9/29 的具体时间官网临近才公布。<b>出发前查一次官方日历</b>，晚餐时间按它定。",
-  "如果 19:00 就闭园，那就不必赶梅田，Universal CityWalk 就在出口，营业到很晚。"]},
+  "<b>味乃家 22:00 关门，21:01 才到难波 —— 只有不到一小时，而且这家常年排队。</b>出发前先去官网订 FastPass 占位：tablecheck.com/en/shops/ajinoya-okonomiyaki/reserve","如果 19:00 就闭园反而更好，早到难波就不用赶。真赶不上就走备选。"]},
  cut:[["梅田空中庭园","闭园后才到梅田，展望台最后入场通常 22:30，时间太紧且看不到夕阳"]]},
 
 {d:"2026-09-30",t:"大阪 → 京都 · 岚山",en:"移动日，下午岚山",
@@ -1338,6 +1350,7 @@ function renderDay(i){
     if(solo){
       var dow0=new Date(d.d+"T00:00:00").getDay();
       var shut0=(solo.shut||[]).indexOf(dow0)>=0;
+      if(solo.addr) h+='<div class="fa">📍 '+esc(solo.addr)+'</div>';
       h+='<div class="chips">';
       if(shut0) h+='<span class="chip shut">'+W[dow0]+' 休息</span>';
       if(solo.hrs) h+='<span class="chip">'+esc(solo.hrs)+'</span>';
@@ -1441,7 +1454,7 @@ pane.addEventListener("click",function(ev){
 document.addEventListener("keydown",function(ev){ if(ev.key==="Escape"&&!sheet.hidden) closeSheet(); });
 
 /* 强制刷新：清掉 App 缓存（地图瓦片留着，重下很贵），再重新加载 */
-var APPV="v36";
+var APPV="v37";
 /* 主题：自动 → 浅色 → 深色 → 自动。CSS 认 data-theme，
    地图瓦片和 iOS 状态栏颜色得手动跟上。 */
 (function(){
