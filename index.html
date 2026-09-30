@@ -358,6 +358,9 @@ a.gomap:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-ra
 var W=["周日","周一","周二","周三","周四","周五","周六"];
 function g(n,a){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(n+" "+(a||""));}
 var g_=g;
+/* 地点可以自带一条确切的 Google Maps 链接（第6位）。
+   连锁店用文字搜索会搜到别家分店，所以能指名就指名。 */
+function gp(p){ return (p&&p[5]) ? p[5] : g(p?p[4]:"",""); }
 function tabelog(n){return "https://tabelog.com/rstLst/?sk="+encodeURIComponent(n);}
 /* 路线：从上一个地点出发，公共交通模式（Google 会顺带显示票价） */
 function dir(from,to){
@@ -531,6 +534,16 @@ var LEG={
    {m:"train",l:"御堂筋线 → 京阪本线特急",
     d:"心斋桥 2号站台（新大阪行）2站 → 淀屋桥，换京阪 3号站台（出町柳行 特急）2站 → 天满桥",
     t:"13min",f:370,fn:"京阪 6号车是 Premium Car，要另收费"}],
+ "hgikyoto>mocokiyo":[
+   {m:"bus",l:"京都市巴士 207 路「清水寺・东福寺行」",
+    d:"酒店门口 <b>四条烏丸</b> 站上车，沿四条通往东：四条河原町 → 四条京阪前 → 祇园 → 清水道 → <b>五条坂</b> 下车，<b>步行1分钟</b>到店",
+    t:"约20–25分",f:230,fn:"8点档发车 :05 :15 :23 :30 :40 :50 :59（四条高倉 时刻，四条烏丸 早约1分）· 均一价 ¥230 · 车程是估的，早高峰四条通会堵",rec:1},
+   {m:"train",l:"阪急京都线 → 步行",
+    d:"步行2分钟到 <b>烏丸</b> 站，<b>1号站台</b> 阪急京都本线（京都河原町行）<b>1站</b> → 京都河原町，<b>1B 出口</b>出来<b>步行21分钟</b>（上坡）",
+    t:"37min",f:170,fn:"最便宜，但最后要爬21分钟坡 · 08:29 发 → 08:33 到站"},
+   {m:"train",l:"地铁烏丸线 → 步行",
+    d:"<b>四条（市营）1号站台</b> 烏丸线（竹田行）<b>1站</b> → <b>五条（市营）</b>，<b>1号出口</b>出来<b>步行23分钟</b>",
+    t:"34min",f:220,fn:"走得更多，不推荐 · 08:37 发 → 08:38 到站"}],
  "kix>castle":[
    {m:"train",l:"南海空港线 空港急行 → JR 大阪环状线",
     d:"航站楼步行5分钟到 <b>关西空港（铁道）站</b> → <b>1号站台</b> 空港急行（难波行 · 乘车位置 8两「中・后」）<b>10站</b> → <b>新今宫</b>，换 JR 大阪环状线内回り <b>1号站台</b>（天王寺・鹤桥方向）<b>7站</b> → 大阪城公园",
@@ -758,6 +771,7 @@ var P={
  yusai:[35.0148,135.6742,"祐斋亭","17:00 闭馆","祐斎亭"],
  togetsu:[35.0132,135.6776,"渡月桥","Togetsukyo","渡月橋"],
  nishiki:[35.0050,135.7649,"锦市场","Nishiki Market","錦市場"],
+ mocokiyo:[34.9954951,135.7763166,"MOCOMOCO 清水寺本店","京都着物レンタルMOCOMOCO · 五条坂巴士站步行1分钟","京都着物レンタルMOCOMOCO 清水寺本店","https://www.google.com/maps?cid=6099024764023776780"],
  kiyomizu:[34.9949,135.7850,"清水寺","Kiyomizu-dera","清水寺"],
  yasaka:[35.0036,135.7786,"八坂神社","Yasaka Shrine","八坂神社"],
  fushimi:[34.9671,135.7727,"伏见稻荷大社","Fushimi Inari Taisha","伏見稲荷大社"],
@@ -897,7 +911,7 @@ var DAYS=[
  badges:[["ok","和服 已约"],["ok","伏见稻荷店 还衣"],["warn","预约写 1 名"]],
  ev:[
   {t:"08:30",k:"move",n:"酒店出发",en:"公交约20分钟",p:"hgikyoto"},
-  {t:"09:00",n:"mocomoco 和服租借",tid:"kimono",en:"清水寺店 · 约1小时",m:"预约 ID 261001397 · ¥4,400"},
+  {t:"09:00",n:"mocomoco 和服租借",tid:"kimono",p:"mocokiyo",en:"京都着物レンタルMOCOMOCO 清水寺本店 · 约1小时",m:"预约 ID 261001397 · ¥4,400 · <b>09:00 开门</b> · 東山区梅林町564-16",note:"巴士约20–25分钟，08:30 出发只是刚好赶上开门。想留余地就坐 08:23 那班。"},
   {t:"10:00",n:"清水寺 + 二年坂・三年坂",en:"2–3小时",p:"kiyomizu",
    note:"租和服就是为了这一段。尽量早上去，那条坡道才是照片本身。"},
   {t:"13:15",n:"八坂神社",en:"30分钟",p:"yasaka"},
@@ -1072,11 +1086,11 @@ function drawMap(idx){
   }
   if(idx<0){
     DAYS.forEach(function(d,i){
-      d.ev.forEach(function(e,ei){ if(e.p&&P[e.p]) pts.push([P[e.p][0],P[e.p][1],C[i],P[e.p][2],P[e.p][4],i,ei,e.t,e.n,e.c]); });
+      d.ev.forEach(function(e,ei){ if(e.p&&P[e.p]) pts.push([P[e.p][0],P[e.p][1],C[i],P[e.p][2],P[e.p][4],i,ei,e.t,e.n,e.c,P[e.p][5]||null]); });
     });
   }else{
     col=C[idx];
-    DAYS[idx].ev.forEach(function(e,ei){ if(e.p&&P[e.p]) pts.push([P[e.p][0],P[e.p][1],col,P[e.p][2],P[e.p][4],idx,ei,e.t,e.n,e.c]); });
+    DAYS[idx].ev.forEach(function(e,ei){ if(e.p&&P[e.p]) pts.push([P[e.p][0],P[e.p][1],col,P[e.p][2],P[e.p][4],idx,ei,e.t,e.n,e.c,P[e.p][5]||null]); });
   }
   if(!pts.length){ map.setView([35.30,136.60],7); return; }
   /* 同一个地点出现两次时错开一点，否则两个编号会完全重叠 */
@@ -1132,7 +1146,7 @@ function drawMap(idx){
         return h+'</div>';
       })()+
       '<button class="pb" onclick="jumpTo('+p[5]+','+p[6]+')">'+(idx<0?"跳到这一天":"看这一站")+'</button>'+
-      '<a class="pg" href="'+g(p[4],"")+'" target="_blank" rel="noopener">在 Google 地图打开 →</a></div>';
+      '<a class="pg" href="'+(p[10]||g(p[4],""))+'" target="_blank" rel="noopener">在 Google 地图打开 →</a></div>';
     m.bindPopup(html,{closeButton:true,autoPan:true,maxWidth:240});
     m.on("click",function(){ m.openPopup(); });
   });
@@ -1342,7 +1356,7 @@ function renderDay(i){
     h+='<div class="row" data-k="'+(e.k||"")+'"><div class="rt">'+esc(e.t)+'</div>'+
        '<div class="rb" style="--dc:'+C[i]+'"><div class="card">';
     h+= soloUrl ? '<a class="nm gomap" href="'+soloUrl+'" target="_blank" rel="noopener">'+esc(e.n)+'</a>'
-       : pl ? '<a class="nm gomap" href="'+g(pl[4],"")+'" target="_blank" rel="noopener">'+esc(e.n)+'</a>'
+       : pl ? '<a class="nm gomap" href="'+gp(pl)+'" target="_blank" rel="noopener">'+esc(e.n)+'</a>'
             : '<div class="nm">'+esc(e.n)+'</div>';
     if(e.en) h+='<div class="en">'+esc(e.en)+'</div>';
     if(e.m) h+='<div class="meta">'+e.m+'</div>';
@@ -1454,7 +1468,7 @@ pane.addEventListener("click",function(ev){
 document.addEventListener("keydown",function(ev){ if(ev.key==="Escape"&&!sheet.hidden) closeSheet(); });
 
 /* 强制刷新：清掉 App 缓存（地图瓦片留着，重下很贵），再重新加载 */
-var APPV="v37";
+var APPV="v38";
 /* 主题：自动 → 浅色 → 深色 → 自动。CSS 认 data-theme，
    地图瓦片和 iOS 状态栏颜色得手动跟上。 */
 (function(){
