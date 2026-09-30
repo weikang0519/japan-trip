@@ -411,12 +411,23 @@ var LEG={
  "jojakko>bamboo":[{m:"walk",l:"步行",d:"下坡穿过竹林北口",t:"~10min",f:0,rec:1}],
  "bamboo>togetsu":[{m:"walk",l:"步行",d:"穿过竹林南口，沿桂川",t:"~13min",f:0,rec:1}],
  "nishiki>fushimi":[
-   {m:"train",l:"烏丸线 → 东西线 → 京阪本线",
+   {m:"train",l:"京阪本线 · 直达",
+    d:"锦市场<b>东口（寺町）</b>出来，沿四条通往东过<b>四条大桥</b>约10分钟到 <b>祇园四条</b>，<b>2号站台</b>（淀屋桥／中之岛行）<b>5站</b> → 伏见稻荷（2号站台到达）",
+    t:"9min",f:240,fn:"不用换车 · 16:16 / 16:27 / 16:38 发 · 从东口走过去正好顺路",rec:1},
+   {m:"train",l:"从西口走：烏丸线 → 东西线 → 京阪本线",
     d:"<b>四条 2号站台</b>（国际会馆行）1站 → <b>乌丸御池</b>，换东西线 <b>2号站台</b>（六地藏行）2站 → <b>三条京阪</b>，走到京阪 <b>三条站 4号站台</b>（中之岛行）6站 → 伏见稻荷",
-    t:"28min",f:460,fn:"地铁 ¥220 + 京阪 ¥240 · 16:32 发 → 17:00 到",rec:1},
-   {m:"train",l:"另一条（换一次）",
-    d:"Yahoo 给的第二方案：只换 1 次，29 分钟",
-    t:"29min",f:410,fn:"便宜 ¥50，慢 1 分钟"}],
+    t:"28min",f:460,fn:"换两次、贵 ¥220 —— 只有逛完还留在西口才值得"}],
+ "yasaka>katsuda":[
+   {m:"train",l:"走到京都河原町 → 阪急京都线 1站",
+    d:"八坂神社沿四条通往西走约<b>9分钟</b>到 <b>京都河原町</b>，阪急京都本线（大阪梅田方向 · <b>1 或 3号站台</b>）<b>1站</b> → <b>烏丸</b>（2号站台到达），出站步行2分钟",
+    t:"约15min",f:170,fn:"车程只有1分钟，班次约5分钟一班 · 穿和服不想走远就坐这个",rec:1},
+   {m:"walk",l:"全程走四条通",
+    d:"八坂神社 → 四条大桥 → 四条河原町 → 四条烏丸，全程<b>约1.6公里</b>，有拱廊遮阳",
+    t:"约20min",f:0,fn:"会从鬼丸和锦市场东口门前经过 —— 忍住，回头再吃"}],
+ "katsuda>nishiki":[
+   {m:"walk",l:"走到锦市场西口",
+    d:"店门口回到四条通往东约250米到 <b>高倉通</b>，北上一个路口就是<b>锦市场西口</b>",
+    t:"约5min",f:0,fn:"从西口进，一路往东逛到寺町，正好接下一站",rec:1}],
  "yasaka>kiyomizu":[{m:"walk",l:"经二年坂・三年坂",d:"反方向也一样好走",t:"~20min",f:0,rec:1}],
  "togetsu>nishiki":[
    {m:"train",l:"JR 嵯峨野线 → 东西线 → 烏丸线",
@@ -705,6 +716,7 @@ var R={
  terakoya:{cn:"寺子屋本铺",en:"仙贝 senbei",ja:"おかき処 寺子屋本舗",area:"錦市場 京都",hrs:"10:00–18:00",yen:300,pay:"💳🍉"},
  sallys:{cn:"Sally's Kitchen",en:"水果三明治",ja:"Sally's Kitchen",area:"錦市場 京都",hrs:"11:00–18:00",yen:1000,pay:"🍉"},
  ichiha:{cn:"锦 いちは",en:"鲷鱼烧",ja:"錦 いちは",area:"錦市場 京都",hrs:"10:00–20:00",yen:800},
+ katsuda:{cn:"京都炸猪排 かつ田",en:"Kyoto Tonkatsu Katsuda · 四条烏丸店",ja:"京都とんかつ かつ田 四条烏丸店",area:"四条烏丸 京都",addr:"下京区大政所町673-1 峯ビル1F · 地铁四条站 6号出口步行1分钟",hrs:"11:30–22:00 · 无休",yen:3000,pay:"💳",url:"https://www.google.com/maps?cid=12620070692181449152",note:"中午不休息，也没有定休日 —— 这一带少见。食べログ 还写着 15:00–17:00 休息、14:45 停止点单，那是旧的，官网和 Google 都是 11:30–22:00 连续营业。"},
  onimaru:{cn:"饭团 鬼丸",en:"Onimaru · 四条河原町",ja:"おにぎり 鬼丸",area:"四条河原町 京都",hrs:"10:00–21:00",yen:1000,pay:"💳🍉"},
  mensho:{cn:"面匠 高松",en:"Mensho Takamatsu · 蘸面",ja:"麺匠 たか松",area:"京都",hrs:"11:00–22:00",yen:3000,pay:"💳🍉"},
  ginjo:{cn:"银龙拉面",en:"ginjo ramen",ja:"ぎん龍",area:"京都",hrs:"11:00–14:30 / 18:00–21:30",yen:2000},
@@ -770,6 +782,7 @@ var P={
  bamboo:[35.0170,135.6716,"竹林小径","Bamboo Grove","竹林の小径"],
  yusai:[35.0148,135.6742,"祐斋亭","17:00 闭馆","祐斎亭"],
  togetsu:[35.0132,135.6776,"渡月桥","Togetsukyo","渡月橋"],
+ katsuda:[35.0012535,135.7594566,"かつ田 四条烏丸店","京都とんかつ かつ田 · 炸猪排","京都とんかつ かつ田 四条烏丸店","https://www.google.com/maps?cid=12620070692181449152"],
  nishiki:[35.0050,135.7649,"锦市场","Nishiki Market","錦市場"],
  mocokiyo:[34.9954951,135.7763166,"MOCOMOCO 清水寺本店","京都着物レンタルMOCOMOCO · 五条坂巴士站步行1分钟","京都着物レンタルMOCOMOCO 清水寺本店","https://www.google.com/maps?cid=6099024764023776780"],
  kiyomizu:[34.9949,135.7850,"清水寺","Kiyomizu-dera","清水寺"],
@@ -908,26 +921,28 @@ var DAYS=[
  cut:[["祐斋亭","你删掉了 — 17:00 闭馆，会挤掉渡月桥的日落"],["稻荷豆大福","周三休息"],["いづ重","周三休息"],["黑门市场","周三休息"]]},
 
 {d:"2026-10-01",t:"京都 — 和服",en:"和服 · 东山 · 锦市场",
- badges:[["ok","和服 已约"],["ok","伏见稻荷店 还衣"],["warn","预约写 1 名"]],
+ badges:[["ok","和服 已约"],["ok","伏见稻荷店 还衣"],["plain","かつ田 无休"],["warn","预约写 1 名"]],
  ev:[
   {t:"08:30",k:"move",n:"酒店出发",en:"公交约20分钟",p:"hgikyoto"},
   {t:"09:00",n:"mocomoco 和服租借",tid:"kimono",p:"mocokiyo",en:"京都着物レンタルMOCOMOCO 清水寺本店 · 约1小时",m:"预约 ID 261001397 · ¥4,400 · <b>09:00 开门</b> · 東山区梅林町564-16",note:"巴士约20–25分钟，08:30 出发只是刚好赶上开门。想留余地就坐 08:23 那班。"},
   {t:"10:00",n:"清水寺 + 二年坂・三年坂",en:"2–3小时",p:"kiyomizu",
    note:"租和服就是为了这一段。尽量早上去，那条坡道才是照片本身。"},
   {t:"13:15",n:"八坂神社",en:"30分钟",p:"yasaka"},
-  {t:"14:00",n:"饭团 鬼丸 四条河原町",en:"15分钟 · 垫一下",c:["onimaru"]},
-  {t:"14:30",n:"午餐 — 鳗鱼饭 / 鲭鱼寿司",en:"三选一",c:["hanamichi","izuu","izuju"],
-   note:"花道 ¥9,000，11:00–16:00 午市，是排队店。いづう（清本町367，1781年）和 いづ重（八坂石阶下）周四都开，想吃鲭鱼寿司就换它们。"},
-  {t:"15:30",n:"锦市场",en:"Nishiki Market · 15:30–16:30",p:"nishiki",m:"多数摊位 18:00 收",
+  {t:"14:00",n:"午餐 — 京都炸猪排 かつ田",en:"Kyoto Tonkatsu Katsuda · 四条烏丸店",
+   p:"katsuda",c:["katsuda"],m:"人均 ¥2,000–4,000 · 鹿儿岛茶美豚 · 最后用咖喱酱收尾"},
+  {t:"15:15",n:"锦市场",en:"Nishiki Market · 西口进，往东逛",p:"nishiki",
+   m:"约390米 · 多数摊位 17:00–18:00 收",
    c:["konnamonja","terakoya","sallys","ichiha"],
-   note:"14:00 饭团、14:30 鳗鱼饭、15:30 锦市场、18:30 拉面 —— 四个半小时里四顿。吃不完很正常，这一段最容易砍。"},
-  {t:"17:00",n:"伏见稻荷大社",en:"Fushimi Inari · 穿和服",p:"fushimi",m:"24小时开放 · 免费 · 京阪本线约25分钟",
-   note:"<b>和服就在这里还，所以千本鸟居这段你是穿着和服走的。</b><br>只是要知道：10月1日日落约 <b>17:25</b>，而和服 17:30 要还 —— 穿着和服有光的时间大概只有 <b>25 分钟</b>。想多拍一点，锦市场提早20分钟走就行。"},
+   note:"从高倉那头进、寺町那头出 —— 走完正好在河原町，接着拿饭团、再过桥坐京阪。"},
+  {t:"16:15",n:"饭团 鬼丸 四条河原町",en:"10分钟 · 带着路上吃",c:["onimaru"],
+   note:"开到 21:00，是这三家里最没有时间压力的一家，所以放在最后。"},
+  {t:"16:45",n:"伏见稻荷大社",en:"Fushimi Inari · 穿和服",p:"fushimi",m:"24小时开放 · 免费 · 京阪本线 9分钟",
+   note:"<b>和服就在这里还，所以千本鸟居这段你是穿着和服走的。</b><br>10月1日日落约 <b>17:25</b>，和服 17:30 还 —— 16:45 到的话，穿着和服有光的时间约 <b>40 分钟</b>。"},
   {t:"17:30",n:"还和服 · MOCOMOCO 伏见稻荷店",en:"Kimono returned",p:"fushimi",
    note:"清水寺店取、伏见稻荷店还，不用绕回东山。还完可以继续往山上走几步，下半段鸟居有灯。"},
   {t:"18:30",n:"晚餐 — 拉面",en:"ginjo ramen · 无需预约",c:["ginjo","mensho","kikukawa"]}],
  call:{cls:"good",h:"和服的问题解决了 —— 而且变成了加分项",p:["MOCOMOCO 在<b>伏见稻荷也有店</b>，17:30 就地归还。不用赶回东山，18:00 的死线也不存在了。",
-  "更好的是：千本鸟居那段你是<b>穿着和服</b>走的。原本它只是个时间冲突，现在成了全天最好的拍照点。为了赶在日落前，锦市场提早20分钟收。"]},
+  "更好的是：千本鸟居那段你是<b>穿着和服</b>走的。原本它只是个时间冲突，现在成了全天最好的拍照点。","下午三顿按<b>午餐 → 锦市场 → 鬼丸</b>的顺序走：只有锦市场有收摊时间，かつ田 中午不休、鬼丸 开到 21:00。这样一路由西往东，最后落在祇园四条，坐京阪 9 分钟就到伏见稻荷。"]},
  cut:[["鲷寿司","周四休息"],["稻荷豆大福","周三、周四都休 — 正好你去伏见那天关门"]]},
 
 {d:"2026-10-02",t:"京都 → 东京",en:"新干线 · 浅草 · 晴空塔 · 秋叶原",
@@ -1258,7 +1273,7 @@ function candCard(key,dow,from){
   var h='<div class="cand'+(shut?" shut":"")+'">';
   var inner=esc(r.cn)+(r.en?'<span class="crom">'+esc(r.en)+'</span>':"");
   h+= r.nolink ? '<div class="cnm">'+inner+'</div>'
-    : '<a class="cnm gomap" href="'+g(target,r.area)+'" target="_blank" rel="noopener">'+inner+'</a>';
+    : '<a class="cnm gomap" href="'+(r.url||g(target,r.area))+'" target="_blank" rel="noopener">'+inner+'</a>';
   if(r.addr) h+='<div class="fa">📍 '+esc(r.addr)+'</div>';
   h+='<div class="chips">';
   if(shut) h+='<span class="chip shut">'+W[dow]+' 休息</span>';
@@ -1352,7 +1367,7 @@ function renderDay(i){
       var na=(e.n||"").replace(/\s/g,""), nb=(r0.cn||"").replace(/\s/g,"");
       if(nb&&(na.indexOf(nb)>=0||nb.indexOf(na)>=0)) solo=r0;
     }
-    var soloUrl=(solo&&!solo.nolink)?g(solo.ja||solo.cn,solo.area):null;
+    var soloUrl=(solo&&!solo.nolink)?(solo.url||g(solo.ja||solo.cn,solo.area)):null;
     h+='<div class="row" data-k="'+(e.k||"")+'"><div class="rt">'+esc(e.t)+'</div>'+
        '<div class="rb" style="--dc:'+C[i]+'"><div class="card">';
     h+= soloUrl ? '<a class="nm gomap" href="'+soloUrl+'" target="_blank" rel="noopener">'+esc(e.n)+'</a>'
@@ -1468,7 +1483,7 @@ pane.addEventListener("click",function(ev){
 document.addEventListener("keydown",function(ev){ if(ev.key==="Escape"&&!sheet.hidden) closeSheet(); });
 
 /* 强制刷新：清掉 App 缓存（地图瓦片留着，重下很贵），再重新加载 */
-var APPV="v38";
+var APPV="v39";
 /* 主题：自动 → 浅色 → 深色 → 自动。CSS 认 data-theme，
    地图瓦片和 iOS 状态栏颜色得手动跟上。 */
 (function(){
