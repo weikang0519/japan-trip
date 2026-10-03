@@ -462,6 +462,22 @@ var LEG={
    {m:"train",l:"JR 山手线",d:"新桥 → 东京，1站",t:"~3min",f:150,est:1,rec:1},
    {m:"walk",l:"步行经银座",d:"顺路逛一番街",t:"~25min",f:0}],
  "meiji>omote":[{m:"walk",l:"穿过原宿",d:"出神宫南口沿表参道",t:"~15min",f:0,rec:1}],
+ "roynet>tokyotower":[
+   {m:"metro",l:"都营浅草线 → 大江户线",
+    d:"<b>新桥 1号站台</b> 浅草线快特（羽田空港第1・第2航站楼行 · 乘车位置 8两「前・中・后」）<b>2站</b> → <b>大门</b>，换大江户线 <b>4号站台</b>（六本木・都厅前方向）→ <b>赤羽桥</b>，步行5分钟",
+    t:"13min",f:178,fn:"酒店出来就是新桥站 · 东京塔 9:00 开门",rec:1}],
+ "tokyotower>omote":[
+   {m:"metro",l:"大江户线 → 半藏门线",
+    d:"<b>赤羽桥 2号站台</b> 大江户线（六本木・都厅前方向 · 乘车位置 8两「中・后」）<b>3站</b> → <b>青山一丁目</b>，换半藏门线 <b>3号站台</b>（中央林间行）→ 表参道",
+    t:"17min",f:286,fn:"下车就是表参道，往西走就是原宿",rec:1}],
+ "omote>ichiharajuku":[
+   {m:"walk",l:"沿表参道下坡 → 明治通",
+    d:"表参道站出来往西沿<b>表参道</b>走到<b>神宫前交叉口</b>，右转进<b>明治通</b>，店在左手边二楼（サンポウ综合ビル）",
+    t:"约11min",f:0,fn:"约850米，一路都是店 —— 这段路本来就要走",rec:1}],
+ "shibuya>ginza":[
+   {m:"metro",l:"银座线 · 直达",
+    d:"<b>涩谷 2号站台</b> 银座线（浅草行 · <b>本站始发，有座</b>）<b>8站</b> → 银座（2号站台到达），A 出口上来就是四丁目路口",
+    t:"16min",f:209,fn:"不用换车 · 18:25 / 18:28 / 18:31 发",rec:1}],
  "omote>shibuya":[
    {m:"walk",l:"沿表参道步行下坡",
     d:"表参道 → 涩谷十字路口，一路是店",
@@ -745,6 +761,7 @@ var R={
  naruto:{addr:"多家分店",rv:"排队",cn:"鸣门鲷烧本铺",en:"Naruto Taiyaki Honpo",ja:"鳴門鯛焼本舗",area:"東京",hrs:"10:00–21:00"},
  kimuraya:{addr:"中央区银座4-5-7",rv:"排队",cn:"银座木村家",en:"Kimuraya · 红豆面包 · est. 1869",ja:"銀座木村家",area:"銀座 東京",hrs:"10:00–20:00",pay:"💳"},
  kikanbo:{addr:"池袋",rv:"排队",cn:"鬼金棒 池袋",en:"Kikanbo · 麻辣味噌拉面",ja:"鬼金棒 池袋店",area:"池袋 東京",hrs:"11:00–22:00"},
+ ichiharajuku:{cn:"一兰 原宿店",en:"Ichiran Harajuku · 豚骨拉面",ja:"一蘭 原宿店",area:"原宿 東京",addr:"涩谷区神宫前6-5-6 2F サンポウ综合ビル · 明治神宫前站步行3分",hrs:"09:00 开门",yen:1500,url:"https://www.google.com/maps?cid=12194424554300215605",note:"<b>只收现金。</b>一人一格的味集中台，点单靠纸条，不用说话。"},
  usjdk:{cn:"咚奇刚热狗",en:"Donkey Kong hot dog",ja:"",area:"",
    addr:"超级任天堂世界 · 咚奇刚园区",hrs:"园区营业时间",yen:1300,nolink:1,pay:"💳🍉"},
  usjbw:{cn:"Boardwalk Snacks",en:"披萨 + 饮料",ja:"",area:"",
@@ -792,7 +809,9 @@ var P={
  roynet:[35.6665,139.7570,"大和 Roynet 酒店 东京新桥","Daiwa Roynet · 新桥","ダイワロイネットホテル東京新橋"],
  ginza:[35.6717,139.7650,"银座四丁目","Ginza","銀座四丁目"],
  akiba:[35.6984,139.7731,"秋叶原","Akihabara","秋葉原"],
- tokyotower:[35.6586,139.7454,"东京塔","Tokyo Tower","東京タワー"],
+ tokyotower:[35.6586,139.7454,"东京塔","Tokyo Tower · 大展望台","東京タワー"],
+ ichiharajuku:[35.6678693,139.7052351,"一兰 原宿店","Ichiran Harajuku · 神宮前6-5-6 2F","一蘭 原宿店","https://www.google.com/maps?cid=12194424554300215605"],
+ onginza:[35.6725473,139.7646888,"On 银座旗舰店","On Flagship Store Tokyo Ginza","On Flagship Store Tokyo Ginza","https://www.google.com/maps?cid=2142535125410863779"],
  shinjuku:[35.6910,139.7040,"新宿","丸井 / 伊势丹 / 歌舞伎町","新宿駅 東口"],
  tsukiji:[35.6654,139.7707,"筑地场外市场","Tsukiji Outer Market","築地場外市場"],
  meiji:[35.6764,139.6993,"明治神宫","Meiji Jingu","明治神宮"],
@@ -994,21 +1013,36 @@ var DAYS=[
  call:{cls:"warn",h:"今天走的路最多",p:["筑地 → 银座四小时 → 东京塔 → 回银座吃面 → 新宿 → 回新桥。<b>银座去了两趟</b>，中间夹一个东京塔来回。",
   "嫌折返的话：银座逛到 17:30，吃完油组直接从汐留上大江户线去东京塔看夜景，再回新桥 —— <b>新宿留到明天</b>，反正明天整个上午都在新宿。"]}},
 
-{d:"2026-10-04",t:"东京 — 新宿 · 涩谷",en:"新宿 · 原宿 · 表参道 · 涩谷SKY",
- badges:[["ok","涩谷SKY 17:20 已购"],["stop","筑地 周日休市"],["warn","周日 + 黄金周"]],
+{d:"2026-10-04",t:"东京 — 东京塔 · 原宿 · 涩谷",en:"东京塔 · 原宿 · 表参道 · 涩谷SKY · On 银座",
+ badges:[["ok","涩谷SKY 17:20 已购"],["ok","东京塔 补上"],["plain","周日"],["warn","晚餐待定"]],
  ev:[
-  {t:"09:30",n:"新宿",en:"Shinjuku · 周日",p:"shinjuku",m:"新桥坐 JR 约15分钟",
-   note:"昨晚没逛完的接着逛。歌舞伎町一番街、哥斯拉头、东口 3D 猫猫大屏都在这一带。"},
-  {t:"11:00",n:"超煮干拉面 凪",en:"新宿黄金街本馆",c:["nagi"],
-   note:"黄金街巷子里、二楼，只有10个座位。<b>24小时营业</b>，所以这个时间去反而没队。食べログ拉面百名店。"},
-  {t:"12:30",n:"原宿 + 表参道",en:"Harajuku & Omotesando",p:"omote",m:"新宿坐副都心线约5分钟",
-   note:"周日的竹下通是最挤的时候，表参道那一侧会舒服很多。"},
+  {t:"09:00",k:"move",n:"酒店出发 → 赤羽桥",en:"新桥 → 大门 → 赤羽桥",p:"roynet",rf:"roynet",rt:"tokyotower",
+   m:"13分钟 · ¥178 · 下车步行5分钟到塔下"},
+  {t:"09:20",n:"东京塔",en:"Tokyo Tower · 大展望台 150m",p:"tokyotower",nort:1,
+   m:"¥1,500/人 · 9:00–23:00 · 不用预约，窗口买票",
+   note:"10/3 没赶上的那座，放在今天第一站 —— 离酒店只有 13 分钟，早上也最空。250m 的 Top Deck 要另外订（¥3,300 网购），不订也不影响。"},
+  {t:"10:47",k:"move",n:"赤羽桥 → 表参道",en:"大江户线 → 半藏门线",rf:"tokyotower",rt:"omote",
+   m:"17分钟 · ¥286 · 11:04 到"},
+  {t:"11:05",n:"表参道 → 原宿",en:"Omotesando & Harajuku",p:"omote",nort:1,
+   m:"从表参道站一路往西走，下坡全是店"},
+  {t:"12:30",n:"午餐 — 一兰 原宿店",en:"Ichiran Harajuku",p:"ichiharajuku",c:["ichiharajuku"],
+   m:"<b>只收现金</b> · 人均约 ¥1,500 · 9:00 就开门"},
+  {t:"13:30",n:"竹下通 + 猫街",en:"Takeshita St · Cat Street",p:"omote",nort:1,
+   note:"周日的竹下通是最挤的时候，往猫街那一侧会舒服很多。"},
   {t:"15:00",n:"涩谷",en:"Shibuya · 十字路口",p:"shibuya"},
-  {t:"17:20",n:"涩谷 SKY",tid:"sky",en:"Shibuya Sky · 入场 17:20–17:39",p:"shibuya",m:"¥3,400/人 · Webket · 已购",
+  {t:"17:20",n:"涩谷 SKY",tid:"sky",en:"Shibuya Sky · 入场 17:20–17:39",p:"shibuya",nort:1,
+   m:"¥3,400/人 · Webket · 已购",
    note:"<b>必须在 17:20–17:39 这19分钟内进闸。</b>10月4日东京日落约 17:22 —— 一进去就是蓝调时刻。"},
-  {t:"19:00",n:"晚餐 — 二选一",en:"tonkatsu.jp 或 和牛寿喜烧 極",c:["tonkatsujp","kiwami","afuri"],
-   note:"两家都可预约、可指定。tonkatsu.jp 在表参道；寿喜烧 極 先用导航确认最近的分店。"}],
- cut:[["Kikanbo 池袋","哪一天都塞不进去 — 删掉"]]},
+  {t:"18:25",k:"move",n:"涩谷 → 银座",en:"银座线 直达 · 本站始发",rf:"shibuya",rt:"ginza",
+   m:"16分钟 · ¥209 · 18:41 到"},
+  {t:"18:45",n:"On 银座旗舰店",en:"On Flagship Store Tokyo Ginza",p:"onginza",nort:1,
+   m:"<b>20:00 关门</b> · 银座4-3-1 並木會館 B1/1F/2F · 四丁目路口",
+   note:"全球第二大的 On 旗舰店，仅次于巴黎香榭丽舍。1F 跑步和户外、2F 训练和生活、B1 是活动空间。<b>今晚唯一有硬时间的一站。</b>"},
+  {t:"20:10",n:"晚餐 — 待定",en:"Dinner · TBD",
+   note:"先空着。银座这一带你自己那份清单里还有：银座胜神（炸猪排）、La Panza（西班牙烤饭）、Les Copains（法式小馆）、银座狮子啤酒馆。想吃拉面的话，一兰新桥店 24 小时、离酒店 2 分钟 —— 但今天中午已经吃过一兰了。"}],
+ cut:[["新宿","10/3 晚上连 Alpen 一起逛过了"],
+      ["鬼金棒","神田本店离表参道 8.9 公里、28 分钟；池袋店更绕 —— 去池袋要经过代々木（离原宿一站），等于路过原宿再往北五站、回头十二站。放到 10/6 配秋叶原更合理，本店现在可以在 TableCheck 预约"],
+      ["秋叶原","今天全程在西边，硬塞进来要拿原宿或东京塔去换 — 10/6 上午还空着"]]},
 
 {d:"2026-10-05",t:"迪士尼乐园",en:"Tokyo Disneyland",
  badges:[["ok","已订票"],["plain","全天"]],
@@ -1487,7 +1521,7 @@ pane.addEventListener("click",function(ev){
 document.addEventListener("keydown",function(ev){ if(ev.key==="Escape"&&!sheet.hidden) closeSheet(); });
 
 /* 强制刷新：清掉 App 缓存（地图瓦片留着，重下很贵），再重新加载 */
-var APPV="v40";
+var APPV="v41";
 /* 主题：自动 → 浅色 → 深色 → 自动。CSS 认 data-theme，
    地图瓦片和 iOS 状态栏颜色得手动跟上。 */
 (function(){
